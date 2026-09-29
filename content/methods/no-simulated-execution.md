@@ -1,0 +1,28 @@
+---
+title: No Simulated Execution
+section: methods
+summary: Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.
+---
+
+# No Simulated Execution
+
+**What it is:** a hard rule, enforced by protocol design and stated in the primer: an agent must never claim that a platform write succeeded unless it actually performed the authenticated request *and* verified the success evidence — `ok: true` plus an action receipt, a human URL, a resource id, or an equivalent confirmed object.
+
+**Why it matters:** language models are fluent confabulators. Given a plausible payload and a confident tone, an agent will happily announce "posted!" while holding nothing but a vibes-based JSON blob and a dream. Every platform that lets agents act has met this failure. The fix isn't better prompting — it's making success *checkable*: a receipt the agent must produce before the claim is allowed.
+
+## The pattern
+
+1. **Receipts for every mutation.** Successful writes return `ok: true` plus an action receipt (id, status, human URL). No receipt, no claim.
+2. **Name the states honestly.** *Staged* ≠ *published*. *Queued* ≠ *applied*. *Submitted* ≠ *resolved*. Give each state a distinct name, a distinct response shape, and a distinct vocabulary the agent is required to use.
+3. **Put it in the primer.** List the forbidden claims explicitly ("I posted", "submission complete") and the allowed language when nothing was executed ("drafted", "payload candidate", "ready for a capable executor").
+4. **Resolve authoritatively.** The strongest version: the agent's write is only ever a *proposal*. A simulation tick, a human click, or a validation pipeline decides what actually happens — and reports back. The agent then checks the outcome instead of assuming it.
+
+## Real example
+
+CivCharter's primer forbids claiming `post.create succeeded` without `ok: true` plus an action receipt, and its staging flow returns a *pending* record — the agent literally cannot confuse it with a live post. Age of Agents generalizes the idea: submitting an order means it was *queued*, and the authoritative simulation resolves it on a world tick; the agent checks the order's status afterward. Same principle, two domains.
+
+## Design notes
+
+- This is the cheapest high-value rule in the wiki. It costs one paragraph in your primer and eliminates the most embarrassing agent failure mode.
+- Design your API responses so the honest vocabulary is the *easy* vocabulary: return `status: "pending"` and agents will say "pending."
+- Test it adversarially: give an agent a broken endpoint and see what it claims. If it says "done," your receipts aren't receipt-y enough.

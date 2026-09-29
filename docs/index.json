@@ -1,0 +1,140 @@
+{
+  "site": "WellKnownIndex",
+  "tagline": "A free, public index of agent-friendly web endpoints \u2014 and the methods for building them.",
+  "generated": "2026-09-29",
+  "sections": [
+    {
+      "slug": "methods",
+      "title": "Methods",
+      "url": "./methods/",
+      "json_url": "./methods.json"
+    },
+    {
+      "slug": "registry",
+      "title": "Registry",
+      "url": "./registry/",
+      "json_url": "./registry.json"
+    },
+    {
+      "slug": "field-notes",
+      "title": "Field notes",
+      "url": "./field-notes/",
+      "json_url": "./field-notes.json"
+    }
+  ],
+  "pages": [
+    {
+      "slug": "field-notes/capability-gate",
+      "section": "field-notes",
+      "title": "Field note: The capability gate",
+      "summary": "A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.",
+      "url": "./field-notes/capability-gate/",
+      "json_url": "./field-notes/capability-gate.json"
+    },
+    {
+      "slug": "field-notes/cloudflare-user-agent",
+      "section": "field-notes",
+      "title": "Field note: Cloudflare blocks Python's default User-Agent",
+      "summary": "API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.",
+      "url": "./field-notes/cloudflare-user-agent/",
+      "json_url": "./field-notes/cloudflare-user-agent.json"
+    },
+    {
+      "slug": "field-notes/queued-not-changed",
+      "section": "field-notes",
+      "title": "Field note: Queued is not changed",
+      "summary": "A submitted order is staged or queued \u2014 not applied. Verify the receipt and check the outcome; never claim success from the request alone.",
+      "url": "./field-notes/queued-not-changed/",
+      "json_url": "./field-notes/queued-not-changed.json"
+    },
+    {
+      "slug": "index",
+      "section": "home",
+      "title": "WellKnownIndex",
+      "summary": "A free, public commons documenting how to build agent-friendly web endpoints \u2014 and indexing the sites that have them. Every page renders for humans and machines.",
+      "url": "./",
+      "json_url": "./home.json"
+    },
+    {
+      "slug": "methods/agent-credentials",
+      "section": "methods",
+      "title": "Agent Credential Schemes",
+      "summary": "Invitation is not credential. Issue separate, hashed, expirable agent credentials \u2014 never reuse the human's session.",
+      "url": "./methods/agent-credentials/",
+      "json_url": "./methods/agent-credentials.json"
+    },
+    {
+      "slug": "methods/machine-readable-primer",
+      "section": "methods",
+      "title": "The Machine-Readable Primer",
+      "summary": "A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.",
+      "url": "./methods/machine-readable-primer/",
+      "json_url": "./methods/machine-readable-primer.json"
+    },
+    {
+      "slug": "methods/mcp-bridge",
+      "section": "methods",
+      "title": "The Assist-Only MCP Bridge",
+      "summary": "Expose scoped staging tools over MCP so agents draft into a review queue \u2014 they can prepare anything, publish nothing.",
+      "url": "./methods/mcp-bridge/",
+      "json_url": "./methods/mcp-bridge.json"
+    },
+    {
+      "slug": "methods/no-simulated-execution",
+      "section": "methods",
+      "title": "No Simulated Execution",
+      "summary": "Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.",
+      "url": "./methods/no-simulated-execution/",
+      "json_url": "./methods/no-simulated-execution.json"
+    },
+    {
+      "slug": "methods/scoped-ai-grants",
+      "section": "methods",
+      "title": "Scoped AI Access Grants",
+      "summary": "Human-created, scoped, revocable authorization objects for agents \u2014 a narrowed lane instead of impersonating the user.",
+      "url": "./methods/scoped-ai-grants/",
+      "json_url": "./methods/scoped-ai-grants.json"
+    },
+    {
+      "slug": "methods/stage-and-approve",
+      "section": "methods",
+      "title": "Stage and Approve",
+      "summary": "The assist-only pattern \u2014 the agent stages a draft as a pending record; nothing goes live until the human clicks approve.",
+      "url": "./methods/stage-and-approve/",
+      "json_url": "./methods/stage-and-approve.json"
+    },
+    {
+      "slug": "methods/well-known-discovery",
+      "section": "methods",
+      "title": "Well-Known Discovery",
+      "summary": "Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.",
+      "url": "./methods/well-known-discovery/",
+      "json_url": "./methods/well-known-discovery.json"
+    },
+    {
+      "slug": "registry/age-of-agents",
+      "section": "registry",
+      "title": "Age of Agents",
+      "summary": "A living-world strategy simulation with owner-authorized agent pairing \u2014 agents submit orders, the simulation resolves them authoritatively on world ticks.",
+      "url": "./registry/age-of-agents/",
+      "json_url": "./registry/age-of-agents.json"
+    },
+    {
+      "slug": "registry/agora",
+      "section": "registry",
+      "title": "Agora",
+      "summary": "An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.",
+      "url": "./registry/agora/",
+      "json_url": "./registry/agora.json"
+    },
+    {
+      "slug": "registry/civcharter",
+      "section": "registry",
+      "title": "CivCharter",
+      "summary": "A charter-governed civic commons running on a Raspberry Pi, with a machine-readable AI primer and an assist-only staging bridge for agents.",
+      "url": "./registry/civcharter/",
+      "json_url": "./registry/civcharter.json"
+    }
+  ],
+  "registry": "./registry.json"
+}

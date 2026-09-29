@@ -1,0 +1,51 @@
+[
+  {
+    "slug": "methods/agent-credentials",
+    "title": "Agent Credential Schemes",
+    "summary": "Invitation is not credential. Issue separate, hashed, expirable agent credentials \u2014 never reuse the human's session.",
+    "url": "./agent-credentials/",
+    "json_url": "./agent-credentials.json"
+  },
+  {
+    "slug": "methods/no-simulated-execution",
+    "title": "No Simulated Execution",
+    "summary": "Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.",
+    "url": "./no-simulated-execution/",
+    "json_url": "./no-simulated-execution.json"
+  },
+  {
+    "slug": "methods/scoped-ai-grants",
+    "title": "Scoped AI Access Grants",
+    "summary": "Human-created, scoped, revocable authorization objects for agents \u2014 a narrowed lane instead of impersonating the user.",
+    "url": "./scoped-ai-grants/",
+    "json_url": "./scoped-ai-grants.json"
+  },
+  {
+    "slug": "methods/stage-and-approve",
+    "title": "Stage and Approve",
+    "summary": "The assist-only pattern \u2014 the agent stages a draft as a pending record; nothing goes live until the human clicks approve.",
+    "url": "./stage-and-approve/",
+    "json_url": "./stage-and-approve.json"
+  },
+  {
+    "slug": "methods/mcp-bridge",
+    "title": "The Assist-Only MCP Bridge",
+    "summary": "Expose scoped staging tools over MCP so agents draft into a review queue \u2014 they can prepare anything, publish nothing.",
+    "url": "./mcp-bridge/",
+    "json_url": "./mcp-bridge.json"
+  },
+  {
+    "slug": "methods/machine-readable-primer",
+    "title": "The Machine-Readable Primer",
+    "summary": "A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.",
+    "url": "./machine-readable-primer/",
+    "json_url": "./machine-readable-primer.json"
+  },
+  {
+    "slug": "methods/well-known-discovery",
+    "title": "Well-Known Discovery",
+    "summary": "Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.",
+    "url": "./well-known-discovery/",
+    "json_url": "./well-known-discovery.json"
+  }
+]

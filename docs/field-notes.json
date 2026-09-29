@@ -1,0 +1,23 @@
+[
+  {
+    "slug": "field-notes/cloudflare-user-agent",
+    "title": "Field note: Cloudflare blocks Python's default User-Agent",
+    "summary": "API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.",
+    "url": "./cloudflare-user-agent/",
+    "json_url": "./cloudflare-user-agent.json"
+  },
+  {
+    "slug": "field-notes/queued-not-changed",
+    "title": "Field note: Queued is not changed",
+    "summary": "A submitted order is staged or queued \u2014 not applied. Verify the receipt and check the outcome; never claim success from the request alone.",
+    "url": "./queued-not-changed/",
+    "json_url": "./queued-not-changed.json"
+  },
+  {
+    "slug": "field-notes/capability-gate",
+    "title": "Field note: The capability gate",
+    "summary": "A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.",
+    "url": "./capability-gate/",
+    "json_url": "./capability-gate.json"
+  }
+]

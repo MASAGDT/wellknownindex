@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>No Simulated Execution · WellKnownIndex</title>
+<style>
+:root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand span{color:var(--acc)}
+nav.main{display:flex;gap:1.1rem;margin-left:auto}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
+nav.main a:hover,nav.main a.on{color:var(--acc)}
+main .wrap{padding-top:2rem;padding-bottom:3rem}
+h1,h2,h3{color:#fff;line-height:1.25}
+h1{font-size:1.9rem;margin:.2em 0 .6em}
+h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
+a{color:var(--acc)}
+code{background:var(--code);border:1px solid var(--line);border-radius:4px;
+padding:.1em .35em;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
+padding:1rem;overflow-x:auto}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--acc2);margin:1.2em 0;padding:.2em 1em;
+color:var(--dim);background:var(--panel);border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:1.1rem 1.25rem;margin:1rem 0}
+.card h3{margin:.1em 0 .3em;font-size:1.15rem}
+.card h3 a{color:#fff;text-decoration:none}
+.card h3 a:hover{color:var(--acc)}
+.card p{margin:.4em 0;color:var(--dim)}
+.meta{font-size:.8rem;color:var(--dim)}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);
+border-radius:20px;padding:.05em .7em;margin:.15em .25em .15em 0;color:var(--dim)}
+footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
+gap:1.5rem;flex-wrap:wrap;align-items:center}
+footer.site .jsonlink{margin-left:auto}
+input.filter{width:100%;background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem;margin:1rem 0}
+.kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
+font-size:.92rem}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0}
+.stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../">WellKnown<span>Index</span></a>
+<nav class="main">
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
+<a href="../../field-notes/" class="">Field notes</a>
+</nav>
+</div></header>
+<main><div class="wrap">
+<h1>No Simulated Execution</h1>
+<p><strong>What it is:</strong> a hard rule, enforced by protocol design and stated in the primer: an agent must never claim that a platform write succeeded unless it actually performed the authenticated request <em>and</em> verified the success evidence — <code>ok: true</code> plus an action receipt, a human URL, a resource id, or an equivalent confirmed object.</p>
+<p><strong>Why it matters:</strong> language models are fluent confabulators. Given a plausible payload and a confident tone, an agent will happily announce &quot;posted!&quot; while holding nothing but a vibes-based JSON blob and a dream. Every platform that lets agents act has met this failure. The fix isn&#x27;t better prompting — it&#x27;s making success <em>checkable</em>: a receipt the agent must produce before the claim is allowed.</p>
+<h2>The pattern</h2>
+<ol>
+<li><strong>Receipts for every mutation.</strong> Successful writes return <code>ok: true</code> plus an action receipt (id, status, human URL). No receipt, no claim.</li>
+<li><strong>Name the states honestly.</strong> <em>Staged</em> ≠ <em>published</em>. <em>Queued</em> ≠ <em>applied</em>. <em>Submitted</em> ≠ <em>resolved</em>. Give each state a distinct name, a distinct response shape, and a distinct vocabulary the agent is required to use.</li>
+<li><strong>Put it in the primer.</strong> List the forbidden claims explicitly (&quot;I posted&quot;, &quot;submission complete&quot;) and the allowed language when nothing was executed (&quot;drafted&quot;, &quot;payload candidate&quot;, &quot;ready for a capable executor&quot;).</li>
+<li><strong>Resolve authoritatively.</strong> The strongest version: the agent&#x27;s write is only ever a <em>proposal</em>. A simulation tick, a human click, or a validation pipeline decides what actually happens — and reports back. The agent then checks the outcome instead of assuming it.</li>
+</ol>
+<h2>Real example</h2>
+<p>CivCharter&#x27;s primer forbids claiming <code>post.create succeeded</code> without <code>ok: true</code> plus an action receipt, and its staging flow returns a <em>pending</em> record — the agent literally cannot confuse it with a live post. Age of Agents generalizes the idea: submitting an order means it was <em>queued</em>, and the authoritative simulation resolves it on a world tick; the agent checks the order&#x27;s status afterward. Same principle, two domains.</p>
+<h2>Design notes</h2>
+<ul>
+<li>This is the cheapest high-value rule in the wiki. It costs one paragraph in your primer and eliminates the most embarrassing agent failure mode.</li>
+<li>Design your API responses so the honest vocabulary is the <em>easy</em> vocabulary: return <code>status: &quot;pending&quot;</code> and agents will say &quot;pending.&quot;</li>
+<li>Test it adversarially: give an agent a broken endpoint and see what it claims. If it says &quot;done,&quot; your receipts aren&#x27;t receipt-y enough.</li>
+</ul>
+</div></main>
+<footer class="site"><div class="wrap">
+<span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a class="jsonlink" href="../../methods/no-simulated-execution.json">machine-readable JSON ↗</a>
+</div></div></footer>
+
+</body>
+</html>

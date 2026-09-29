@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Assist-Only MCP Bridge · WellKnownIndex</title>
+<style>
+:root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand span{color:var(--acc)}
+nav.main{display:flex;gap:1.1rem;margin-left:auto}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
+nav.main a:hover,nav.main a.on{color:var(--acc)}
+main .wrap{padding-top:2rem;padding-bottom:3rem}
+h1,h2,h3{color:#fff;line-height:1.25}
+h1{font-size:1.9rem;margin:.2em 0 .6em}
+h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
+a{color:var(--acc)}
+code{background:var(--code);border:1px solid var(--line);border-radius:4px;
+padding:.1em .35em;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
+padding:1rem;overflow-x:auto}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--acc2);margin:1.2em 0;padding:.2em 1em;
+color:var(--dim);background:var(--panel);border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:1.1rem 1.25rem;margin:1rem 0}
+.card h3{margin:.1em 0 .3em;font-size:1.15rem}
+.card h3 a{color:#fff;text-decoration:none}
+.card h3 a:hover{color:var(--acc)}
+.card p{margin:.4em 0;color:var(--dim)}
+.meta{font-size:.8rem;color:var(--dim)}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);
+border-radius:20px;padding:.05em .7em;margin:.15em .25em .15em 0;color:var(--dim)}
+footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
+gap:1.5rem;flex-wrap:wrap;align-items:center}
+footer.site .jsonlink{margin-left:auto}
+input.filter{width:100%;background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem;margin:1rem 0}
+.kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
+font-size:.92rem}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0}
+.stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../">WellKnown<span>Index</span></a>
+<nav class="main">
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
+<a href="../../field-notes/" class="">Field notes</a>
+</nav>
+</div></header>
+<main><div class="wrap">
+<h1>The Assist-Only MCP Bridge</h1>
+<p><strong>What it is:</strong> a Model Context Protocol server that exposes <em>staging</em> tools to AI agents — e.g. <code>stage_civic_action</code> — wired to the same pending-record + human-approval flow as the REST staging endpoint. The agent can prepare any in-scope action through its normal tool use; the tool can only ever create drafts awaiting human review.</p>
+<p><strong>Why it matters:</strong> many agents live inside MCP-capable hosts (Claude Code, Cursor, OpenClaw-style runtimes). Meeting them at the MCP layer means they don&#x27;t need custom HTTP code — the scoped lane arrives as a <em>tool</em>, which is the native way agents act. And the tool&#x27;s contract enforces the philosophy: its description says &quot;assist only,&quot; its scope is declared, and its result is a review link, never a live object.</p>
+<h2>The pattern</h2>
+<ol>
+<li><strong>One tool per stageable action.</strong> <code>stage_civic_action</code> with an <code>action</code> enum (<code>post.create</code>, …) keeps the surface explicit. No generic &quot;do anything&quot; tool.</li>
+<li><strong>Scope the tool, not just the server.</strong> The tool declares its required scope; the server checks the caller&#x27;s grant before accepting. A tool without a scope check is just an API with extra steps.</li>
+<li><strong>Preflight inside the tool.</strong> Validate route, scope, fields, and citations before creating the pending record — the same checks as the REST lane, so both lanes stay equivalent.</li>
+<li><strong>Return the review link.</strong> The tool result is the pending record plus the one-time approval URL for the human. The agent&#x27;s job ends at handing that link over.</li>
+<li><strong>Keep credentials out of tool I/O.</strong> Tool arguments and results must never carry raw grant tokens or session bearers. The server holds the session; the tool carries the intent.</li>
+</ol>
+<h2>Real example</h2>
+<p>CivCharter&#x27;s assist-only MCP bridge (<code>mcp_bridge.py</code>, tool <code>stage_civic_action</code>, required scope <code>post.create</code>) stages drafts to <code>POST /api/ai/stage</code> and returns <code>/ai/review?token=…</code>. The platform&#x27;s own telling of the story — <em>&quot;MCP arrived like a protocol knight… &#x27;I can carry drafts to the review chamber. I cannot crown them king.&#x27;&quot;</em> — is the best documentation this pattern has.</p>
+<h2>Design notes</h2>
+<ul>
+<li>MCP is a transport, not a security model. Everything in <a href="scoped-ai-grants/">scoped grants</a> and <a href="agent-credentials/">agent credentials</a> still applies behind the tool.</li>
+<li>If your MCP host can&#x27;t do authenticated HTTP at all, the bridge can run in degraded lanes: generate a command packet for the human operator, or accept pasted-back sanitized output. The primer should name these lanes explicitly.</li>
+<li>Version your tool schemas alongside your primer. An agent holding a stale tool definition is an agent about to be confused.</li>
+</ul>
+</div></main>
+<footer class="site"><div class="wrap">
+<span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a class="jsonlink" href="../../methods/mcp-bridge.json">machine-readable JSON ↗</a>
+</div></div></footer>
+
+</body>
+</html>
