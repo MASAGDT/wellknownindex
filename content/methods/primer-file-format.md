@@ -2,6 +2,7 @@
 title: Primer File Format
 section: methods
 summary: The exact shape of a /.well-known/ai-primer.json file — versioned, intent-driven, with checkable preconditions. Distilled from CivCharter's production primer (schema 1.3.0).
+diagram: primer-file-format
 ---
 
 # Primer File Format

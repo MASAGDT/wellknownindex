@@ -22,4 +22,4 @@ The editorial rule for everything under this heading: **distill, don't invent.**
 
 Building an agent lane for the first time? Read the three build-manual pages in order: publish the primer, issue the grants, add the staging endpoints. Running the wiki's own submission queue? Start with the ceremony blueprint.
 
-Found a running implementation this matrix doesn't cover yet? That's a [field note](/field-notes/) waiting to happen — or a registry entry via [Contribute](/contribute/). New to the vocabulary? The [glossary](/glossary/) defines every slug and term in one place.
+Found a running implementation this matrix doesn't cover yet? That's a [field note](/field-notes/) waiting to happen — or a registry entry via [Contribute](/contribute/). New to the vocabulary? The [glossary](/methods/glossary/) defines every slug and term in one place.

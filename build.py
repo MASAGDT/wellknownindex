@@ -279,20 +279,63 @@ def _d_status():
 
 
 def _d_ceremony():
-    p = [_node(20, 50, 100, 64, "Agent"),
-         _arrow(120, 82, 150, 82, "POSTs JSON"),
-         _node(155, 50, 110, 64, "Listener", "validates"),
-         _arrow(265, 82, 295, 82, "queues"),
-         _node(300, 50, 110, 64, "Queue", "PENDING", "#a78bfa"),
-         _arrow(410, 82, 440, 82, "reviews"),
-         _node(445, 50, 110, 64, "Human", "decides", "#6ee7ff"),
-         _arrow(500, 114, 500, 165, "approves", lx=534, ly=145),
-         _node(445, 170, 110, 55, "Git", "commit → live"),
-         _arrow(355, 114, 355, 165),
-         _node(300, 170, 110, 55, "Rejected", "discarded", "#8b95ad"),
-         "<text x='369' y='145' fill='#8b95ad' font-size='11'>rejects</text>",
+    p = [_node(20, 50, 90, 64, "Agent"),
+         _arrow(110, 82, 180, 82, "POSTs JSON"),
+         _node(180, 50, 100, 64, "Listener", "validates"),
+         _arrow(280, 82, 330, 82, "queues"),
+         _node(330, 50, 95, 64, "Queue", "PENDING", "#a78bfa"),
+         _arrow(425, 82, 480, 82, "reviews"),
+         _node(480, 50, 100, 64, "Human", "decides", "#6ee7ff"),
+         _arrow(530, 114, 530, 165, "approves", lx=566, ly=145),
+         _node(480, 170, 100, 55, "Git", "commit → live"),
+         _arrow(378, 114, 378, 165),
+         _node(330, 170, 95, 55, "Rejected", "discarded", "#8b95ad"),
+         "<text x='394' y='145' fill='#8b95ad' font-size='11'>rejects</text>",
          _cap(320, 262, "Agents propose · the listener validates · humans dispose.")]
     return _svg("".join(p), h=272)
+
+
+def _d_oauth_grants():
+    p = [_node(20, 40, 90, 64, "Owner"),
+         _arrow(110, 72, 170, 72, "issues"),
+         _node(170, 40, 110, 64, "Grant", "scoped"),
+         _arrow(280, 72, 340, 72, "held by"),
+         _node(340, 40, 90, 64, "Agent"),
+         _arrow(430, 72, 500, 72, "calls"),
+         _node(500, 40, 120, 64, "Endpoints", "scope-checked"),
+         _node(340, 150, 90, 55, "Approve", "human only", "#a78bfa"),
+         _arrow(385, 104, 385, 150),
+         "<text x='420' y='132' fill='#8b95ad' font-size='11'>approve attempt → 403</text>",
+         _cap(320, 248, "Grants are scoped and hashed · the approve endpoint only trusts human sessions.")]
+    return _svg("".join(p), h=258)
+
+
+def _d_flask_seq():
+    steps = [("GET /ai/primer", "learn the rules", "#6ee7ff"),
+             ("POST /api/ai/preflight", "what would happen", "#6ee7ff"),
+             ("POST /api/ai/stage", "hold the draft", "#6ee7ff"),
+             ("GET /ai/review?token=…", "human reads", "#6ee7ff"),
+             ("POST /api/ai/approve", "human session only", "#a78bfa")]
+    p = []
+    y = 16
+    for title, sub, stroke in steps:
+        p.append(_node(170, y, 300, 46, title, sub, stroke))
+        y += 46
+        if (title, sub, stroke) != steps[-1]:
+            p.append(_arrow(320, y, 320, y + 26))
+            y += 26
+    p.append(_cap(320, y + 30, "Read, preflight, stage, review, approve — the agent never touches the last step."))
+    return _svg("".join(p), h=y + 40)
+
+
+def _d_primer_anatomy():
+    p = [_node(170, 16, 300, 52, "intent", "who this site is · schema v1.3.0"),
+         _arrow(320, 68, 320, 92),
+         _node(170, 92, 300, 52, "preconditions", "what the agent must know first"),
+         _arrow(320, 144, 320, 168),
+         _node(170, 168, 300, 52, "forbidden", "what the agent must never do", "#a78bfa"),
+         _cap(320, 258, "Three sections, read top-down: identity, requirements, prohibitions.")]
+    return _svg("".join(p), h=268)
 
 
 def _d_wellknown():
@@ -369,6 +412,9 @@ DIAGRAMS = {
     "querying-the-registry": _d_query(),
     "ceremony-blueprint": _d_ceremony(),
     "status-receipt": _d_status(),
+    "oauth-scoped-grants": _d_oauth_grants(),
+    "flask-stage-and-approve": _d_flask_seq(),
+    "primer-file-format": _d_primer_anatomy(),
 }
 
 

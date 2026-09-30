@@ -64,14 +64,6 @@
       "json_url": "./field-notes/queued-not-changed.json"
     },
     {
-      "slug": "glossary",
-      "section": "methods",
-      "title": "Glossary: The Vocabulary",
-      "summary": "Every slug, scheme, and term the wiki uses \u2014 method, protocol, auth, ceremony \u2014 defined in one place.",
-      "url": "./glossary/",
-      "json_url": "./glossary.json"
-    },
-    {
       "slug": "index",
       "section": "home",
       "title": "WellKnownIndex",
@@ -102,6 +94,14 @@
       "summary": "A Flask-first reference for staged-write endpoints \u2014 preflight, stage, review, approve \u2014 distilled from CivCharter's /api/ai/* lane.",
       "url": "./methods/flask-stage-and-approve/",
       "json_url": "./methods/flask-stage-and-approve.json"
+    },
+    {
+      "slug": "methods/glossary",
+      "section": "methods",
+      "title": "Glossary: The Vocabulary",
+      "summary": "Every slug, scheme, and term the wiki uses \u2014 method, protocol, auth, ceremony \u2014 defined in one place.",
+      "url": "./methods/glossary/",
+      "json_url": "./methods/glossary.json"
     },
     {
       "slug": "methods/machine-readable-primer",

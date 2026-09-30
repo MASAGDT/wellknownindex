@@ -21,7 +21,7 @@
     "json_url": "./flask-stage-and-approve.json"
   },
   {
-    "slug": "glossary",
+    "slug": "methods/glossary",
     "title": "Glossary: The Vocabulary",
     "summary": "Every slug, scheme, and term the wiki uses \u2014 method, protocol, auth, ceremony \u2014 defined in one place.",
     "url": "./glossary/",

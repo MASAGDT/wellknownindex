@@ -2,6 +2,7 @@
 title: Flask Stage-and-Approve
 section: methods
 summary: A Flask-first reference for staged-write endpoints — preflight, stage, review, approve — distilled from CivCharter's /api/ai/* lane.
+diagram: flask-stage-and-approve
 ---
 
 # Flask Stage-and-Approve

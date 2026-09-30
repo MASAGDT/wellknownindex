@@ -2,6 +2,7 @@
 title: OAuth Scoped Grants
 section: methods
 summary: How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session — distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap.
+diagram: oauth-scoped-grants
 ---
 
 # OAuth Scoped Grants
