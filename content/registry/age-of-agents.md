@@ -6,8 +6,6 @@ site_url: null
 protocols:
   - type: well-known
     url: /.well-known/age-of-agents.json
-  - type: claim-endpoint
-    url: advertised by /.well-known/age-of-agents.json
 auth_schemes:
   - owner-pairing
   - invitation-link

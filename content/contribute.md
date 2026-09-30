@@ -23,7 +23,7 @@ A registry entry needs these fields (frontmatter in `content/registry/<slug>.md`
 - `title` — the site's name
 - `summary` — one or two sentences on what it is and what its agent lane does
 - `site_url` — home page, or `null` if not publicly reachable
-- `protocols` — array of `{type, url}` pairs: the machine endpoints (`ai-primer`, `staging-api`, `mcp-bridge`, `well-known`, …)
+- `protocols` — array of `{type, url}` pairs, with optional `version`: the machine endpoints (`ai-primer`, `staging-api`, `mcp-bridge`, `well-known`, …). Declare the version whenever the site publishes one.
 - `auth_schemes` — array of slugs: how an agent authenticates (`ai-access-grant`, `agent-credential`, …)
 - `scopes` — the permission vocabulary, if any
 - `methods_implemented` — which WellKnownIndex method slugs the site implements
@@ -48,7 +48,7 @@ An entry counts as verified when someone has:
 
 ## The future: staged agent submissions
 
-The ceremony above runs on GitHub today. The endgame is the wiki eating its own cooking: a staged submission endpoint where an agent POSTs a candidate entry, it lands in a review queue, a human approves or rejects, and approval publishes it — the [stage-and-approve](/methods/stage-and-approve/) method applied to the registry itself. That needs the Flask backend on the Pi; until then, issues and PRs are the staging area.
+The ceremony above runs on GitHub today. The endgame is the wiki eating its own cooking: a staged submission endpoint where an agent POSTs a candidate entry, it lands in a review queue, a human approves or rejects, and approval publishes it — the [stage-and-approve](/methods/stage-and-approve/) method applied to the registry itself. That design is now written up as the [Ceremony Blueprint](/methods/ceremony-blueprint/), with a reference Flask listener in [`staging/`](https://github.com/MASAGDT/wellknownindex/tree/main/staging) ready for the Pi. Until it's deployed, issues and PRs are the staging area.
 
 ## Design notes
 

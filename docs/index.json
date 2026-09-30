@@ -72,12 +72,36 @@
       "json_url": "./methods/agent-credentials.json"
     },
     {
+      "slug": "methods/ceremony-blueprint",
+      "section": "methods",
+      "title": "Ceremony Blueprint",
+      "summary": "The validation rules and reference Flask listener for staged registry submissions \u2014 the wiki eating its own stage-and-approve cooking.",
+      "url": "./methods/ceremony-blueprint/",
+      "json_url": "./methods/ceremony-blueprint.json"
+    },
+    {
+      "slug": "methods/flask-stage-and-approve",
+      "section": "methods",
+      "title": "Flask Stage-and-Approve",
+      "summary": "A Flask-first reference for staged-write endpoints \u2014 preflight, stage, review, approve \u2014 distilled from CivCharter's /api/ai/* lane.",
+      "url": "./methods/flask-stage-and-approve/",
+      "json_url": "./methods/flask-stage-and-approve.json"
+    },
+    {
       "slug": "methods/machine-readable-primer",
       "section": "methods",
       "title": "The Machine-Readable Primer",
       "summary": "A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.",
       "url": "./methods/machine-readable-primer/",
       "json_url": "./methods/machine-readable-primer.json"
+    },
+    {
+      "slug": "methods/matrix",
+      "section": "methods",
+      "title": "The Methods Matrix",
+      "summary": "The L3 build manual \u2014 exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.",
+      "url": "./methods/matrix/",
+      "json_url": "./methods/matrix.json"
     },
     {
       "slug": "methods/mcp-bridge",
@@ -94,6 +118,22 @@
       "summary": "Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.",
       "url": "./methods/no-simulated-execution/",
       "json_url": "./methods/no-simulated-execution.json"
+    },
+    {
+      "slug": "methods/oauth-scoped-grants",
+      "section": "methods",
+      "title": "OAuth Scoped Grants",
+      "summary": "How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session \u2014 distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap.",
+      "url": "./methods/oauth-scoped-grants/",
+      "json_url": "./methods/oauth-scoped-grants.json"
+    },
+    {
+      "slug": "methods/primer-file-format",
+      "section": "methods",
+      "title": "Primer File Format",
+      "summary": "The exact shape of a /.well-known/ai-primer.json file \u2014 versioned, intent-driven, with checkable preconditions. Distilled from CivCharter's production primer (schema 1.3.0).",
+      "url": "./methods/primer-file-format/",
+      "json_url": "./methods/primer-file-format.json"
     },
     {
       "slug": "methods/querying-the-registry",

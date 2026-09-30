@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ceremony Blueprint · WellKnownIndex</title>
+<style>
+:root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand span{color:var(--acc)}
+nav.main{display:flex;gap:1.1rem;margin-left:auto}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
+nav.main a:hover,nav.main a.on{color:var(--acc)}
+main .wrap{padding-top:2rem;padding-bottom:3rem}
+h1,h2,h3{color:#fff;line-height:1.25}
+h1{font-size:1.9rem;margin:.2em 0 .6em}
+h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
+a{color:var(--acc)}
+code{background:var(--code);border:1px solid var(--line);border-radius:4px;
+padding:.1em .35em;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
+padding:1rem;overflow-x:auto}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--acc2);margin:1.2em 0;padding:.2em 1em;
+color:var(--dim);background:var(--panel);border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:1.1rem 1.25rem;margin:1rem 0}
+.card h3{margin:.1em 0 .3em;font-size:1.15rem}
+.card h3 a{color:#fff;text-decoration:none}
+.card h3 a:hover{color:var(--acc)}
+.card p{margin:.4em 0;color:var(--dim)}
+.meta{font-size:.8rem;color:var(--dim)}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);
+border-radius:20px;padding:.05em .7em;margin:.15em .25em .15em 0;color:var(--dim)}
+footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
+gap:1.5rem;flex-wrap:wrap;align-items:center}
+footer.site .jsonlink{margin-left:auto}
+input.filter,select.filter{background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem}
+input.filter{width:100%;margin:1rem 0}
+.frow{display:flex;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem}
+.frow select{flex:1;min-width:9rem}
+.kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
+font-size:.92rem}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0}
+.stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../">WellKnown<span>Index</span></a>
+<nav class="main">
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
+<a href="../../field-notes/" class="">Field notes</a>
+</nav>
+</div></header>
+<main><div class="wrap">
+<h1>Ceremony Blueprint</h1>
+<figure class='diagram'><svg viewBox='0 0 640 272' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='20' y='50' width='100' height='64' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='70.0' y='87.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Agent</text><line x1='120' y1='82' x2='150' y2='82' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='135.0' y='74.0' text-anchor='middle' fill='#8b95ad' font-size='11'>POSTs JSON</text><rect x='155' y='50' width='110' height='64' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='210.0' y='80.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Listener</text><text x='210.0' y='100.0' text-anchor='middle' fill='#8b95ad' font-size='11'>validates</text><line x1='265' y1='82' x2='295' y2='82' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='280.0' y='74.0' text-anchor='middle' fill='#8b95ad' font-size='11'>queues</text><rect x='300' y='50' width='110' height='64' rx='10' fill='#11151f' stroke='#a78bfa' stroke-width='1.5'/><text x='355.0' y='80.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Queue</text><text x='355.0' y='100.0' text-anchor='middle' fill='#8b95ad' font-size='11'>PENDING</text><line x1='410' y1='82' x2='440' y2='82' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='425.0' y='74.0' text-anchor='middle' fill='#8b95ad' font-size='11'>reviews</text><rect x='445' y='50' width='110' height='64' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='500.0' y='80.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Human</text><text x='500.0' y='100.0' text-anchor='middle' fill='#8b95ad' font-size='11'>decides</text><line x1='500' y1='114' x2='500' y2='165' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='534' y='145' text-anchor='middle' fill='#8b95ad' font-size='11'>approves</text><rect x='445' y='170' width='110' height='55' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='500.0' y='195.5' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Git</text><text x='500.0' y='215.5' text-anchor='middle' fill='#8b95ad' font-size='11'>commit → live</text><line x1='355' y1='114' x2='355' y2='165' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><rect x='300' y='170' width='110' height='55' rx='10' fill='#11151f' stroke='#8b95ad' stroke-width='1.5'/><text x='355.0' y='195.5' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Rejected</text><text x='355.0' y='215.5' text-anchor='middle' fill='#8b95ad' font-size='11'>discarded</text><text x='369' y='145' fill='#8b95ad' font-size='11'>rejects</text><text x='320' y='262' text-anchor='middle' fill='#8b95ad' font-size='12'>Agents propose · the listener validates · humans dispose.</text></svg></figure>
+<p><strong>What it is:</strong> the complete design for letting agents <em>propose</em> registry entries while humans keep the merge button — stage-and-approve applied to the wiki itself. An agent POSTs a JSON entry to a small Flask listener; the listener validates it against the published schema and the wiki&#x27;s own rules; valid submissions wait in a queue; a human reviews, approves, and commits. Nothing reaches the registry without a human decision.</p>
+<p><strong>Status:</strong> reference implementation lives in <a href="https://github.com/MASAGDT/wellknownindex/tree/main/staging"><code>staging/</code></a> in the repo — built for a Raspberry Pi, Flask-first, no paid services.</p>
+<h2>The flow</h2>
+<p>Agent → <code>POST /submit</code> → validation → <code>queue/pending/</code> → human <code>review.py approve</code> → markdown generated → git commit → rebuild → GitHub Pages. Reject → discarded. Expiry was considered and dropped: a submission queue is small enough that explicit reject beats silent rot, and every rejection is a signal about what the validation rules should say.</p>
+<h2>The validation rules</h2>
+<p>These live in <code>staging/validate.py</code>, next to the code. The JSON Schema check loads the <em>published</em> <code>schema/registry-entry.json</code>, so the code and the schema can&#x27;t drift apart.</p>
+<ol>
+<li><strong>Shape.</strong> The submission must validate against the published registry-entry schema: required fields (<code>title</code>, <code>summary</code>, <code>site_url</code>, <code>protocols</code>, <code>auth_schemes</code>, <code>methods_implemented</code>, <code>cost</code>, <code>verified</code>), types, and the <code>verified</code> date format (<code>YYYY-MM-DD</code>).</li>
+<li><strong>URLs.</strong> <code>site_url</code> must be <code>https://…</code> or <code>null</code>. Protocol URLs must be absolute <code>https://</code> or site-relative paths starting with <code>/</code>. Plain <code>http://</code> is rejected — the registry maps trustworthy lanes.</li>
+<li><strong>Methods must exist.</strong> Every <code>methods_implemented</code> slug must be a real method page in the wiki. The listener ships the slug list; unknown slugs fail with the closest matches, so the agent can fix and resubmit.</li>
+<li><strong>Auth schemes may be new.</strong> Unknown <code>auth_schemes</code> produce warnings, not failures — the registry is supposed to learn new schemes. Unknown <em>methods</em> fail; unknown <em>schemes</em> teach.</li>
+<li><strong>No duplicates.</strong> A submission whose <code>site_url</code> or title matches an existing registry entry — or an already-queued submission — is rejected with a pointer to the existing one.</li>
+<li><strong>Abuse controls.</strong> 32KB max body. Per-IP rate limiting (10/hour default). Text fields are scanned for markup/script injection and rejected if found.</li>
+</ol>
+<h2>The human side</h2>
+<pre><code>python3 review.py list              # what&#x27;s waiting
+python3 review.py show &lt;id&gt;         # read the full submission
+python3 review.py approve &lt;id&gt;      # → queue/approved/ + generated markdown on stdout
+python3 review.py reject &lt;id&gt;       # → discarded, with an optional reason</code></pre>
+<p>Approval generates the registry markdown (frontmatter from the submission, stub body for the human to flesh out). The human still edits, commits, rebuilds, and pushes — <strong>the script never pushes by itself.</strong> Verification is not authorization, all the way down.</p>
+<h2>Hardening notes</h2>
+<ul>
+<li>The listener binds <code>127.0.0.1</code> by default. In production, put it behind a reverse proxy; don&#x27;t expose the port.</li>
+<li>Optional <code>WKI_SUBMIT_TOKEN</code>: when set, <code>/submit</code> requires <code>Authorization: Bearer &lt;token&gt;</code>. Open submission is the default posture for a commons, but the token exists for spam waves.</li>
+<li>Rate limits are in-memory and per-process — fine for a Pi, not for a fleet. The README says so honestly.</li>
+</ul>
+<h2>Why this shape</h2>
+<p>Every rule traces back to a wiki principle: rule 1 is the machine-readable primer idea (rules as data); rule 3 keeps the method vocabulary honest; rule 5 is the registry&#x27;s own no-duplicates hygiene; rule 6 is the Cloudflare field note applied at the application layer. And the human-approves step is <a href="../../methods/stage-and-approve/">stage-and-approve</a> with the wiki as the protected resource. The gardener still gardens — the listener just carries the watering can to the gate.</p>
+</div></main>
+<footer class="site"><div class="wrap">
+<span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a href="../../contribute/">Contribute</a>
+<a class="jsonlink" href="../../methods/ceremony-blueprint.json">machine-readable JSON ↗</a>
+</div></div></footer>
+
+</body>
+</html>

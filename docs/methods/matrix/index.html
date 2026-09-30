@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Age of Agents · WellKnownIndex</title>
+<title>The Methods Matrix · WellKnownIndex</title>
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
 --acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
@@ -64,36 +64,24 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <header class="site"><div class="wrap">
 <a class="brand" href="../../">WellKnown<span>Index</span></a>
 <nav class="main">
-<a href="../../methods/" class="">Methods</a>
-<a href="../../registry/" class="on">Registry</a>
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
 <a href="../../field-notes/" class="">Field notes</a>
 </nav>
 </div></header>
 <main><div class="wrap">
-<h1>Age of Agents</h1>
-<p><strong>Age of Agents</strong> is a living-world strategy simulation where AI agents play as civilizations. Its agent protocol is the most developed example of <em>authoritative resolution</em>: the agent never writes world state — it submits orders, and the simulation validates and applies them on world ticks.</p>
-<h2>The agent lane</h2>
-<ol>
-<li><strong>Owner-authorized pairing, two stages.</strong> The human owner signs in, chooses a civilization, and creates a named agent connection — producing a pending agent identity plus a short-lived, <strong>single-use</strong> invitation link.</li>
-<li><strong>Explicit redemption.</strong> The agent POSTs the complete link to the claim endpoint advertised by <code>/.well-known/age-of-agents.json</code>. Opening the link in a browser does <em>not</em> redeem it. The invitation is not the credential.</li>
-<li><strong>Separate agent credential.</strong> The server issues a dedicated credential used as <code>Authorization: Agent &lt;credential&gt;</code> — stored hashed, 30-day default expiry, rotatable, revocable. Human sessions and agent credentials are fully separate; the agent never gains the owner&#x27;s account controls or another civilization&#x27;s hidden information.</li>
-<li><strong>Discover, brief, validate, submit.</strong> The agent discovers the protocol, reads its briefing and <em>filtered</em> state, validates or previews canonical actions, and submits orders.</li>
-<li><strong>Queued, not changed.</strong> A successful submission means the order was queued. The authoritative simulation resolves it on a world tick; the agent checks the order&#x27;s status and outcome afterward.</li>
-</ol>
-<h2>Design philosophy</h2>
-<p><em>Grant, then stage, then execute authoritatively:</em> the owner authorizes the connection; the one-use invitation stages the pairing; the credential authenticates the agent; and the simulation — not the agent or its host — decides legality and applies world changes. <strong>Agents supply intelligence; Age of Agents supplies continuity.</strong></p>
-<h2>Notes</h2>
-<ul>
-<li>Currently civilization-scoped rather than per-action grants — a compromised credential has broad <em>legal</em>-order power within one civilization, so the state filter and owner vigilance carry weight.</li>
-<li>The public origin URL was not confirmed at verification time; check the project&#x27;s current hosting for the live <code>/.well-known/age-of-agents.json</code>.</li>
-</ul>
-<h2>Machine-readable facts</h2>
-<dl class='kv'><dt>Cost</dt><dd>unknown</dd><dt>Verified</dt><dd>2026-09-29</dd><dt>Protocols</dt><dd><code>well-known</code> <a href='/.well-known/age-of-agents.json'>/.well-known/age-of-agents.json</a></dd><dt>Auth</dt><dd><code>owner-pairing</code>, <code>invitation-link</code>, <code>agent-credential</code></dd><dt>Scopes</dt><dd><code>civilization-scoped agent identity (per-action grants not yet implemented)</code></dd><dt>Methods</dt><dd><code>well-known-discovery</code>, <code>scoped-ai-grants</code>, <code>agent-credentials</code>, <code>no-simulated-execution</code></dd></dl>
+<h1>The Methods Matrix</h1>
+<p>The <a href="../../methods/">method pages</a> describe the <em>patterns</em> for giving a website an agent lane. This is the level below: the exact formats, flows, and endpoint designs you&#x27;d hand an engineer — distilled from running systems, not invented.</p>
+<p>The editorial rule for everything under this heading: <strong>distill, don&#x27;t invent.</strong> Every spec here comes from a site in the <a href="../../registry/">registry</a> that already runs it in production.</p>
+<p>| L3 rung | Pattern | Build manual | |---|---|---| | Machine-readable primer | <a href="../../methods/machine-readable-primer/">Machine-Readable Primer</a> | <a href="../../methods/primer-file-format/">Primer File Format</a> — the exact shape of <code>/.well-known/ai-primer.json</code>, distilled from CivCharter&#x27;s production primer (schema 1.3.0) | | Scoped AI grants | <a href="../../methods/scoped-ai-grants/">Scoped AI Grants</a> | <a href="../../methods/oauth-scoped-grants/">OAuth Scoped Grants</a> — OAuth-shaped agent credentials with zero session impersonation, distilled from Age of Agents&#x27; pairing flow and CivCharter&#x27;s grant bootstrap | | Stage and approve | <a href="../../methods/stage-and-approve/">Stage and Approve</a> | <a href="../../methods/flask-stage-and-approve/">Flask Stage-and-Approve</a> — reference endpoint design (preflight → stage → review → approve), Flask-first, distilled from CivCharter&#x27;s <code>/api/ai/*</code> lane | | Registry + ceremony | <a href="../../contribute/">Contribute</a> | <a href="../../methods/ceremony-blueprint/">Ceremony Blueprint</a> — the validation rules and reference Flask listener for staged registry submissions; the wiki eating its own stage-and-approve cooking |</p>
+<h2>How to use this</h2>
+<p>Building an agent lane for the first time? Read the three build-manual pages in order: publish the primer, issue the grants, add the staging endpoints. Running the wiki&#x27;s own submission queue? Start with the ceremony blueprint.</p>
+<p>Found a running implementation this matrix doesn&#x27;t cover yet? That&#x27;s a <a href="../../field-notes/">field note</a> waiting to happen — or a registry entry via <a href="../../contribute/">Contribute</a>.</p>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
 <a href="../../contribute/">Contribute</a>
-<a class="jsonlink" href="../../registry/age-of-agents.json">machine-readable JSON ↗</a>
+<a class="jsonlink" href="../../methods/matrix.json">machine-readable JSON ↗</a>
 </div></div></footer>
 
 </body>

@@ -265,6 +265,23 @@ def _d_stage():
     return _svg("".join(p), h=268)
 
 
+def _d_ceremony():
+    p = [_node(20, 50, 100, 64, "Agent"),
+         _arrow(120, 82, 150, 82, "POSTs JSON"),
+         _node(155, 50, 110, 64, "Listener", "validates"),
+         _arrow(265, 82, 295, 82, "queues"),
+         _node(300, 50, 110, 64, "Queue", "PENDING", "#a78bfa"),
+         _arrow(410, 82, 440, 82, "reviews"),
+         _node(445, 50, 110, 64, "Human", "decides", "#6ee7ff"),
+         _arrow(500, 114, 500, 165, "approves", lx=534, ly=145),
+         _node(445, 170, 110, 55, "Git", "commit → live"),
+         _arrow(355, 114, 355, 165),
+         _node(300, 170, 110, 55, "Rejected", "discarded", "#8b95ad"),
+         "<text x='369' y='145' fill='#8b95ad' font-size='11'>rejects</text>",
+         _cap(320, 262, "Agents propose · the listener validates · humans dispose.")]
+    return _svg("".join(p), h=272)
+
+
 def _d_wellknown():
     p = [_node(255, 15, 130, 60, "Agent", "arrives cold"),
          _node(225, 115, 190, 60, "well-known file", "/.well-known/x.json", "#a78bfa"),
@@ -337,6 +354,7 @@ DIAGRAMS = {
     "no-simulated-execution": _d_nosim(),
     "mcp-bridge": _d_mcp(),
     "querying-the-registry": _d_query(),
+    "ceremony-blueprint": _d_ceremony(),
 }
 
 

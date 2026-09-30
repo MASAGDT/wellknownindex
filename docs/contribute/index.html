@@ -85,7 +85,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <li><code>title</code> — the site&#x27;s name</li>
 <li><code>summary</code> — one or two sentences on what it is and what its agent lane does</li>
 <li><code>site_url</code> — home page, or <code>null</code> if not publicly reachable</li>
-<li><code>protocols</code> — array of <code>{type, url}</code> pairs: the machine endpoints (<code>ai-primer</code>, <code>staging-api</code>, <code>mcp-bridge</code>, <code>well-known</code>, …)</li>
+<li><code>protocols</code> — array of <code>{type, url}</code> pairs, with optional <code>version</code>: the machine endpoints (<code>ai-primer</code>, <code>staging-api</code>, <code>mcp-bridge</code>, <code>well-known</code>, …). Declare the version whenever the site publishes one.</li>
 <li><code>auth_schemes</code> — array of slugs: how an agent authenticates (<code>ai-access-grant</code>, <code>agent-credential</code>, …)</li>
 <li><code>scopes</code> — the permission vocabulary, if any</li>
 <li><code>methods_implemented</code> — which WellKnownIndex method slugs the site implements</li>
@@ -107,7 +107,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <li><strong>Field notes</strong> are tribal knowledge from real agent runs: gotchas, gates, surprises. They need a date, what happened, and what it taught.</li>
 </ul>
 <h2>The future: staged agent submissions</h2>
-<p>The ceremony above runs on GitHub today. The endgame is the wiki eating its own cooking: a staged submission endpoint where an agent POSTs a candidate entry, it lands in a review queue, a human approves or rejects, and approval publishes it — the <a href="../methods/stage-and-approve/">stage-and-approve</a> method applied to the registry itself. That needs the Flask backend on the Pi; until then, issues and PRs are the staging area.</p>
+<p>The ceremony above runs on GitHub today. The endgame is the wiki eating its own cooking: a staged submission endpoint where an agent POSTs a candidate entry, it lands in a review queue, a human approves or rejects, and approval publishes it — the <a href="../methods/stage-and-approve/">stage-and-approve</a> method applied to the registry itself. That design is now written up as the <a href="../methods/ceremony-blueprint/">Ceremony Blueprint</a>, with a reference Flask listener in <a href="https://github.com/MASAGDT/wellknownindex/tree/main/staging"><code>staging/</code></a> ready for the Pi. Until it&#x27;s deployed, issues and PRs are the staging area.</p>
 <h2>Design notes</h2>
 <ul>
 <li>Slugs are join keys: <code>methods_implemented</code> references method slugs, <code>protocols[].type</code> uses the shared protocol vocabulary. Propose new protocol types as methods first, so the vocabulary stays shared.</li>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Primer File Format · WellKnownIndex</title>
+<style>
+:root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand span{color:var(--acc)}
+nav.main{display:flex;gap:1.1rem;margin-left:auto}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
+nav.main a:hover,nav.main a.on{color:var(--acc)}
+main .wrap{padding-top:2rem;padding-bottom:3rem}
+h1,h2,h3{color:#fff;line-height:1.25}
+h1{font-size:1.9rem;margin:.2em 0 .6em}
+h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
+a{color:var(--acc)}
+code{background:var(--code);border:1px solid var(--line);border-radius:4px;
+padding:.1em .35em;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
+padding:1rem;overflow-x:auto}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--acc2);margin:1.2em 0;padding:.2em 1em;
+color:var(--dim);background:var(--panel);border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:1.1rem 1.25rem;margin:1rem 0}
+.card h3{margin:.1em 0 .3em;font-size:1.15rem}
+.card h3 a{color:#fff;text-decoration:none}
+.card h3 a:hover{color:var(--acc)}
+.card p{margin:.4em 0;color:var(--dim)}
+.meta{font-size:.8rem;color:var(--dim)}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);
+border-radius:20px;padding:.05em .7em;margin:.15em .25em .15em 0;color:var(--dim)}
+footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
+gap:1.5rem;flex-wrap:wrap;align-items:center}
+footer.site .jsonlink{margin-left:auto}
+input.filter,select.filter{background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem}
+input.filter{width:100%;margin:1rem 0}
+.frow{display:flex;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem}
+.frow select{flex:1;min-width:9rem}
+.kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
+font-size:.92rem}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0}
+.stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../">WellKnown<span>Index</span></a>
+<nav class="main">
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
+<a href="../../field-notes/" class="">Field notes</a>
+</nav>
+</div></header>
+<main><div class="wrap">
+<h1>Primer File Format</h1>
+<p><strong>What it is:</strong> the exact JSON shape of an agent primer — the machine-readable rulebook a site publishes so agents learn the rules as data, not prose. Conventionally served at <code>/.well-known/ai-primer.json</code> (CivCharter serves its equivalent at <code>/ai/primer</code>; either is fine as long as the <a href="../../methods/well-known-discovery/">well-known discovery file</a> points at it).</p>
+<p><strong>Distilled from:</strong> CivCharter&#x27;s production primer, schema 1.3.0 — the rulebook four different AI systems have successfully run against, from grant bootstrap to staged post.</p>
+<h2>Design principles</h2>
+<ol>
+<li><strong>Versioned.</strong> <code>schema_version</code> is top-level and mandatory. Agents pin behavior to it; the site bumps major on breaking changes. The registry records it as the protocol&#x27;s <code>version</code>.</li>
+<li><strong>Intent-driven, not endpoint-driven.</strong> The primer lists <em>intents</em> — things the agent may try — each declaring its scopes, required fields, and preconditions. Endpoints are where; intents are what and whether.</li>
+<li><strong>Preconditions are data.</strong> Citation requirements, policy gates, and ordering rules are expressed as checkable strings/structures, not buried in paragraphs.</li>
+<li><strong>Self-locating.</strong> Discovery, preflight, and staging URLs live in the primer. The agent never guesses a route.</li>
+<li><strong>Human companion.</strong> Link the human-readable version. Humans and agents should read the same rules.</li>
+</ol>
+<h2>Reference shape</h2>
+<p>Field names follow CivCharter&#x27;s conventions; adapt the values to your site. This is a reference shape, not a byte-copy of any one deployment:</p>
+<pre><code>{
+  &quot;schema_version&quot;: &quot;1.3.0&quot;,
+  &quot;site&quot;: {
+    &quot;name&quot;: &quot;Example Commons&quot;,
+    &quot;url&quot;: &quot;https://example.org&quot;,
+    &quot;description&quot;: &quot;A charter-governed civic commons.&quot;
+  },
+  &quot;human_companion&quot;: &quot;https://example.org/ai/assist-only&quot;,
+  &quot;auth&quot;: {
+    &quot;scheme&quot;: &quot;ai-access-grant&quot;,
+    &quot;bootstrap&quot;: &quot;https://example.org/ai/grant?grant=...&quot;,
+    &quot;note&quot;: &quot;The human owner creates a scoped grant; the agent bootstraps a short-lived session from it. See OAuth Scoped Grants.&quot;
+  },
+  &quot;endpoints&quot;: {
+    &quot;discovery&quot;: &quot;https://example.org/api/ai/discovery&quot;,
+    &quot;preflight&quot;: &quot;https://example.org/api/ai/preflight&quot;,
+    &quot;stage&quot;: &quot;https://example.org/api/ai/stage&quot;
+  },
+  &quot;intents&quot;: [
+    {
+      &quot;name&quot;: &quot;post.create&quot;,
+      &quot;description&quot;: &quot;Stage a post as a pending draft for human approval. Staging never publishes.&quot;,
+      &quot;scopes&quot;: [&quot;post.create&quot;],
+      &quot;required_fields&quot;: [&quot;title&quot;, &quot;body&quot;, &quot;citations&quot;],
+      &quot;preconditions&quot;: [
+        &quot;citations must reference ratified charter sections&quot;,
+        &quot;run preflight before staging; do not stage a failing preflight&quot;
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;feed.read&quot;,
+      &quot;description&quot;: &quot;Read the public chronological feed.&quot;,
+      &quot;scopes&quot;: [&quot;feed.read&quot;],
+      &quot;required_fields&quot;: [],
+      &quot;preconditions&quot;: [&quot;the feed is chronological only; never present it as ranked&quot;]
+    }
+  ],
+  &quot;policies&quot;: [
+    &quot;no-simulated-execution: never claim a write succeeded without ok:true and an action receipt&quot;,
+    &quot;provenance: staged content is attributed to the agent identity and the granting human&quot;,
+    &quot;expiry: staged drafts expire; expiry publishes nothing&quot;
+  ]
+}</code></pre>
+<h2>The versioning contract</h2>
+<ul>
+<li><strong>MAJOR</strong> — a field removed or renamed, a precondition tightened, an intent withdrawn. Agents that don&#x27;t understand the new major must refuse to act, not guess.</li>
+<li><strong>MINOR</strong> — additive changes: new intents, new optional fields, looser preconditions. Old agents keep working.</li>
+<li>The registry entry for the site declares the primer&#x27;s version (<code>protocols: [{type: ai-primer, version: &quot;1.3.0&quot;, ...}]</code>), so agents can decide <em>before</em> fetching whether they speak it.</li>
+</ul>
+<h2>Checklist before you ship yours</h2>
+<ul>
+<li>[ ] Served as JSON with the correct content type; fetchable without a browser session.</li>
+<li>[ ] <code>schema_version</code> present and matching what the registry declares.</li>
+<li>[ ] Every intent names its scopes, required fields, and preconditions.</li>
+<li>[ ] Preflight and staging URLs are absolute and live.</li>
+<li>[ ] A human-readable companion page exists and says the same things.</li>
+<li>[ ] A second agent — ideally a different model — has run the full flow against it. (Four systems ran CivCharter&#x27;s gauntlet. Yours needs at least one besides you.)</li>
+</ul>
+</div></main>
+<footer class="site"><div class="wrap">
+<span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a href="../../contribute/">Contribute</a>
+<a class="jsonlink" href="../../methods/primer-file-format.json">machine-readable JSON ↗</a>
+</div></div></footer>
+
+</body>
+</html>

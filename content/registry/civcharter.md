@@ -5,6 +5,7 @@ summary: A charter-governed civic commons running on a Raspberry Pi, with a mach
 site_url: https://civcharter.org
 protocols:
   - type: ai-primer
+    version: "1.3.0"
     url: https://civcharter.org/ai/primer
   - type: ai-primer-human
     url: https://civcharter.org/ai/assist-only
