@@ -190,11 +190,13 @@ def _node(x, y, w, h, title, sub="", stroke="#6ee7ff"):
     return s
 
 
-def _arrow(x1, y1, x2, y2, label=""):
+def _arrow(x1, y1, x2, y2, label="", lx=None, ly=None):
     s = (f"<line x1='{x1}' y1='{y1}' x2='{x2}' y2='{y2}' "
          f"stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/>")
     if label:
-        s += (f"<text x='{(x1 + x2) / 2}' y='{(y1 + y2) / 2 - 8}' text-anchor='middle' "
+        tx = (x1 + x2) / 2 if lx is None else lx
+        ty = (y1 + y2) / 2 - 8 if ly is None else ly
+        s += (f"<text x='{tx}' y='{ty}' text-anchor='middle' "
               f"fill='#8b95ad' font-size='11'>{label}</text>")
     return s
 
@@ -253,7 +255,7 @@ def _d_stage():
          _node(175, 50, 130, 70, "Staging", "PENDING", "#a78bfa"),
          _node(355, 50, 110, 70, "Human", "reviews"),
          _node(515, 50, 110, 70, "Live", "✓ published"),
-         _arrow(125, 85, 170, 85, "stages intent"),
+         _arrow(125, 85, 170, 85, "stages"),
          _arrow(305, 85, 350, 85, "reviews"),
          _arrow(465, 85, 510, 85, "approves"),
          _node(355, 175, 110, 55, "Rejected", "discarded", "#8b95ad"),
@@ -268,7 +270,7 @@ def _d_wellknown():
          _node(225, 115, 190, 60, "well-known file", "/.well-known/x.json", "#a78bfa"),
          _node(40, 200, 150, 55, "Primer", "the rulebook"),
          _node(450, 200, 150, 55, "Staging API", "the lane"),
-         _arrow(320, 75, 320, 110, "fetches"),
+         _arrow(320, 75, 320, 110, "fetches", lx=352, ly=96),
          _arrow(280, 175, 130, 200),
          _arrow(360, 175, 510, 200),
          _cap(320, 288, "One fetch bootstraps the whole lane.")]
@@ -318,7 +320,7 @@ def _d_query():
          _node(235, 105, 170, 60, "registry.json", "one request", "#6ee7ff"),
          _node(40, 190, 150, 55, "Site A lane", "primer + grants"),
          _node(450, 190, 150, 55, "Site B lane", "mcp bridge"),
-         _arrow(320, 72, 320, 100, "fetches"),
+         _arrow(320, 72, 320, 100, "fetches", lx=352, ly=90),
          _arrow(285, 165, 125, 190),
          _arrow(355, 165, 515, 190),
          _cap(320, 272, "One fetch. Every lane. No scraping.")]
