@@ -18,6 +18,7 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request
 
+from demo import demo_bp
 from validate import MAX_BODY_BYTES, validate_entry
 
 BASE = Path(__file__).resolve().parent
@@ -31,6 +32,7 @@ _hits: dict[str, list[float]] = {}
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = MAX_BODY_BYTES
+app.register_blueprint(demo_bp)
 
 
 def _rate_ok(ip: str) -> bool:

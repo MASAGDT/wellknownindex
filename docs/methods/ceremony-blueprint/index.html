@@ -104,7 +104,7 @@ border-bottom:1px solid var(--line);vertical-align:top}
 <ol>
 <li><strong>Shape.</strong> The submission must validate against the published registry-entry schema: required fields (<code>title</code>, <code>summary</code>, <code>site_url</code>, <code>protocols</code>, <code>auth_schemes</code>, <code>methods_implemented</code>, <code>cost</code>, <code>verified</code>), types, and the <code>verified</code> date format (<code>YYYY-MM-DD</code>).</li>
 <li><strong>URLs.</strong> <code>site_url</code> must be <code>https://…</code> or <code>null</code>. Protocol URLs must be absolute <code>https://</code> or site-relative paths starting with <code>/</code>. Plain <code>http://</code> is rejected — the registry maps trustworthy lanes.</li>
-<li><strong>Methods must exist.</strong> Every <code>methods_implemented</code> slug must be a real method page in the wiki. The listener ships the slug list; unknown slugs fail with the closest matches, so the agent can fix and resubmit.</li>
+<li><strong>Methods must exist.</strong> Every <code>methods_implemented</code> slug must be a real method page in the wiki. The listener derives the slug list from the wiki&#x27;s own method pages at startup, so the vocabulary can&#x27;t drift; unknown slugs fail with the closest matches, so the agent can fix and resubmit.</li>
 <li><strong>Auth schemes may be new.</strong> Unknown <code>auth_schemes</code> produce warnings, not failures — the registry is supposed to learn new schemes. Unknown <em>methods</em> fail; unknown <em>schemes</em> teach.</li>
 <li><strong>No duplicates.</strong> A submission whose <code>site_url</code> or title matches an existing registry entry — or an already-queued submission — is rejected with a pointer to the existing one.</li>
 <li><strong>Abuse controls.</strong> 32KB max body. Per-IP rate limiting (10/hour default). Text fields are scanned for markup/script injection and rejected if found.</li>
@@ -121,6 +121,17 @@ python3 review.py reject &lt;id&gt;       # → discarded, with an optional reas
 <li>Optional <code>WKI_SUBMIT_TOKEN</code>: when set, <code>/submit</code> requires <code>Authorization: Bearer &lt;token&gt;</code>. Open submission is the default posture for a commons, but the token exists for spam waves.</li>
 <li>Rate limits are in-memory and per-process — fine for a Pi, not for a fleet. The README says so honestly.</li>
 </ul>
+<h2>Try it: demo mode</h2>
+<p>The reference listener ships a sandbox (<code>staging/demo.py</code>, mounted at <code>/demo/*</code>) where anyone can run the full ceremony — preflight, stage, review, approve/reject, status receipts — without touching the real queue. Practice, not preaching:</p>
+<ul>
+<li><code>POST /demo/preflight</code> — validate a submission without staging it.</li>
+<li><code>POST /demo/stage</code> — stage a demo entry; get back <code>pending</code> plus a <code>review_url</code> and a <code>status_url</code>.</li>
+<li><code>GET /demo/review?token=…</code> — inspect the staged record.</li>
+<li><code>POST /demo/review/approve?token=…</code> / <code>POST /demo/review/reject?token=…</code> — decide it.</li>
+<li><code>GET /demo/status/&lt;id&gt;</code> — the <a href="../../methods/status-receipts/">status-receipts</a> method, live.</li>
+</ul>
+<p>Rules of the sandbox: demo records live in <code>queue/demo/</code>, auto-expire after 24 hours, and never publish — every response carries <code>&quot;demo&quot;: true</code> and <code>&quot;published_live&quot;: false</code>. Review tokens are single-use and stored hashed. In demo mode the caller plays <strong>both</strong> roles, agent and human, to exercise the mechanics; the policy is unchanged — real submissions still need a human via <code>review.py</code>. The demo teaches the mechanics, it doesn&#x27;t relax the rule.</p>
+<p><em>Deployment status: the demo is implemented and tested in the repo. It goes live with the listener on the Pi cutover — not on GitHub Pages, which can&#x27;t run it.</em></p>
 <h2>Why this shape</h2>
 <p>Every rule traces back to a wiki principle: rule 1 is the machine-readable primer idea (rules as data); rule 3 keeps the method vocabulary honest; rule 5 is the registry&#x27;s own no-duplicates hygiene; rule 6 is the Cloudflare field note applied at the application layer. And the human-approves step is <a href="../../methods/stage-and-approve/">stage-and-approve</a> with the wiki as the protected resource. The gardener still gardens — the listener just carries the watering can to the gate.</p>
 </div></main>
