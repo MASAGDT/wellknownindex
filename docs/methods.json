@@ -49,6 +49,13 @@
     "json_url": "./machine-readable-primer.json"
   },
   {
+    "slug": "methods/retrofit-ladder",
+    "title": "The Retrofit Ladder",
+    "summary": "A maturity model for retrofitting non-agent-centric websites \u2014 five rungs from hostile to agentic-native, what each rung costs, and how to climb.",
+    "url": "./retrofit-ladder/",
+    "json_url": "./retrofit-ladder.json"
+  },
+  {
     "slug": "methods/well-known-discovery",
     "title": "Well-Known Discovery",
     "summary": "Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.",

@@ -55,6 +55,9 @@ font-size:.92rem}
 .kv dt{color:var(--dim)}
 .kv dd{margin:0}
 .stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -68,6 +71,7 @@ font-size:.92rem}
 </div></header>
 <main><div class="wrap">
 <h1>Scoped AI Access Grants</h1>
+<figure class='diagram'><svg viewBox='0 0 640 224' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='232' y='36' width='168' height='118' rx='12' fill='none' stroke='#8b95ad' stroke-width='1.5' stroke-dasharray='6 5'/><text x='316' y='56' text-anchor='middle' fill='#8b95ad' font-size='11'>scope fence</text><rect x='20' y='60' width='130' height='70' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='85.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Human</text><text x='85.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>owns the account</text><rect x='250' y='66' width='132' height='70' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='316.0' y='99.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Agent</text><text x='316.0' y='119.0' text-anchor='middle' fill='#8b95ad' font-size='11'>least privilege</text><line x1='150' y1='95' x2='245' y2='95' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='197.5' y='87.0' text-anchor='middle' fill='#8b95ad' font-size='11'>grants scope</text><text x='250' y='188' fill='#6ee7ff' font-size='12'>✓ can: post.create</text><text x='250' y='210' fill='#8b95ad' font-size='12'>✗ cannot: everything else</text></svg></figure>
 <p><strong>What it is:</strong> an authorization object created by a human, granting an AI agent a <em>narrow, explicit</em> set of capabilities — specific scopes, for a limited time — instead of the agent borrowing the human&#x27;s full identity.</p>
 <p><strong>Why it matters:</strong> the alternative is the agent acting <em>as you</em>: your session, your permissions, your blast radius. A scoped grant applies the principle of least privilege to agents. The site knows it&#x27;s dealing with an agent, the agent knows exactly what it&#x27;s allowed to touch, and the human can revoke the whole thing in one move.</p>
 <h2>The pattern</h2>

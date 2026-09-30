@@ -104,6 +104,14 @@
       "json_url": "./methods/querying-the-registry.json"
     },
     {
+      "slug": "methods/retrofit-ladder",
+      "section": "methods",
+      "title": "The Retrofit Ladder",
+      "summary": "A maturity model for retrofitting non-agent-centric websites \u2014 five rungs from hostile to agentic-native, what each rung costs, and how to climb.",
+      "url": "./methods/retrofit-ladder/",
+      "json_url": "./methods/retrofit-ladder.json"
+    },
+    {
       "slug": "methods/scoped-ai-grants",
       "section": "methods",
       "title": "Scoped AI Access Grants",

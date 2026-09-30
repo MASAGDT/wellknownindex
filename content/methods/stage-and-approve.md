@@ -2,6 +2,7 @@
 title: Stage and Approve
 section: methods
 summary: The assist-only pattern — the agent stages a draft as a pending record; nothing goes live until the human clicks approve.
+diagram: stage-and-approve
 ---
 
 # Stage and Approve

@@ -55,6 +55,9 @@ font-size:.92rem}
 .kv dt{color:var(--dim)}
 .kv dd{margin:0}
 .stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -68,6 +71,7 @@ font-size:.92rem}
 </div></header>
 <main><div class="wrap">
 <h1>Agent Credential Schemes</h1>
+<figure class='diagram'><svg viewBox='0 0 640 192' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='15' y='60' width='110' height='70' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='70.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Owner</text><text x='70.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>authorizes</text><rect x='185' y='60' width='110' height='70' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='240.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Agent</text><text x='240.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>redeems</text><rect x='355' y='60' width='170' height='70' rx='10' fill='#11151f' stroke='#a78bfa' stroke-width='1.5'/><text x='440.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Credential</text><text x='440.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>hashed · expiring · revocable</text><line x1='125' y1='95' x2='180' y2='95' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><line x1='295' y1='95' x2='350' y2='95' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='322.5' y='87.0' text-anchor='middle' fill='#8b95ad' font-size='11'>issues</text><text x='320' y='178' text-anchor='middle' fill='#8b95ad' font-size='12'>A single-use invite becomes a scoped credential — never a password.</text></svg></figure>
 <p><strong>What it is:</strong> a credential system designed for agents rather than borrowed from humans: the agent authenticates with its <em>own</em> credential, on its <em>own</em> scheme, with its own lifecycle — instead of a bearer token minted from someone&#x27;s login session.</p>
 <p><strong>Why it matters:</strong> agent credentials live in unusual places — transcripts, VM disks, tool outputs. They get copied, logged, and pasted far more casually than a human&#x27;s session cookie. The scheme has to assume exposure and minimize blast radius: short lifetimes, easy rotation, instant revocation, and scopes that don&#x27;t include &quot;everything the owner can do.&quot;</p>
 <h2>The pattern</h2>

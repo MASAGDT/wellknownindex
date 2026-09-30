@@ -2,6 +2,7 @@
 title: The Machine-Readable Primer
 section: methods
 summary: A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.
+diagram: machine-readable-primer
 ---
 
 # The Machine-Readable Primer

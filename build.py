@@ -162,6 +162,182 @@ def render_markdown(body, depth):
     return fix_links("\n".join(out), depth)
 
 
+# ------------------------------------------------------- diagrams (inline SVG)
+# Visual explainers, one per method page. Pure inline SVG — no external
+# dependencies, no JS. Content opts in via frontmatter: `diagram: <name>`.
+
+
+def _svg(inner, h=200):
+    return (
+        "<svg viewBox='0 0 640 " + str(h) + "' width='100%' role='img' "
+        "style='display:block;height:auto'>"
+        "<defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' "
+        "markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'>"
+        "<path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs>"
+        + inner + "</svg>"
+    )
+
+
+def _node(x, y, w, h, title, sub="", stroke="#6ee7ff"):
+    cy = y + h / 2
+    s = (f"<rect x='{x}' y='{y}' width='{w}' height='{h}' rx='10' "
+         f"fill='#11151f' stroke='{stroke}' stroke-width='1.5'/>"
+         f"<text x='{x + w / 2}' y='{cy - 2 if sub else cy + 5}' text-anchor='middle' "
+         f"fill='#dbe2f0' font-size='14' font-weight='600'>{title}</text>")
+    if sub:
+        s += (f"<text x='{x + w / 2}' y='{cy + 18}' text-anchor='middle' "
+              f"fill='#8b95ad' font-size='11'>{sub}</text>")
+    return s
+
+
+def _arrow(x1, y1, x2, y2, label=""):
+    s = (f"<line x1='{x1}' y1='{y1}' x2='{x2}' y2='{y2}' "
+         f"stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/>")
+    if label:
+        s += (f"<text x='{(x1 + x2) / 2}' y='{(y1 + y2) / 2 - 8}' text-anchor='middle' "
+              f"fill='#8b95ad' font-size='11'>{label}</text>")
+    return s
+
+
+def _cap(x, y, text, size=12, fill="#8b95ad"):
+    return (f"<text x='{x}' y='{y}' text-anchor='middle' "
+            f"fill='{fill}' font-size='{size}'>{text}</text>")
+
+
+def _d_retrofit_ladder():
+    rungs = [
+        ("L0", "Hostile", "CAPTCHAs, bot walls — agents fight the site", "#8b95ad"),
+        ("L1", "Tolerated", "browser automation works until it breaks", "#8b95ad"),
+        ("L2", "Documented", "human docs agents can read; prose, not protocol", "#8b95ad"),
+        ("L3", "Machine lane", "primer · scoped grants · staged approval", "#6ee7ff"),
+        ("L4", "Agentic native", "agents are first-class actors", "#a78bfa"),
+    ]
+    parts = []
+    for i, (lvl, name, desc, color) in enumerate(rungs):
+        y = 8 + i * 56
+        parts.append(
+            f"<rect x='16' y='{y}' width='608' height='46' rx='10' "
+            f"fill='#11151f' stroke='{color}' stroke-width='1.5'/>"
+            f"<text x='36' y='{y + 29}' fill='{color}' font-size='14' "
+            f"font-weight='700'>{lvl} — {name}</text>"
+            f"<text x='604' y='{y + 28}' text-anchor='end' "
+            f"fill='#8b95ad' font-size='11'>{desc}</text>")
+    parts.append(_cap(320, 298, "Most of the web: L0–L1 · This wiki: the tools for L3"))
+    return _svg("".join(parts), h=308)
+
+
+def _d_primer():
+    p = [_node(20, 60, 130, 70, "Website", "human HTML"),
+         _node(255, 60, 130, 70, "Primer", "JSON rulebook", "#a78bfa"),
+         _node(490, 60, 130, 70, "Agent", "acts within rules"),
+         _arrow(150, 95, 250, 95, "publishes"),
+         _arrow(385, 95, 485, 95, "agent reads"),
+         _cap(320, 175, "The rules become data, not prose.")]
+    return _svg("".join(p), h=190)
+
+
+def _d_grants():
+    p = ["<rect x='232' y='36' width='168' height='118' rx='12' fill='none' "
+         "stroke='#8b95ad' stroke-width='1.5' stroke-dasharray='6 5'/>",
+         _cap(316, 56, "scope fence", 11),
+         _node(20, 60, 130, 70, "Human", "owns the account"),
+         _node(250, 66, 132, 70, "Agent", "least privilege"),
+         _arrow(150, 95, 245, 95, "grants scope"),
+         "<text x='250' y='188' fill='#6ee7ff' font-size='12'>✓ can: post.create</text>",
+         "<text x='250' y='210' fill='#8b95ad' font-size='12'>✗ cannot: everything else</text>"]
+    return _svg("".join(p), h=224)
+
+
+def _d_stage():
+    p = [_node(15, 50, 110, 70, "Agent", "proposes"),
+         _node(175, 50, 130, 70, "Staging", "PENDING", "#a78bfa"),
+         _node(355, 50, 110, 70, "Human", "reviews"),
+         _node(515, 50, 110, 70, "Live", "✓ published"),
+         _arrow(125, 85, 170, 85, "stages intent"),
+         _arrow(305, 85, 350, 85, "reviews"),
+         _arrow(465, 85, 510, 85, "approves"),
+         _node(355, 175, 110, 55, "Rejected", "discarded", "#8b95ad"),
+         _arrow(410, 120, 410, 170),
+         "<text x='424' y='150' fill='#8b95ad' font-size='11'>rejects</text>",
+         _cap(320, 258, "Nothing goes live without a human decision.")]
+    return _svg("".join(p), h=268)
+
+
+def _d_wellknown():
+    p = [_node(255, 15, 130, 60, "Agent", "arrives cold"),
+         _node(225, 115, 190, 60, "well-known file", "/.well-known/x.json", "#a78bfa"),
+         _node(40, 200, 150, 55, "Primer", "the rulebook"),
+         _node(450, 200, 150, 55, "Staging API", "the lane"),
+         _arrow(320, 75, 320, 110, "fetches"),
+         _arrow(280, 175, 130, 200),
+         _arrow(360, 175, 510, 200),
+         _cap(320, 288, "One fetch bootstraps the whole lane.")]
+    return _svg("".join(p), h=298)
+
+
+def _d_credentials():
+    p = [_node(15, 60, 110, 70, "Owner", "authorizes"),
+         _node(185, 60, 110, 70, "Agent", "redeems"),
+         _node(355, 60, 170, 70, "Credential", "hashed · expiring · revocable", "#a78bfa"),
+         _arrow(125, 95, 180, 95),
+         _arrow(295, 95, 350, 95, "issues"),
+         _cap(320, 178, "A single-use invite becomes a scoped credential — never a password.")]
+    return _svg("".join(p), h=192)
+
+
+def _d_nosim():
+    p = [_cap(320, 22, "The agent's view vs. the authority's view", 12, "#dbe2f0"),
+         _node(30, 40, 140, 60, "Submit order", "agent acts"),
+         _node(250, 40, 140, 60, "QUEUED", "not yet real", "#a78bfa"),
+         _arrow(170, 70, 245, 70),
+         _node(30, 130, 140, 60, "Authority tick", "world resolves"),
+         _node(250, 130, 140, 60, "CHANGED ✓", "receipt issued", "#6ee7ff"),
+         _arrow(170, 160, 245, 160),
+         "<text x='465' y='128' text-anchor='middle' fill='#a78bfa' "
+         "font-size='30' font-weight='700'>≠</text>",
+         _cap(320, 222, "Queued is not changed. Only the authority resolves.")]
+    return _svg("".join(p), h=232)
+
+
+def _d_mcp():
+    p = [_node(20, 60, 120, 70, "Agent", "any model"),
+         _node(260, 60, 120, 70, "Bridge", "scoped tools", "#a78bfa"),
+         _node(500, 60, 120, 70, "Site", "your app"),
+         _arrow(140, 88, 255, 88),
+         _arrow(255, 104, 140, 104),
+         _arrow(380, 88, 495, 88),
+         _arrow(495, 104, 380, 104),
+         _cap(200, 74, "MCP", 11),
+         _cap(440, 74, "scoped calls", 11),
+         _cap(320, 172, "MCP is transport; the scope model is the security.")]
+    return _svg("".join(p), h=186)
+
+
+def _d_query():
+    p = [_node(255, 12, 130, 60, "Agent", "needs a lane"),
+         _node(235, 105, 170, 60, "registry.json", "one request", "#6ee7ff"),
+         _node(40, 190, 150, 55, "Site A lane", "primer + grants"),
+         _node(450, 190, 150, 55, "Site B lane", "mcp bridge"),
+         _arrow(320, 72, 320, 100, "fetches"),
+         _arrow(285, 165, 125, 190),
+         _arrow(355, 165, 515, 190),
+         _cap(320, 272, "One fetch. Every lane. No scraping.")]
+    return _svg("".join(p), h=282)
+
+
+DIAGRAMS = {
+    "retrofit-ladder": _d_retrofit_ladder(),
+    "machine-readable-primer": _d_primer(),
+    "scoped-ai-grants": _d_grants(),
+    "stage-and-approve": _d_stage(),
+    "well-known-discovery": _d_wellknown(),
+    "agent-credentials": _d_credentials(),
+    "no-simulated-execution": _d_nosim(),
+    "mcp-bridge": _d_mcp(),
+    "querying-the-registry": _d_query(),
+}
+
+
 # ---------------------------------------------------------------- template
 CSS = """
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
@@ -214,6 +390,9 @@ font-size:.92rem}
 .kv dt{color:var(--dim)}
 .kv dd{margin:0}
 .stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
 """
 
 TEMPLATE = """<!DOCTYPE html>
@@ -297,6 +476,15 @@ def main():
                     for k, v in facts
                 )
                 body_html += f"\n<h2>Machine-readable facts</h2>\n<dl class='kv'>{rows}</dl>"
+
+        # visual explainer diagram (frontmatter: diagram: <name>)
+        diagram_name = meta.get("diagram")
+        if diagram_name and diagram_name in DIAGRAMS:
+            fig = f"<figure class='diagram'>{DIAGRAMS[diagram_name]}</figure>"
+            if "</h1>" in body_html:
+                body_html = body_html.replace("</h1>", "</h1>\n" + fig, 1)
+            else:
+                body_html = fig + "\n" + body_html
 
         out_dir = DOCS if str(rel) == "index" else DOCS / rel
         out_dir.mkdir(parents=True, exist_ok=True)

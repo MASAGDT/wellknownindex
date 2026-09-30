@@ -55,6 +55,9 @@ font-size:.92rem}
 .kv dt{color:var(--dim)}
 .kv dd{margin:0}
 .stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -68,6 +71,7 @@ font-size:.92rem}
 </div></header>
 <main><div class="wrap">
 <h1>The Machine-Readable Primer</h1>
+<figure class='diagram'><svg viewBox='0 0 640 190' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='20' y='60' width='130' height='70' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='85.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Website</text><text x='85.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>human HTML</text><rect x='255' y='60' width='130' height='70' rx='10' fill='#11151f' stroke='#a78bfa' stroke-width='1.5'/><text x='320.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Primer</text><text x='320.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>JSON rulebook</text><rect x='490' y='60' width='130' height='70' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='555.0' y='93.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Agent</text><text x='555.0' y='113.0' text-anchor='middle' fill='#8b95ad' font-size='11'>acts within rules</text><line x1='150' y1='95' x2='250' y2='95' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='200.0' y='87.0' text-anchor='middle' fill='#8b95ad' font-size='11'>publishes</text><line x1='385' y1='95' x2='485' y2='95' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='435.0' y='87.0' text-anchor='middle' fill='#8b95ad' font-size='11'>agent reads</text><text x='320' y='175' text-anchor='middle' fill='#8b95ad' font-size='12'>The rules become data, not prose.</text></svg></figure>
 <p><strong>What it is:</strong> a public, schema-versioned JSON document — served at a stable URL like <code>/ai/primer</code> — that an AI assistant reads <em>before</em> doing anything else on your site. It declares the agent contract: allowed actions, execution lanes, credential rules, canonical routes, citation requirements, and the policies that govern agent behavior.</p>
 <p><strong>Why it matters:</strong> most platforms hand an agent a loaded API and hope for the best. A primer inverts that: the site speaks first, in the agent&#x27;s own language (structured data, not prose). The agent doesn&#x27;t guess your rules — it parses them. This eliminates the largest source of agent misbehavior: confidently inventing endpoints, scopes, and permissions that don&#x27;t exist.</p>
 <h2>The pattern</h2>

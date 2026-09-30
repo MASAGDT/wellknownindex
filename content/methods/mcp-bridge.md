@@ -2,6 +2,7 @@
 title: The Assist-Only MCP Bridge
 section: methods
 summary: Expose scoped staging tools over MCP so agents draft into a review queue — they can prepare anything, publish nothing.
+diagram: mcp-bridge
 ---
 
 # The Assist-Only MCP Bridge

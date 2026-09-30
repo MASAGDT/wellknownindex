@@ -2,6 +2,7 @@
 title: Scoped AI Access Grants
 section: methods
 summary: Human-created, scoped, revocable authorization objects for agents — a narrowed lane instead of impersonating the user.
+diagram: scoped-ai-grants
 ---
 
 # Scoped AI Access Grants

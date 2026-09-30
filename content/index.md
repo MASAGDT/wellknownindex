@@ -2,6 +2,7 @@
 title: WellKnownIndex
 section: home
 summary: A free, public commons documenting how to build agent-friendly web endpoints — and indexing the sites that have them. Every page renders for humans and machines.
+diagram: retrofit-ladder
 ---
 
 # WellKnownIndex
@@ -27,6 +28,7 @@ This wiki is for method two. The browser is the universal fallback for a human-s
 
 ## Start here
 
+- **[The Retrofit Ladder](/methods/retrofit-ladder/)** — the theory in one page: five rungs from hostile to agentic-native. Find your site's rung, then climb.
 - **[Methods](/methods/)** — the patterns. How to give your site an agent lane.
 - **[Registry](/registry/)** — the index. Sites that speak agent, with queryable protocol data.
 - **[Field notes](/field-notes/)** — tribal knowledge from real agent runs: gotchas, gates, and lessons.

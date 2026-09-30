@@ -2,6 +2,7 @@
 title: Querying the Registry
 section: methods
 summary: How agents (and humans) consume the WellKnownIndex registry — the JSON schema, the discovery file, and shareable filtered views.
+diagram: querying-the-registry
 ---
 
 # Querying the Registry

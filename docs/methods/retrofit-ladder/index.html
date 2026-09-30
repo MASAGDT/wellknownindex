@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WellKnownIndex · WellKnownIndex</title>
+<title>The Retrofit Ladder · WellKnownIndex</title>
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
 --acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
@@ -62,43 +62,53 @@ figure.diagram svg{display:block;width:100%;height:auto}
 </head>
 <body>
 <header class="site"><div class="wrap">
-<a class="brand" href="./">WellKnown<span>Index</span></a>
+<a class="brand" href="../../">WellKnown<span>Index</span></a>
 <nav class="main">
-<a href="./methods/" class="">Methods</a>
-<a href="./registry/" class="">Registry</a>
-<a href="./field-notes/" class="">Field notes</a>
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
+<a href="../../field-notes/" class="">Field notes</a>
 </nav>
 </div></header>
 <main><div class="wrap">
-<h1>WellKnownIndex</h1>
+<h1>The Retrofit Ladder</h1>
 <figure class='diagram'><svg viewBox='0 0 640 308' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='16' y='8' width='608' height='46' rx='10' fill='#11151f' stroke='#8b95ad' stroke-width='1.5'/><text x='36' y='37' fill='#8b95ad' font-size='14' font-weight='700'>L0 — Hostile</text><text x='604' y='36' text-anchor='end' fill='#8b95ad' font-size='11'>CAPTCHAs, bot walls — agents fight the site</text><rect x='16' y='64' width='608' height='46' rx='10' fill='#11151f' stroke='#8b95ad' stroke-width='1.5'/><text x='36' y='93' fill='#8b95ad' font-size='14' font-weight='700'>L1 — Tolerated</text><text x='604' y='92' text-anchor='end' fill='#8b95ad' font-size='11'>browser automation works until it breaks</text><rect x='16' y='120' width='608' height='46' rx='10' fill='#11151f' stroke='#8b95ad' stroke-width='1.5'/><text x='36' y='149' fill='#8b95ad' font-size='14' font-weight='700'>L2 — Documented</text><text x='604' y='148' text-anchor='end' fill='#8b95ad' font-size='11'>human docs agents can read; prose, not protocol</text><rect x='16' y='176' width='608' height='46' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='36' y='205' fill='#6ee7ff' font-size='14' font-weight='700'>L3 — Machine lane</text><text x='604' y='204' text-anchor='end' fill='#8b95ad' font-size='11'>primer · scoped grants · staged approval</text><rect x='16' y='232' width='608' height='46' rx='10' fill='#11151f' stroke='#a78bfa' stroke-width='1.5'/><text x='36' y='261' fill='#a78bfa' font-size='14' font-weight='700'>L4 — Agentic native</text><text x='604' y='260' text-anchor='end' fill='#8b95ad' font-size='11'>agents are first-class actors</text><text x='320' y='298' text-anchor='middle' fill='#8b95ad' font-size='12'>Most of the web: L0–L1 · This wiki: the tools for L3</text></svg></figure>
-<p><strong>A free, public index of agent-friendly web endpoints — and the methods for building them.</strong></p>
-<p>WellKnownIndex has two jobs:</p>
-<ol>
-<li><strong>Document the methods</strong> — the patterns for retrofitting a website so AI agents can work with it in their own language: machine-readable primers, scoped grants, stage-and-approve flows, well-known discovery, agent credential schemes.</li>
-<li><strong>Maintain the registry</strong> — a catalog of sites that implement these methods, in a format agents can query directly.</li>
-</ol>
-<p>Everything here is free, public, and dual-rendered: every page exists as human-readable HTML <strong>and</strong> machine-readable JSON. Agents shouldn&#x27;t have to scrape prose to learn the rules. The rules should be data.</p>
-<h2>The fork in the road</h2>
-<p>There are two ways to give an AI agent access to the web.</p>
-<p><strong>Method one: impersonation.</strong> Hand the agent a browser, log it in as you, and let it click around like a person. It works on the entire existing web with zero cooperation from any site — but it&#x27;s brittle, every CAPTCHA is the web saying <em>we didn&#x27;t build this for you</em>, and the permission model is &quot;can do anything you can.&quot;</p>
-<p><strong>Method two: a scoped lane.</strong> The site knows it&#x27;s talking to an agent. It hands over a machine-readable rulebook, a scoped credential, and a staging area — and nothing goes live without approval. Least privilege, full audit trail, no impersonation.</p>
-<p>This wiki is for method two. The browser is the universal fallback for a human-shaped web; the scoped lane is the better equilibrium. We&#x27;re mapping the territory so more of the web can get there.</p>
-<h2>Start here</h2>
+<p><strong>What it is:</strong> a maturity model for the central question of this wiki — <em>your website wasn&#x27;t built for agents, now what?</em> The ladder has five rungs. Most of the web sits on rung zero or one. Every method in this wiki is a tool for climbing.</p>
+<h2>The rungs</h2>
+<h3>L0 — Hostile</h3>
+<p>The site actively resists automation: CAPTCHAs, bot walls, fingerprinting, no API. Agents can&#x27;t work here at all — or only by fighting the site. Fighting the site is not a lane.</p>
+<h3>L1 — Tolerated</h3>
+<p>Nothing stops a browser-driving agent, but nothing helps it either. It works until a redesign, a CAPTCHA, or a rate limit breaks it. The permission model is &quot;everything you can do&quot; — the broadest, least auditable grant possible. Most agent deployments live here today, and it&#x27;s the most expensive rung to <em>stay</em> on: every site change is a potential outage.</p>
+<h3>L2 — Documented</h3>
+<p>The site publishes human docs an agent can read: API references, help centers, status pages. Better than nothing — agents can ground their actions in something real — but prose isn&#x27;t a protocol. The agent still guesses at intent boundaries.</p>
+<h3>L3 — Machine lane</h3>
+<p>The site speaks agent: a <a href="../../methods/machine-readable-primer/">machine-readable primer</a>, <a href="../../methods/scoped-ai-grants/">scoped credentials</a>, <a href="../../methods/stage-and-approve/">staged writes with human approval</a>, <a href="../../methods/well-known-discovery/">well-known discovery</a>. Least privilege, audit trails, no impersonation. <strong>This is the wiki&#x27;s home turf</strong> — every method here is rung-3 technology, and it&#x27;s the cheapest rung to <em>operate</em> on: explicit contracts replace fragile guessing.</p>
+<h3>L4 — Agentic native</h3>
+<p>The site was designed for agents first: agents are first-class actors with identities, budgets, and reputations, and the human UI is the secondary interface. Almost nothing lives here yet. The top of the ladder is a research direction, not a product category.</p>
+<h2>The economics of climbing</h2>
 <ul>
-<li><strong><a href="methods/retrofit-ladder/">The Retrofit Ladder</a></strong> — the theory in one page: five rungs from hostile to agentic-native. Find your site&#x27;s rung, then climb.</li>
-<li><strong><a href="methods/">Methods</a></strong> — the patterns. How to give your site an agent lane.</li>
-<li><strong><a href="registry/">Registry</a></strong> — the index. Sites that speak agent, with queryable protocol data.</li>
-<li><strong><a href="field-notes/">Field notes</a></strong> — tribal knowledge from real agent runs: gotchas, gates, and lessons.</li>
-<li><strong><a href="contribute/">Contribute</a></strong> — add a site to the registry, propose a method, or file a field note.</li>
+<li><strong>L0 → L1</strong> is paid by the <em>agent builder</em> — proxies, solvers, retries, breakage.</li>
+<li><strong>L1 → L2</strong> costs the <em>site</em> a little: write things down.</li>
+<li><strong>L2 → L3</strong> costs the <em>site</em> real design work — and pays it back in support load, abuse reduction, and auditability.</li>
+<li>The key insight: <strong>the cost of a rung is paid by whoever wants the capability.</strong> Sites that want agent traffic will climb; agents will route around sites that don&#x27;t.</li>
 </ul>
-<h2>For agents</h2>
-<p>Fetch <code>/index.json</code> for the site map, <code>/registry.json</code> for every registered endpoint with its protocols, auth schemes, and scopes. Each page also has a <code>.json</code> twin next to its HTML. No scraping required — that&#x27;s the point.</p>
+<h2>How to use the ladder</h2>
+<ol>
+<li><strong>Place your site honestly.</strong> &quot;We have docs&quot; is L2, not L3. &quot;Agents can use our site&quot; via browser automation is L1.</li>
+<li><strong>Climb one rung, not four.</strong> L2 → L3 starts with a single primer and one scoped, staged write path — not a full rebuild.</li>
+<li><strong>Measure the right things.</strong> Time to first successful agent task, breakage rate per site deploy, support tickets caused by agents. If those don&#x27;t improve, the rung isn&#x27;t real.</li>
+</ol>
+<h2>Design notes</h2>
+<ul>
+<li>Rungs are about <em>contracts</em>, not technology. A GraphQL API with no scoping is L2 with better tooling.</li>
+<li>Skipping rungs fails: a well-known file (L3 tech) pointing at undocumented endpoints is decoration.</li>
+<li>The ladder is descriptive, not moral. L1 is fine for a weekend project; L3 is for anything agents touch daily.</li>
+<li>New here? Read the rung you&#x27;re on, then read the method for the next one. That&#x27;s the whole wiki, in order.</li>
+</ul>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
-<a href="./contribute/">Contribute</a>
-<a class="jsonlink" href="./home.json">machine-readable JSON ↗</a>
+<a href="../../contribute/">Contribute</a>
+<a class="jsonlink" href="../../methods/retrofit-ladder.json">machine-readable JSON ↗</a>
 </div></div></footer>
 
 </body>

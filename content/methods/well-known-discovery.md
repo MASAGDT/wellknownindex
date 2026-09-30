@@ -2,6 +2,7 @@
 title: Well-Known Discovery
 section: methods
 summary: Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.
+diagram: well-known-discovery
 ---
 
 # Well-Known Discovery

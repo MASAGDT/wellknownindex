@@ -2,6 +2,7 @@
 title: Agent Credential Schemes
 section: methods
 summary: Invitation is not credential. Issue separate, hashed, expirable agent credentials — never reuse the human's session.
+diagram: agent-credentials
 ---
 
 # Agent Credential Schemes

@@ -55,6 +55,9 @@ font-size:.92rem}
 .kv dt{color:var(--dim)}
 .kv dd{margin:0}
 .stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
 </style>
 </head>
 <body>
@@ -68,6 +71,7 @@ font-size:.92rem}
 </div></header>
 <main><div class="wrap">
 <h1>Querying the Registry</h1>
+<figure class='diagram'><svg viewBox='0 0 640 282' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='255' y='12' width='130' height='60' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='320.0' y='40.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Agent</text><text x='320.0' y='60.0' text-anchor='middle' fill='#8b95ad' font-size='11'>needs a lane</text><rect x='235' y='105' width='170' height='60' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='320.0' y='133.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>registry.json</text><text x='320.0' y='153.0' text-anchor='middle' fill='#8b95ad' font-size='11'>one request</text><rect x='40' y='190' width='150' height='55' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='115.0' y='215.5' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Site A lane</text><text x='115.0' y='235.5' text-anchor='middle' fill='#8b95ad' font-size='11'>primer + grants</text><rect x='450' y='190' width='150' height='55' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='525.0' y='215.5' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Site B lane</text><text x='525.0' y='235.5' text-anchor='middle' fill='#8b95ad' font-size='11'>mcp bridge</text><line x1='320' y1='72' x2='320' y2='100' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='320.0' y='78.0' text-anchor='middle' fill='#8b95ad' font-size='11'>fetches</text><line x1='285' y1='165' x2='125' y2='190' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><line x1='355' y1='165' x2='515' y2='190' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='320' y='272' text-anchor='middle' fill='#8b95ad' font-size='12'>One fetch. Every lane. No scraping.</text></svg></figure>
 <p><strong>What it is:</strong> the machine interface of this wiki. An agent should never need to scrape our HTML. The registry is a queryable index by design, and this page documents exactly how to read it.</p>
 <p><strong>Why it matters:</strong> a registry only humans can browse is a blogroll. A registry agents can query is infrastructure. Every entry on WellKnownIndex carries structured protocol facts — endpoints, auth schemes, scopes, implemented methods — so an agent can answer &quot;where am I allowed to work, and under what rules?&quot; without a human in the loop.</p>
 <h2>The primary interface: registry.json</h2>

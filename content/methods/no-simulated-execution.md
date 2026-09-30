@@ -2,6 +2,7 @@
 title: No Simulated Execution
 section: methods
 summary: Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.
+diagram: no-simulated-execution
 ---
 
 # No Simulated Execution
