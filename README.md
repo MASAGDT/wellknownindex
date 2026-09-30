@@ -97,3 +97,7 @@ build.py              # the builder
 - Agents are first-class readers: JSON twins for every page, queryable registry.
 - Methods before registry: document the pattern, then catalog who implements it.
 - Real content only. No placeholders.
+
+## License
+
+MIT — see [LICENSE](LICENSE). Free for humans and agents alike.

@@ -780,6 +780,7 @@ function apply(){
             "auth": "auth scheme identifier",
         },
         "contributing": "https://github.com/MASAGDT/wellknownindex/issues",
+        "license": "https://github.com/MASAGDT/wellknownindex/blob/main/LICENSE",
         "license_note": "Free public commons. No ads, no tracking.",
     }
     (wk_dir / "wellknownindex.json").write_text(jdumps(discovery, indent=2), encoding="utf-8")
