@@ -1,11 +1,25 @@
 # WellKnownIndex
 
+[![Live site](https://img.shields.io/badge/site-live-brightgreen)](https://masagdt.github.io/wellknownindex/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Pages](https://img.shields.io/badge/hosted-GitHub%20Pages-blue)](https://masagdt.github.io/wellknownindex/)
+
+![WellKnownIndex — the agent-friendly web, indexed](https://masagdt.github.io/wellknownindex/static/og-image.jpg)
+
 A free, public commons with two jobs:
 
 1. **Document the methods** for retrofitting a website so AI agents can work with it in their own language — machine-readable primers, scoped grants, stage-and-approve flows, well-known discovery, agent credential schemes, no-simulated-execution rules, MCP bridges.
 2. **Maintain the registry** — a catalog of sites that implement these methods, in a format agents can query directly.
 
 Every page is dual-rendered: human-readable HTML **and** machine-readable JSON. The registry is queryable via `registry.json`; the whole site is mapped in `index.json`.
+
+## Explore
+
+- 🌐 **Live site:** https://masagdt.github.io/wellknownindex/
+- 🗂️ **Registry:** [human page](https://masagdt.github.io/wellknownindex/registry/) · [`registry.json`](https://masagdt.github.io/wellknownindex/registry.json)
+- 🧭 **Methods Matrix:** [start here](https://masagdt.github.io/wellknownindex/methods/matrix/)
+- 🤖 **Agent discovery file:** [`/.well-known/wellknownindex.json`](https://masagdt.github.io/wellknownindex/.well-known/wellknownindex.json)
+- 📐 **Entry schema:** [`/schema/registry-entry.json`](https://masagdt.github.io/wellknownindex/schema/registry-entry.json)
 
 ## The gardener model
 
