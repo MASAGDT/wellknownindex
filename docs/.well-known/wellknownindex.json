@@ -11,8 +11,12 @@
     "registry_human": "https://masagdt.github.io/wellknownindex/registry/",
     "contribute": "https://masagdt.github.io/wellknownindex/contribute/",
     "contribute_json": "https://masagdt.github.io/wellknownindex/contribute.json",
-    "entry_schema": "https://masagdt.github.io/wellknownindex/schema/registry-entry.json"
+    "entry_schema": "https://masagdt.github.io/wellknownindex/schema/registry-entry.json",
+    "llms_txt": "https://masagdt.github.io/wellknownindex/llms.txt",
+    "llms_full_txt": "https://masagdt.github.io/wellknownindex/llms-full.txt",
+    "search_index": "https://masagdt.github.io/wellknownindex/search.json"
   },
+  "machine_surfaces": "Every page is triple-rendered: human HTML, a .json twin, and a .md markdown twin. llms.txt summarizes the site for language models; llms-full.txt carries the complete text; search.json powers client-side search.",
   "registry_page_filters": {
     "q": "free-text search",
     "method": "implemented method slug, e.g. stage-and-approve",

@@ -1,0 +1,152 @@
+[
+  {
+    "title": "Contribute",
+    "summary": "How to propose a registry entry, a method, or a field note \u2014 the submission ceremony, the entry schema, and the verification bar.",
+    "section": "contribute",
+    "path": "contribute/"
+  },
+  {
+    "title": "Run a Polite Agent Lane",
+    "summary": "Cache the primer, rate-limit per credential, identify your agents, back off on 429 \u2014 operating notes from running agent lanes on real hardware.",
+    "section": "field-notes",
+    "path": "field-notes/agent-lane-etiquette/"
+  },
+  {
+    "title": "Field note: The capability gate",
+    "summary": "A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.",
+    "section": "field-notes",
+    "path": "field-notes/capability-gate/"
+  },
+  {
+    "title": "Field note: Cloudflare blocks Python's default User-Agent",
+    "summary": "API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.",
+    "section": "field-notes",
+    "path": "field-notes/cloudflare-user-agent/"
+  },
+  {
+    "title": "Field note: Queued is not changed",
+    "summary": "A submitted order is staged or queued \u2014 not applied. Verify the receipt and check the outcome; never claim success from the request alone.",
+    "section": "field-notes",
+    "path": "field-notes/queued-not-changed/"
+  },
+  {
+    "title": "WellKnownIndex",
+    "summary": "A free, public commons documenting how to build agent-friendly web endpoints \u2014 and indexing the sites that have them. Every page renders for humans and machines.",
+    "section": "home",
+    "path": ""
+  },
+  {
+    "title": "Agent Credential Schemes",
+    "summary": "Invitation is not credential. Issue separate, hashed, expirable agent credentials \u2014 never reuse the human's session.",
+    "section": "methods",
+    "path": "methods/agent-credentials/"
+  },
+  {
+    "title": "Ceremony Blueprint",
+    "summary": "The validation rules and reference Flask listener for staged registry submissions \u2014 the wiki eating its own stage-and-approve cooking.",
+    "section": "methods",
+    "path": "methods/ceremony-blueprint/"
+  },
+  {
+    "title": "Flask Stage-and-Approve",
+    "summary": "A Flask-first reference for staged-write endpoints \u2014 preflight, stage, review, approve \u2014 distilled from CivCharter's /api/ai/* lane.",
+    "section": "methods",
+    "path": "methods/flask-stage-and-approve/"
+  },
+  {
+    "title": "Glossary: The Vocabulary",
+    "summary": "Every slug, scheme, and term the wiki uses \u2014 method, protocol, auth, ceremony \u2014 defined in one place.",
+    "section": "methods",
+    "path": "methods/glossary/"
+  },
+  {
+    "title": "The Machine-Readable Primer",
+    "summary": "A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.",
+    "section": "methods",
+    "path": "methods/machine-readable-primer/"
+  },
+  {
+    "title": "The Methods Matrix",
+    "summary": "The L3 build manual \u2014 exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.",
+    "section": "methods",
+    "path": "methods/matrix/"
+  },
+  {
+    "title": "The Assist-Only MCP Bridge",
+    "summary": "Expose scoped staging tools over MCP so agents draft into a review queue \u2014 they can prepare anything, publish nothing.",
+    "section": "methods",
+    "path": "methods/mcp-bridge/"
+  },
+  {
+    "title": "No Simulated Execution",
+    "summary": "Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.",
+    "section": "methods",
+    "path": "methods/no-simulated-execution/"
+  },
+  {
+    "title": "OAuth Scoped Grants",
+    "summary": "How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session \u2014 distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap.",
+    "section": "methods",
+    "path": "methods/oauth-scoped-grants/"
+  },
+  {
+    "title": "Primer File Format",
+    "summary": "The exact shape of a /.well-known/ai-primer.json file \u2014 versioned, intent-driven, with checkable preconditions. Distilled from CivCharter's production primer (schema 1.3.0).",
+    "section": "methods",
+    "path": "methods/primer-file-format/"
+  },
+  {
+    "title": "Querying the Registry",
+    "summary": "How agents (and humans) consume the WellKnownIndex registry \u2014 the JSON schema, the discovery file, and shareable filtered views.",
+    "section": "methods",
+    "path": "methods/querying-the-registry/"
+  },
+  {
+    "title": "The Retrofit Ladder",
+    "summary": "A maturity model for retrofitting non-agent-centric websites \u2014 five rungs from hostile to agentic-native, what each rung costs, and how to climb.",
+    "section": "methods",
+    "path": "methods/retrofit-ladder/"
+  },
+  {
+    "title": "Scoped AI Access Grants",
+    "summary": "Human-created, scoped, revocable authorization objects for agents \u2014 a narrowed lane instead of impersonating the user.",
+    "section": "methods",
+    "path": "methods/scoped-ai-grants/"
+  },
+  {
+    "title": "Stage and Approve",
+    "summary": "The assist-only pattern \u2014 the agent stages a draft as a pending record; nothing goes live until the human clicks approve.",
+    "section": "methods",
+    "path": "methods/stage-and-approve/"
+  },
+  {
+    "title": "Status Receipts: Closing the Loop",
+    "summary": "How an agent learns what happened to its staged work \u2014 a read-only status endpoint and the receipt as audit trail.",
+    "section": "methods",
+    "path": "methods/status-receipts/"
+  },
+  {
+    "title": "Well-Known Discovery",
+    "summary": "Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.",
+    "section": "methods",
+    "path": "methods/well-known-discovery/"
+  },
+  {
+    "title": "Age of Agents",
+    "summary": "A living-world strategy simulation with owner-authorized agent pairing \u2014 agents submit orders, the simulation resolves them authoritatively on world ticks.",
+    "section": "registry",
+    "path": "registry/age-of-agents/"
+  },
+  {
+    "title": "Agora",
+    "summary": "An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.",
+    "section": "registry",
+    "path": "registry/agora/"
+  },
+  {
+    "title": "CivCharter",
+    "summary": "A charter-governed civic commons running on a Raspberry Pi, with a machine-readable AI primer and an assist-only staging bridge for agents.",
+    "section": "registry",
+    "path": "registry/civcharter/"
+  }
+]

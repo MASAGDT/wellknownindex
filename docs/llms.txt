@@ -1,0 +1,38 @@
+# WellKnownIndex
+
+> A free, public index of agent-friendly web endpoints — and the methods for building them.
+
+Every page on this site is triple-rendered: human HTML, a `.json` twin, and a `.md` markdown twin. Fetch `/llms-full.txt` for the complete text of every page, or `/index.json` for the machine-readable site map.
+
+## Methods
+- [Agent Credential Schemes](https://masagdt.github.io/wellknownindex/methods/agent-credentials/): Invitation is not credential. Issue separate, hashed, expirable agent credentials — never reuse the human's session.
+- [Ceremony Blueprint](https://masagdt.github.io/wellknownindex/methods/ceremony-blueprint/): The validation rules and reference Flask listener for staged registry submissions — the wiki eating its own stage-and-approve cooking.
+- [Flask Stage-and-Approve](https://masagdt.github.io/wellknownindex/methods/flask-stage-and-approve/): A Flask-first reference for staged-write endpoints — preflight, stage, review, approve — distilled from CivCharter's /api/ai/* lane.
+- [Glossary: The Vocabulary](https://masagdt.github.io/wellknownindex/methods/glossary/): Every slug, scheme, and term the wiki uses — method, protocol, auth, ceremony — defined in one place.
+- [No Simulated Execution](https://masagdt.github.io/wellknownindex/methods/no-simulated-execution/): Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.
+- [OAuth Scoped Grants](https://masagdt.github.io/wellknownindex/methods/oauth-scoped-grants/): How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session — distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap.
+- [Primer File Format](https://masagdt.github.io/wellknownindex/methods/primer-file-format/): The exact shape of a /.well-known/ai-primer.json file — versioned, intent-driven, with checkable preconditions. Distilled from CivCharter's production primer (schema 1.3.0).
+- [Querying the Registry](https://masagdt.github.io/wellknownindex/methods/querying-the-registry/): How agents (and humans) consume the WellKnownIndex registry — the JSON schema, the discovery file, and shareable filtered views.
+- [Scoped AI Access Grants](https://masagdt.github.io/wellknownindex/methods/scoped-ai-grants/): Human-created, scoped, revocable authorization objects for agents — a narrowed lane instead of impersonating the user.
+- [Stage and Approve](https://masagdt.github.io/wellknownindex/methods/stage-and-approve/): The assist-only pattern — the agent stages a draft as a pending record; nothing goes live until the human clicks approve.
+- [Status Receipts: Closing the Loop](https://masagdt.github.io/wellknownindex/methods/status-receipts/): How an agent learns what happened to its staged work — a read-only status endpoint and the receipt as audit trail.
+- [The Assist-Only MCP Bridge](https://masagdt.github.io/wellknownindex/methods/mcp-bridge/): Expose scoped staging tools over MCP so agents draft into a review queue — they can prepare anything, publish nothing.
+- [The Machine-Readable Primer](https://masagdt.github.io/wellknownindex/methods/machine-readable-primer/): A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.
+- [The Methods Matrix](https://masagdt.github.io/wellknownindex/methods/matrix/): The L3 build manual — exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.
+- [The Retrofit Ladder](https://masagdt.github.io/wellknownindex/methods/retrofit-ladder/): A maturity model for retrofitting non-agent-centric websites — five rungs from hostile to agentic-native, what each rung costs, and how to climb.
+- [Well-Known Discovery](https://masagdt.github.io/wellknownindex/methods/well-known-discovery/): Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.
+
+## Registry
+- [Age of Agents](https://masagdt.github.io/wellknownindex/registry/age-of-agents/): A living-world strategy simulation with owner-authorized agent pairing — agents submit orders, the simulation resolves them authoritatively on world ticks.
+- [Agora](https://masagdt.github.io/wellknownindex/registry/agora/): An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.
+- [CivCharter](https://masagdt.github.io/wellknownindex/registry/civcharter/): A charter-governed civic commons running on a Raspberry Pi, with a machine-readable AI primer and an assist-only staging bridge for agents.
+
+## Field notes
+- [Field note: Cloudflare blocks Python's default User-Agent](https://masagdt.github.io/wellknownindex/field-notes/cloudflare-user-agent/): API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.
+- [Field note: Queued is not changed](https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed/): A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.
+- [Field note: The capability gate](https://masagdt.github.io/wellknownindex/field-notes/capability-gate/): A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.
+- [Run a Polite Agent Lane](https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette/): Cache the primer, rate-limit per credential, identify your agents, back off on 429 — operating notes from running agent lanes on real hardware.
+
+## Contribute
+
+- [Contribute](https://masagdt.github.io/wellknownindex/contribute/): propose a registry entry, a method, or a field note.

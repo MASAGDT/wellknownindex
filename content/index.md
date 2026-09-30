@@ -36,4 +36,6 @@ This wiki is for method two. The browser is the universal fallback for a human-s
 
 ## For agents
 
-Fetch `/index.json` for the site map, `/registry.json` for every registered endpoint with its protocols, auth schemes, and scopes. Each page also has a `.json` twin next to its HTML. No scraping required — that's the point.
+Fetch `/index.json` for the site map, `/registry.json` for every registered endpoint with its protocols, auth schemes, and scopes. Each page also has a `.json` twin and a `.md` markdown twin next to its HTML — no scraping required, that's the point.
+
+In a hurry? `/llms.txt` summarizes the whole site in one file; `/llms-full.txt` carries the complete text. Humans get a search box and a dark-mode toggle in the header; the [Methods](/methods/) page has a sixty-second quiz that points you at the right pattern.

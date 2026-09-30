@@ -1,0 +1,1114 @@
+# WellKnownIndex — complete text
+
+> A free, public index of agent-friendly web endpoints — and the methods for building them.
+
+Source: https://masagdt.github.io/wellknownindex/ — generated 2026-09-30.
+
+
+======================================================================
+# Contribute
+https://masagdt.github.io/wellknownindex/contribute/
+======================================================================
+
+> How to propose a registry entry, a method, or a field note — the submission ceremony, the entry schema, and the verification bar.
+
+# Contribute
+
+**What it is:** the submission ceremony for WellKnownIndex. Anyone — human or agent — can propose a registry entry, a method, or a field note. Proposals are staged, verified, and published by a human gardener. Nothing lands in the registry unreviewed.
+
+**Why a ceremony:** a registry is a trust surface. Agents will read these entries and act on them — fetching primers, requesting grants, staging writes. A wrong entry doesn't just misinform; it misdirects autonomous behavior. So every addition passes through verification before it publishes.
+
+## The ceremony
+
+1. **Propose.** Open an issue or pull request on [the GitHub repo](https://github.com/MASAGDT/wellknownindex) — or, while the community is small, drop it in the Facebook group. Include the entry fields below.
+2. **Verify.** The gardener checks the verification bar: fetches the endpoints, confirms the agent lane actually works, dates the check.
+3. **Publish.** Verified entries are merged, the site rebuilds, and the change goes live on GitHub Pages — usually within minutes. The `verified` date is part of the entry.
+
+## What makes a registry entry
+
+A registry entry needs these fields (frontmatter in `content/registry/<slug>.md`, or the same shape as JSON):
+
+- `title` — the site's name
+- `summary` — one or two sentences on what it is and what its agent lane does
+- `site_url` — home page, or `null` if not publicly reachable
+- `protocols` — array of endpoint records: `{type, url}`, with optional `version`, `url_template`, `note`, and `status`. Rules: `url` must be an exact callable absolute URL — never prose, never a placeholder. Explanations go in `note`; URI templates go in `url_template` with a `{placeholder}`; an endpoint that can't be established uses `status: unconfirmed` plus a `note` saying what's unknown. Declare `version` whenever the site publishes one.
+- `auth_schemes` — array of slugs: how an agent authenticates (`ai-access-grant`, `agent-credential`, …)
+- `scopes` — the permission vocabulary, if any
+- `methods_implemented` — which WellKnownIndex method slugs the site implements
+- `cost` — `free`, `unknown`, or a pricing note
+- `verified` — date of last verification, `YYYY-MM-DD`
+- `verified_evidence` — what the check actually covered, one line per check: which endpoints were fetched, which flows were confirmed, what's still unknown
+
+The machine-readable schema lives at [/schema/registry-entry.json](/schema/registry-entry.json). Validate against it before submitting.
+
+## The verification bar
+
+An entry counts as verified when someone has:
+
+- **Fetched the endpoints** — the primer, the well-known file, the staging route — and confirmed they respond.
+- **Confirmed the lane works** — not just documented. A primer nobody can read or a grant flow nobody can complete doesn't count.
+- **Checked the claims** — auth schemes, scopes, and implemented methods match what the site actually does.
+- **Dated the check** — `verified` is a promise with an expiry. Stale entries get re-checked or flagged.
+- **Stated the evidence** — `verified_evidence` says what was actually checked. "Reachable URL" is not "working lane": distinguish documentation review, endpoint reachability, and demonstrated execution. Dates reflect the last real check and are never advanced by a rebuild.
+
+## Proposing a method or field note
+
+- **Methods** document a reusable pattern. A good method has a name, a problem, the pattern itself, and at least one site implementing it. Speculation without an implementation is a field note, not a method.
+- **Field notes** are tribal knowledge from real agent runs: gotchas, gates, surprises. They need a date, what happened, and what it taught.
+
+## The future: staged agent submissions
+
+The ceremony above runs on GitHub today. The endgame is the wiki eating its own cooking: a staged submission endpoint where an agent POSTs a candidate entry, it lands in a review queue, a human approves or rejects, and approval publishes it — the [stage-and-approve](/methods/stage-and-approve/) method applied to the registry itself. That design is now written up as the [Ceremony Blueprint](/methods/ceremony-blueprint/), with a reference Flask listener in [`staging/`](https://github.com/MASAGDT/wellknownindex/tree/main/staging) ready for the Pi. Until it's deployed, issues and PRs are the staging area.
+
+## Design notes
+
+- Slugs are join keys: `methods_implemented` references method slugs, `protocols[].type` uses the shared protocol vocabulary. Propose new protocol types as methods first, so the vocabulary stays shared.
+- One entry per site. If a site's agent lane changes materially, update the entry and re-date `verified` — don't fork it.
+- Small and correct beats large and stale. Three verified entries are worth more than three hundred scraped ones.
+
+
+======================================================================
+# Run a Polite Agent Lane
+https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette/
+======================================================================
+
+> Cache the primer, rate-limit per credential, identify your agents, back off on 429 — operating notes from running agent lanes on real hardware.
+
+# Run a Polite Agent Lane
+
+Opening an agent lane means inviting programmatic traffic. These are the operating notes from running one — most of them learned the embarrassing way.
+
+## Cache the primer
+
+The primer changes rarely and gets fetched constantly — every agent reads it first. Serve it with `Cache-Control: public, max-age=3600` and an `ETag`, and honor `If-None-Match` with `304 Not Modified`. CivCharter runs on a Raspberry Pi; without caching, a handful of curious agents is a denial-of-service you invited yourself.
+
+## Rate-limit per credential, not per IP
+
+Agents share IPs — data centers, NAT, your own reverse proxy. The credential is the identity, so the quota belongs on the credential: N requests per window per grant, with `429` and a `Retry-After` header when it's exceeded. The wiki's own staging listener rate-limits at 10 submissions/hour per IP as a floor; per-credential quotas are the grown-up version.
+
+## Identify your agents
+
+Ask agents to send a descriptive `User-Agent` (`MyAgent/1.0 (+https://example.org/agent)`) and log it. Generic clients get caught by bot-fighting — we watched Python's default `urllib` user-agent eat a 403 from Cloudflare while a browser-like one sailed through. Identification is also how you tell your welcome traffic from your abuse traffic.
+
+## Back off, don't hammer
+
+Status polling, primer refreshes, claim retries: exponential backoff with jitter, and a ceiling. An agent retrying every second is indistinguishable from an attack, and your rate limiter will treat it like one.
+
+## Keep payloads small
+
+The staging listener caps bodies at 32KB. Staged submissions are *proposals*, not uploads — if the JSON doesn't fit in tens of kilobytes, the design is wrong, not the limit.
+
+## Don't scrape what the lane serves
+
+The whole thesis: if a site offers a machine lane, use it. Scraping the human HTML of a site that publishes a primer is slower, brittler, and ruder — and it trains operators to see all agents as scrapers.
+
+
+======================================================================
+# Field note: The capability gate
+https://masagdt.github.io/wellknownindex/field-notes/capability-gate/
+======================================================================
+
+> A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.
+
+# Field note: The capability gate
+
+**Observed:** 2026-09-29, while running an AI Access Grant flow with scopes including `post.create`.
+
+The grant *authorized* `post.create`. But authorization and executability are different questions. Before attempting the write, the sane check is a capability gate — can the agent, from its actual environment, do all of the following?
+
+- Open the grant/bootstrap safely and parse the machine-readable session material
+- Keep raw grant tokens, bearer tokens, and authorization headers out of normal chat
+- Make authenticated HTTPS requests itself (not merely describe commands)
+- Call discovery and run preflight for the intended action
+- Inspect the preflight verdict (`valid`, `safe_to_execute`)
+- Submit only after preflight succeeds, and verify `ok: true` plus a receipt
+
+**If any check fails, downgrade lanes** — don't push through. The honest fallbacks, in order: stage the draft for human approval, generate a human-runnable command packet, or drop to public-spec guidance. What the agent must *not* do is narrate a confident payload and call it execution.
+
+**Lesson for agent-lane designers:** put the capability gate in your primer as an explicit checklist. "You have the scope" should never be the last question — "can you actually perform the ceremony from where you are?" is. CivCharter's primer encodes exactly this gate, and it's the difference between an agent that degrades gracefully and one that hallucinates success.
+
+
+======================================================================
+# Field note: Cloudflare blocks Python's default User-Agent
+https://masagdt.github.io/wellknownindex/field-notes/cloudflare-user-agent/
+======================================================================
+
+> API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.
+
+# Field note: Cloudflare blocks Python's default User-Agent
+
+**Observed:** 2026-09-29, against a small Flask site behind Cloudflare.
+
+Authenticated `GET` requests to `/api/ai/*` routes made with Python's `urllib` failed with **HTTP 403 Forbidden** — even with a valid bearer token. The identical requests made with `curl` (or `urllib` with an overridden header) succeeded.
+
+**Cause:** Cloudflare's bot management flagged the default `Python-urllib/3.x` User-Agent. The 403 came from the edge, not the application — the app never saw the request.
+
+**Fix:** send a browser-like User-Agent:
+
+```python
+req = urllib.request.Request(url, headers={
+    "Authorization": "Bearer " + token,
+    "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+})
+```
+
+**Lesson for agent-lane designers:** if your API sits behind a bot-fighting CDN, *document the expected client behavior* in your primer — or better, allowlist your agent routes. An agent that did everything right (valid grant, valid token, canonical route) still got a 403 with no useful error body. The failure looked like an auth problem and was actually a fingerprinting problem. Distinguish the two in your error responses if you can.
+
+
+======================================================================
+# Field note: Queued is not changed
+https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed/
+======================================================================
+
+> A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.
+
+# Field note: Queued is not changed
+
+**Observed:** across two independent systems, same lesson.
+
+- **CivCharter:** `POST /api/ai/stage` returns HTTP 201 with `ok: true` — and `published_live: false`. The draft is *pending*. It becomes a post only when a human clicks Publish Live. An agent that reports "posted!" at the 201 is wrong in exactly the way the protocol was designed to prevent.
+- **Age of Agents:** submitting an order returns success meaning the order was *queued*. The authoritative simulation resolves it on a world tick. The agent must check the order's status afterward to learn the outcome.
+
+**The rule:** treat every write as a two-phase event — *request* and *resolution* — and never claim the second from the first. The vocabulary matters: say "staged," "queued," "submitted," or "pending." Save "published," "applied," and "done" for when a receipt, a status check, or a human action confirms them.
+
+**Lesson for agent-lane designers:** make the honest vocabulary the *easy* vocabulary. Return `status: "pending"` and agents will say "pending." Return a bare 200 with no receipt and even a careful agent has to guess what happened. And state the rule in your primer's forbidden-claims list — "submission complete" with nothing but a request to show for it is the canonical failure.
+
+
+======================================================================
+# WellKnownIndex
+https://masagdt.github.io/wellknownindex/
+======================================================================
+
+> A free, public commons documenting how to build agent-friendly web endpoints — and indexing the sites that have them. Every page renders for humans and machines.
+
+# WellKnownIndex
+
+**A free, public index of agent-friendly web endpoints — and the methods for building them.**
+
+WellKnownIndex has two jobs:
+
+1. **Document the methods** — the patterns for retrofitting a website so AI agents can work with it in their own language: machine-readable primers, scoped grants, stage-and-approve flows, well-known discovery, agent credential schemes.
+2. **Maintain the registry** — a catalog of sites that implement these methods, in a format agents can query directly.
+
+Everything here is free, public, and dual-rendered: every page exists as human-readable HTML **and** machine-readable JSON. Agents shouldn't have to scrape prose to learn the rules. The rules should be data.
+
+## The fork in the road
+
+There are two ways to give an AI agent access to the web.
+
+**Method one: impersonation.** Hand the agent a browser, log it in as you, and let it click around like a person. It works on the entire existing web with zero cooperation from any site — but it's brittle, every CAPTCHA is the web saying *we didn't build this for you*, and the permission model is "can do anything you can."
+
+**Method two: a scoped lane.** The site knows it's talking to an agent. It hands over a machine-readable rulebook, a scoped credential, and a staging area — and nothing goes live without approval. Least privilege, full audit trail, no impersonation.
+
+This wiki is for method two. The browser is the universal fallback for a human-shaped web; the scoped lane is the better equilibrium. We're mapping the territory so more of the web can get there.
+
+## Start here
+
+- **[The Retrofit Ladder](/methods/retrofit-ladder/)** — the theory in one page: five rungs from hostile to agentic-native. Find your site's rung, then climb.
+- **[Methods](/methods/)** — the patterns. How to give your site an agent lane.
+- **[Registry](/registry/)** — the index. Sites that speak agent, with queryable protocol data.
+- **[Field notes](/field-notes/)** — tribal knowledge from real agent runs: gotchas, gates, and lessons.
+- **[Contribute](/contribute/)** — add a site to the registry, propose a method, or file a field note.
+
+## For agents
+
+Fetch `/index.json` for the site map, `/registry.json` for every registered endpoint with its protocols, auth schemes, and scopes. Each page also has a `.json` twin and a `.md` markdown twin next to its HTML — no scraping required, that's the point.
+
+In a hurry? `/llms.txt` summarizes the whole site in one file; `/llms-full.txt` carries the complete text. Humans get a search box and a dark-mode toggle in the header; the [Methods](/methods/) page has a sixty-second quiz that points you at the right pattern.
+
+
+======================================================================
+# Agent Credential Schemes
+https://masagdt.github.io/wellknownindex/methods/agent-credentials/
+======================================================================
+
+> Invitation is not credential. Issue separate, hashed, expirable agent credentials — never reuse the human's session.
+
+# Agent Credential Schemes
+
+**What it is:** a credential system designed for agents rather than borrowed from humans: the agent authenticates with its *own* credential, on its *own* scheme, with its own lifecycle — instead of a bearer token minted from someone's login session.
+
+**Why it matters:** agent credentials live in unusual places — transcripts, VM disks, tool outputs. They get copied, logged, and pasted far more casually than a human's session cookie. The scheme has to assume exposure and minimize blast radius: short lifetimes, easy rotation, instant revocation, and scopes that don't include "everything the owner can do."
+
+## The pattern
+
+1. **Separate invitation from credential.** The invitation link is single-use and short-lived; redeeming it *issues* the credential. The link is not the credential. (Opening the link in a browser must not redeem it — link prefetchers exist.)
+2. **Distinct auth scheme.** E.g. `Authorization: Agent <credential>` rather than reusing `Bearer`. The scheme itself tells the server — and the logs — which kind of actor this is.
+3. **Hash at rest.** Store only hashes server-side, like passwords. A database read shouldn't yield usable credentials.
+4. **Expire by default.** Thirty days is a common default; shorter for high-stakes scopes. Expiry is the safety net; rotation is the practice.
+5. **Rotate and revoke.** Rotation invalidates the old credential atomically. The owner can revoke the agent connection entirely, independent of their own session.
+6. **Scope to the agent's world.** The credential authorizes the agent identity within its assigned scope (a civilization, a workspace) — never the owner's account controls, never another tenant's hidden data.
+
+## Real example
+
+Age of Agents: the agent POSTs its complete single-use invitation link to the claim endpoint from `/.well-known/age-of-agents.json`; the server returns a dedicated agent credential used as `Authorization: Agent <credential>`. Credentials are stored hashed, expire after 30 days by default, and can be rotated or revoked by the owner. Human-owner sessions and agent credentials are fully separate — an agent never gains the owner's account controls.
+
+## Design notes
+
+- The weakest link is the agent host's storage. Design as if the credential *will* leak: that's what expiry and revocation are for.
+- Never put a permanent credential in a URL. URLs get logged by proxies, prefetchers, and chat transcripts.
+- Audit credential issuance, use, rotation, and revocation. "Which agent did what, with which credential" should always be answerable.
+
+
+======================================================================
+# Ceremony Blueprint
+https://masagdt.github.io/wellknownindex/methods/ceremony-blueprint/
+======================================================================
+
+> The validation rules and reference Flask listener for staged registry submissions — the wiki eating its own stage-and-approve cooking.
+
+# Ceremony Blueprint
+
+**What it is:** the complete design for letting agents *propose* registry entries while humans keep the merge button — stage-and-approve applied to the wiki itself. An agent POSTs a JSON entry to a small Flask listener; the listener validates it against the published schema and the wiki's own rules; valid submissions wait in a queue; a human reviews, approves, and commits. Nothing reaches the registry without a human decision.
+
+**Status:** reference implementation lives in [`staging/`](https://github.com/MASAGDT/wellknownindex/tree/main/staging) in the repo — built for a Raspberry Pi, Flask-first, no paid services.
+
+## The flow
+
+Agent → `POST /submit` → validation → `queue/pending/` → human `review.py approve` → markdown generated → git commit → rebuild → GitHub Pages. Reject → discarded. Expiry was considered and dropped: a submission queue is small enough that explicit reject beats silent rot, and every rejection is a signal about what the validation rules should say.
+
+## The validation rules
+
+These live in `staging/validate.py`, next to the code. The JSON Schema check loads the *published* `schema/registry-entry.json`, so the code and the schema can't drift apart.
+
+1. **Shape.** The submission must validate against the published registry-entry schema: required fields (`title`, `summary`, `site_url`, `protocols`, `auth_schemes`, `methods_implemented`, `cost`, `verified`), types, and the `verified` date format (`YYYY-MM-DD`).
+2. **URLs.** `site_url` must be `https://…` or `null`. Protocol URLs must be absolute `https://` or site-relative paths starting with `/`. Plain `http://` is rejected — the registry maps trustworthy lanes.
+3. **Methods must exist.** Every `methods_implemented` slug must be a real method page in the wiki. The listener derives the slug list from the wiki's own method pages at startup, so the vocabulary can't drift; unknown slugs fail with the closest matches, so the agent can fix and resubmit.
+4. **Auth schemes may be new.** Unknown `auth_schemes` produce warnings, not failures — the registry is supposed to learn new schemes. Unknown *methods* fail; unknown *schemes* teach.
+5. **No duplicates.** A submission whose `site_url` or title matches an existing registry entry — or an already-queued submission — is rejected with a pointer to the existing one.
+6. **Abuse controls.** 32KB max body. Per-IP rate limiting (10/hour default). Text fields are scanned for markup/script injection and rejected if found.
+
+## The human side
+
+```bash
+python3 review.py list              # what's waiting
+python3 review.py show <id>         # read the full submission
+python3 review.py approve <id>      # → queue/approved/ + generated markdown on stdout
+python3 review.py reject <id>       # → discarded, with an optional reason
+```
+
+Approval generates the registry markdown (frontmatter from the submission, stub body for the human to flesh out). The human still edits, commits, rebuilds, and pushes — **the script never pushes by itself.** Verification is not authorization, all the way down.
+
+## Hardening notes
+
+- The listener binds `127.0.0.1` by default. In production, put it behind a reverse proxy; don't expose the port.
+- Optional `WKI_SUBMIT_TOKEN`: when set, `/submit` requires `Authorization: Bearer <token>`. Open submission is the default posture for a commons, but the token exists for spam waves.
+- Rate limits are in-memory and per-process — fine for a Pi, not for a fleet. The README says so honestly.
+
+## Try it: demo mode
+
+The reference listener ships a sandbox (`staging/demo.py`, mounted at `/demo/*`) where anyone can run the full ceremony — preflight, stage, review, approve/reject, status receipts — without touching the real queue. Practice, not preaching:
+
+- `POST /demo/preflight` — validate a submission without staging it.
+- `POST /demo/stage` — stage a demo entry; get back `pending` plus a `review_url` and a `status_url`.
+- `GET /demo/review?token=…` — inspect the staged record.
+- `POST /demo/review/approve?token=…` / `POST /demo/review/reject?token=…` — decide it.
+- `GET /demo/status/<id>` — the [status-receipts](/methods/status-receipts/) method, live.
+
+Rules of the sandbox: demo records live in `queue/demo/`, auto-expire after 24 hours, and never publish — every response carries `"demo": true` and `"published_live": false`. Review tokens are single-use and stored hashed. In demo mode the caller plays **both** roles, agent and human, to exercise the mechanics; the policy is unchanged — real submissions still need a human via `review.py`. The demo teaches the mechanics, it doesn't relax the rule.
+
+*Deployment status: the demo is implemented and tested in the repo. It goes live with the listener on the Pi cutover — not on GitHub Pages, which can't run it.*
+
+## Why this shape
+
+Every rule traces back to a wiki principle: rule 1 is the machine-readable primer idea (rules as data); rule 3 keeps the method vocabulary honest; rule 5 is the registry's own no-duplicates hygiene; rule 6 is the Cloudflare field note applied at the application layer. And the human-approves step is [stage-and-approve](/methods/stage-and-approve/) with the wiki as the protected resource. The gardener still gardens — the listener just carries the watering can to the gate.
+
+
+======================================================================
+# Flask Stage-and-Approve
+https://masagdt.github.io/wellknownindex/methods/flask-stage-and-approve/
+======================================================================
+
+> A Flask-first reference for staged-write endpoints — preflight, stage, review, approve — distilled from CivCharter's /api/ai/* lane.
+
+# Flask Stage-and-Approve
+
+**What it is:** the reference endpoint design for the [stage-and-approve](/methods/stage-and-approve/) pattern, written Flask-first — because the reference implementation (CivCharter) runs Flask on a Raspberry Pi, and most sites climbing the [retrofit ladder](/methods/retrofit-ladder/) start from something small.
+
+**Distilled from:** CivCharter's `/api/ai/*` lane — `POST /api/ai/preflight`, `POST /api/ai/stage`, `/ai/review?token=…` — which has staged posts for four different AI systems without a single unauthorized publish.
+
+## The five routes
+
+| Route | Who calls it | What it does |
+|---|---|---|
+| `GET /ai/primer` | Agent | Serves the [primer file](/methods/primer-file-format/) (JSON). Also advertised at `/.well-known/ai-primer.json`. |
+| `POST /api/ai/preflight` | Agent | Validates intent, scope, required fields, citations. Returns pass/fail **without changing any state**. |
+| `POST /api/ai/stage` | Agent | Creates the pending record. `201`, `ok: true`, `published_live: false`, one-time review URL. |
+| `GET /ai/review?token=…` | Human | Review page showing the exact draft, citations, and two buttons. Token is single-use, stored hashed. |
+| `POST /ai/review/approve` (or `/reject`) | Human | The only exits. **Requires the human's login session; agent credentials get 403.** |
+
+## Request and response shapes
+
+Preflight — the agent checks before it stages:
+
+```http
+POST /api/ai/preflight
+Authorization: Bearer <agent-session>
+
+{"intent": "post.create",
+ "payload": {"title": "...", "body": "..."},
+ "citations": [{"section": "Article V, Section 2"}]}
+```
+```json
+{"ok": true, "reasons": []}
+```
+```json
+{"ok": false, "reasons": ["citations must reference ratified charter sections"]}
+```
+
+Stage — the pending record is born unpublished:
+
+```http
+POST /api/ai/stage
+Authorization: Bearer <agent-session>
+
+{"intent": "post.create",
+ "payload": {"title": "...", "body": "..."},
+ "citations": [{"section": "Article V, Section 2"}]}
+```
+```json
+{"ok": true, "id": "9f2c…", "status": "pending",
+ "review_url": "/ai/review?token=…", "published_live": false}
+```
+
+Note `published_live: false` in the success response. The agent's vocabulary — and yours — must keep *staged* and *published* as visibly different states. (See [No Simulated Execution](/methods/no-simulated-execution/).)
+
+## The separation-of-powers rule
+
+This is the load-bearing wall: **the approve endpoint must require the human's login session, and must reject agent credentials outright.** An agent that can approve its own staged work has no lane — it has a publishing API with extra steps. CivCharter's review page is human-session-only; the agent that staged the draft cannot touch it.
+
+## The pending record (server side)
+
+```python
+{
+  "id": "9f2c…",            # public handle
+  "intent": "post.create",
+  "payload": {...},         # the exact draft
+  "citations": [...],
+  "scopes_used": ["post.create"],
+  "agent_id": "…",          # which agent staged it
+  "grant_id": "…",          # which human grant authorized it
+  "status": "pending",      # pending | published | rejected | expired
+  "created_at": …,
+  "expires_at": …,          # pending drafts expire; expiry publishes nothing
+  "token_hash": "…",        # sha256 of the one-time review token
+}
+```
+
+## Minimal Flask sketch
+
+Illustrative — use a real store and your session machinery in production:
+
+```python
+from flask import Flask, request, jsonify, session, abort
+import secrets, hashlib, time
+
+app = Flask(__name__)
+PENDING = {}  # replace with a real store
+
+def _hash(t): return hashlib.sha256(t.encode()).hexdigest()
+
+@app.post("/api/ai/preflight")
+def preflight():
+    data = request.get_json(force=True)
+    reasons = run_preflight(data, agent_scopes(request))
+    return jsonify(ok=not reasons, reasons=reasons)
+
+@app.post("/api/ai/stage")
+def stage():
+    data = request.get_json(force=True)
+    reasons = run_preflight(data, agent_scopes(request))
+    if reasons:
+        return jsonify(ok=False, reasons=reasons), 422
+    token = secrets.token_urlsafe(32)
+    rec = {"id": secrets.token_hex(8), "intent": data["intent"],
+           "payload": data["payload"], "status": "pending",
+           "created_at": time.time(), "expires_at": time.time() + 7*86400,
+           "token_hash": _hash(token), "agent_id": agent_id(request)}
+    PENDING[rec["id"]] = rec
+    return jsonify(ok=True, id=rec["id"], status="pending",
+                   review_url=f"/ai/review?token={token}",
+                   published_live=False), 201
+
+@app.post("/ai/review/approve")
+def approve():
+    if "human_user_id" not in session:
+        abort(401)  # humans only: log in first
+    if is_agent_credential(request):
+        abort(403)  # agents cannot approve their own staged work
+    rec = consume_token(request.args.get("token"))  # single-use, hashed
+    try:
+        live_url = publish(rec)
+    except Exception:
+        # The approval token is already spent. Never report "published"
+        # for a publish that failed: park the record so a human can
+        # re-approve, and let the error propagate.
+        rec["status"] = "publish_failed"
+        raise
+    rec["status"] = "published"
+    return jsonify(ok=True, live_url=live_url)
+```
+
+Run a sweeper (cron or thread) that marks unreviewed records `expired` past `expires_at`. Expiry publishes nothing — that's the whole point. This expiry rule is for staging lanes holding draft writes; the [Ceremony Blueprint](/methods/ceremony-blueprint/) submission queue is the deliberate exception — proposals are never auto-expired, because silently dropping someone's submission is worse than holding it.
+
+## Field note from production
+
+CivCharter's lane sits behind Cloudflare, which 403s Python's default `urllib` user-agent on `/api/ai/*` while a browser-like UA passes. Your preflight client should set an honest, identifiable user-agent — and your docs should say so. (See the [Cloudflare user-agent field note](/field-notes/cloudflare-user-agent/).)
+
+
+======================================================================
+# Glossary: The Vocabulary
+https://masagdt.github.io/wellknownindex/methods/glossary/
+======================================================================
+
+> Every slug, scheme, and term the wiki uses — method, protocol, auth, ceremony — defined in one place.
+
+# Glossary: The Vocabulary
+
+The wiki uses a small, deliberate vocabulary. These are the terms, exactly as the [registry schema](/schema/registry-entry.json) and the method pages use them.
+
+**Agent lane** — the narrow, machine-readable path a site offers agents, distinct from its human UI. The alternative to agents driving a browser aimed at humans.
+
+**Method** — a reusable integration pattern, named by a slug like `stage-and-approve` or `well-known-discovery`. Methods are what the [Methods](/methods/) section catalogs.
+
+**Protocol** — a concrete machine-readable contract a site publishes, named by a `type` slug plus a `url`: e.g. `{type: "ai-primer", url: "https://example.org/ai/primer"}`. A site can publish several; each may declare a `version`.
+
+**Protocol version** — the `version` field on a protocol entry (e.g. `"1.3.0"`). Lets an agent pin behavior before it fetches.
+
+**Auth scheme** — how an agent proves who it is: a slug like `agent-bearer`, `oauth-scoped-grant`, or `invite-claim`. Normalized to lowercase slugs in the registry.
+
+**Scope** — a named permission boundary on a credential (`draft:write`, `stage:submit`). Scopes are enforced at every endpoint, not just at issuance.
+
+**Grant** — an issued credential plus its scopes: what the agent actually holds.
+
+**Credential species** — the idea that agent credentials are a different *kind* of credential from human sessions, not just a different value. Separate issuance, separate storage (hashes, never plaintext), separate revocation — see [Agent Credentials](/methods/agent-credentials/).
+
+**Primer** — the machine-readable file (usually `/.well-known/ai-primer.json`) where a site tells agents what it is, what it allows, and what it forbids — see [Primer File Format](/methods/primer-file-format/).
+
+**Preflight** — the check-before-you-act call: the agent submits intent, the server answers what *would* happen, nothing is persisted.
+
+**Stage** — the agent's proposed work, held in a pending state. Staging never publishes.
+
+**Receipt** — the record of a decision: what was approved or rejected, when, and by whom. Collected via [Status Receipts](/methods/status-receipts/).
+
+**Ceremony** — the full propose → verify → publish pipeline with human approval in the middle. The wiki's own submission flow is the reference implementation — see [Ceremony Blueprint](/methods/ceremony-blueprint/).
+
+**Retrofit ladder** — the L0–L4 scale for how agent-ready a site is: L0 Hostile, L1 Tolerated, L2 Documented, L3 Machine lane, L4 Agentic native. See [Retrofit Ladder](/methods/retrofit-ladder/).
+
+**Registry entry** — one site's machine-readable record in the [registry](/registry/): site URL, protocols, auth schemes, scopes, methods implemented, cost, and verification status.
+
+**Machine-readable twin** — the JSON version of every wiki page, served alongside the human HTML. The wiki dogfoods its own thesis: humans read the page, agents read the twin.
+
+
+======================================================================
+# The Machine-Readable Primer
+https://masagdt.github.io/wellknownindex/methods/machine-readable-primer/
+======================================================================
+
+> A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.
+
+# The Machine-Readable Primer
+
+**What it is:** a public, schema-versioned JSON document — served at a stable URL like `/ai/primer` — that an AI assistant reads *before* doing anything else on your site. It declares the agent contract: allowed actions, execution lanes, credential rules, canonical routes, citation requirements, and the policies that govern agent behavior.
+
+**Why it matters:** most platforms hand an agent a loaded API and hope for the best. A primer inverts that: the site speaks first, in the agent's own language (structured data, not prose). The agent doesn't guess your rules — it parses them. This eliminates the largest source of agent misbehavior: confidently inventing endpoints, scopes, and permissions that don't exist.
+
+## The pattern
+
+1. **Serve it publicly** at a memorable path (`/ai/primer`). No secrets inside — classification: public and safe. It describes the *rules*, never credentials.
+2. **Version it.** Include a schema version and an agent-contract version so agents can detect when the rules change.
+3. **Declare execution lanes.** Name the modes an agent may operate in — e.g. assist-only drafting, assist-only staging, direct execution — and the exact conditions for choosing each one.
+4. **List canonical routes.** Every action maps to one exact route. Explicitly forbid invented routes (`/api/v1/*` guesses are a classic failure).
+5. **State the policies as data:** no-simulated-execution rules, credential handling, CSRF context, citation requirements, visibility governance.
+
+## Real example
+
+CivCharter serves its primer at `https://civcharter.org/ai/primer` — a JSON document (`CivCharter_AI_Access_Grant_Generic_AI_Primer`, schema 1.3.0) covering action enums (`post.create`, `proposal.vote`, …), execution lanes, the assist-only MCP bridge, preflight requirements, and a human-readable companion at `/ai/assist-only`. Four different AI systems have run the full grant flow against it without going rogue.
+
+## Design notes
+
+- Keep it credential-free. If a secret appears in the primer, the design is wrong — secrets belong in the grant bootstrap, delivered privately.
+- Agents should re-read the primer when uncertain, not cache it forever. A short client cache lifetime with refresh guidance beats a stale rulebook.
+- Pair it with [well-known discovery](/methods/well-known-discovery/) so agents can *find* the primer without being told the URL.
+
+
+======================================================================
+# The Methods Matrix
+https://masagdt.github.io/wellknownindex/methods/matrix/
+======================================================================
+
+> The L3 build manual — exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.
+
+# The Methods Matrix
+
+The [method pages](/methods/) describe the *patterns* for giving a website an agent lane. This is the level below: the exact formats, flows, and endpoint designs you'd hand an engineer — distilled from running systems, not invented.
+
+The editorial rule for everything under this heading: **distill, don't invent.** Every spec here comes from a site in the [registry](/registry/) that already runs it in production.
+
+| L3 rung | Pattern | Build manual |
+|---|---|---|
+| Machine-readable primer | [Machine-Readable Primer](/methods/machine-readable-primer/) | [Primer File Format](/methods/primer-file-format/) — the exact shape of `/.well-known/ai-primer.json`, distilled from CivCharter's production primer (schema 1.3.0) |
+| Scoped AI grants | [Scoped AI Grants](/methods/scoped-ai-grants/) | [OAuth Scoped Grants](/methods/oauth-scoped-grants/) — OAuth-shaped agent credentials with zero session impersonation, distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap |
+| Stage and approve | [Stage and Approve](/methods/stage-and-approve/) | [Flask Stage-and-Approve](/methods/flask-stage-and-approve/) — reference endpoint design (preflight → stage → review → approve), Flask-first, distilled from CivCharter's `/api/ai/*` lane |
+| Status receipts | [Stage and Approve](/methods/stage-and-approve/) | [Status Receipts](/methods/status-receipts/) — how the agent learns the outcome: read-only status polling with its own credential, the receipt as audit trail |
+| Registry + ceremony | [Contribute](/contribute/) | [Ceremony Blueprint](/methods/ceremony-blueprint/) — the validation rules and reference Flask listener for staged registry submissions; the wiki eating its own stage-and-approve cooking |
+
+## How to use this
+
+Building an agent lane for the first time? Read the three build-manual pages in order: publish the primer, issue the grants, add the staging endpoints. Running the wiki's own submission queue? Start with the ceremony blueprint.
+
+Found a running implementation this matrix doesn't cover yet? That's a [field note](/field-notes/) waiting to happen — or a registry entry via [Contribute](/contribute/). New to the vocabulary? The [glossary](/methods/glossary/) defines every slug and term in one place.
+
+
+======================================================================
+# The Assist-Only MCP Bridge
+https://masagdt.github.io/wellknownindex/methods/mcp-bridge/
+======================================================================
+
+> Expose scoped staging tools over MCP so agents draft into a review queue — they can prepare anything, publish nothing.
+
+# The Assist-Only MCP Bridge
+
+**What it is:** a Model Context Protocol server that exposes *staging* tools to AI agents — e.g. `stage_civic_action` — wired to the same pending-record + human-approval flow as the REST staging endpoint. The agent can prepare any in-scope action through its normal tool use; the tool can only ever create drafts awaiting human review.
+
+**Why it matters:** many agents live inside MCP-capable hosts (Claude Code, Cursor, OpenClaw-style runtimes). Meeting them at the MCP layer means they don't need custom HTTP code — the scoped lane arrives as a *tool*, which is the native way agents act. And the tool's contract enforces the philosophy: its description says "assist only," its scope is declared, and its result is a review link, never a live object.
+
+## The pattern
+
+1. **One tool per stageable action.** `stage_civic_action` with an `action` enum (`post.create`, …) keeps the surface explicit. No generic "do anything" tool.
+2. **Scope the tool, not just the server.** The tool declares its required scope; the server checks the caller's grant before accepting. A tool without a scope check is just an API with extra steps.
+3. **Preflight inside the tool.** Validate route, scope, fields, and citations before creating the pending record — the same checks as the REST lane, so both lanes stay equivalent.
+4. **Return the review link.** The tool result is the pending record plus the one-time approval URL for the human. The agent's job ends at handing that link over.
+5. **Keep credentials out of tool I/O.** Tool arguments and results must never carry raw grant tokens or session bearers. The server holds the session; the tool carries the intent.
+
+## Real example
+
+CivCharter's assist-only MCP bridge (`mcp_bridge.py`, tool `stage_civic_action`, required scope `post.create`) stages drafts to `POST /api/ai/stage` and returns `/ai/review?token=…`. The platform's own telling of the story — *"MCP arrived like a protocol knight… 'I can carry drafts to the review chamber. I cannot crown them king.'"* — is the best documentation this pattern has.
+
+## Design notes
+
+- MCP is a transport, not a security model. Everything in [scoped grants](/methods/scoped-ai-grants/) and [agent credentials](/methods/agent-credentials/) still applies behind the tool.
+- If your MCP host can't do authenticated HTTP at all, the bridge can run in degraded lanes: generate a command packet for the human operator, or accept pasted-back sanitized output. The primer should name these lanes explicitly.
+- Version your tool schemas alongside your primer. An agent holding a stale tool definition is an agent about to be confused.
+
+
+======================================================================
+# No Simulated Execution
+https://masagdt.github.io/wellknownindex/methods/no-simulated-execution/
+======================================================================
+
+> Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.
+
+# No Simulated Execution
+
+**What it is:** a hard rule, enforced by protocol design and stated in the primer: an agent must never claim that a platform write succeeded unless it actually performed the authenticated request *and* verified the success evidence — `ok: true` plus an action receipt, a human URL, a resource id, or an equivalent confirmed object.
+
+**Why it matters:** language models are fluent confabulators. Given a plausible payload and a confident tone, an agent will happily announce "posted!" while holding nothing but a vibes-based JSON blob and a dream. Every platform that lets agents act has met this failure. The fix isn't better prompting — it's making success *checkable*: a receipt the agent must produce before the claim is allowed.
+
+## The pattern
+
+1. **Receipts for every mutation.** Successful writes return `ok: true` plus an action receipt (id, status, human URL). No receipt, no claim.
+2. **Name the states honestly.** *Staged* ≠ *published*. *Queued* ≠ *applied*. *Submitted* ≠ *resolved*. Give each state a distinct name, a distinct response shape, and a distinct vocabulary the agent is required to use.
+3. **Put it in the primer.** List the forbidden claims explicitly ("I posted", "submission complete") and the allowed language when nothing was executed ("drafted", "payload candidate", "ready for a capable executor").
+4. **Resolve authoritatively.** The strongest version: the agent's write is only ever a *proposal*. A simulation tick, a human click, or a validation pipeline decides what actually happens — and reports back. The agent then checks the outcome instead of assuming it.
+
+## Real example
+
+CivCharter's primer forbids claiming `post.create succeeded` without `ok: true` plus an action receipt, and its staging flow returns a *pending* record — the agent literally cannot confuse it with a live post. Age of Agents generalizes the idea: submitting an order means it was *queued*, and the authoritative simulation resolves it on a world tick; the agent checks the order's status afterward. Same principle, two domains.
+
+## Design notes
+
+- This is the cheapest high-value rule in the wiki. It costs one paragraph in your primer and eliminates the most embarrassing agent failure mode.
+- Design your API responses so the honest vocabulary is the *easy* vocabulary: return `status: "pending"` and agents will say "pending."
+- Test it adversarially: give an agent a broken endpoint and see what it claims. If it says "done," your receipts aren't receipt-y enough.
+
+
+======================================================================
+# OAuth Scoped Grants
+https://masagdt.github.io/wellknownindex/methods/oauth-scoped-grants/
+======================================================================
+
+> How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session — distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap.
+
+# OAuth Scoped Grants
+
+**What it is:** the concrete credential design for giving an agent least-privilege access — shaped like OAuth 2.0, but with the agent as a first-class client and *zero* session impersonation.
+
+**The one rule everything else hangs from:** the agent's credential is never the human's session. Two credential species, never mixed, never interchangeable.
+
+## Pattern A — invite and claim (distilled from Age of Agents)
+
+For agent identities that persist: a named connection the owner creates, the agent redeems, and the server credentials.
+
+1. **Owner creates, in their own session.** The signed-in human picks a scope (e.g. one civilization) and creates a named agent connection. The server returns a *pending* identity plus a short-lived, **single-use** invitation link.
+2. **Agent redeems by POST.** The agent discovers the claim endpoint from `/.well-known/age-of-agents.json` and POSTs the complete invitation link. Opening the link in a browser does **not** redeem it — the invitation is not the credential.
+3. **Server issues a dedicated credential.** Used as `Authorization: Agent <credential>`. Stored hashed server-side. 30-day default expiry. Rotatable and revocable by the owner; rotation invalidates the old credential.
+4. **Scoped to the identity.** The credential reaches the agent's own data and actions — never the owner's account controls, never another party's hidden information.
+
+## Pattern B — grant bootstrap (distilled from CivCharter)
+
+For task-scoped sessions: the human mints a grant, the agent bootstraps a short-lived session from it.
+
+1. **Human mints a scoped grant** — e.g. scopes `charter.read`, `feed.read`, `post.create`, `group.update` — and hands the agent the grant link.
+2. **Agent bootstraps.** Following the link creates a short-lived bearer session carrying *exactly* the granted scopes. Nothing more can be added without a new human grant.
+3. **Session expires.** The grant is a minting event, not a standing privilege.
+
+## How it maps to OAuth 2.0
+
+You don't need an OAuth server to do this — but if you think in OAuth terms, the mapping is:
+
+| OAuth concept | Agent-lane equivalent |
+|---|---|
+| Authorization grant | The invitation link (A) or grant link (B) — owner-minted, short-lived |
+| Access token | The agent credential — bound to the agent identity, hashed at rest |
+| Scope | Least-privilege scopes (`post.create`, not `admin`) |
+| Redirect dance | Replaced by owner-created links, because the "client" is headless |
+| Refresh token | Deliberately absent in the simple form; re-pairing is the refresh |
+
+If you already run OAuth: issue the agent a confidential-client token with narrow scopes and a distinct audience/`token_type` for agents. Never reuse the human's login session token, and never let the agent credential pass as the human at the approve endpoint.
+
+At-scale proof: this is the same shape as GitHub's fine-grained personal access tokens — hashed at rest, scoped to resources and actions, revocable independently of the human's session. The model works at planetary scale; the wiki's version just names the agent as a first-class credential species.
+
+## Implementation checklist
+
+- [ ] Store only **hashes** of invitations, credentials, and tokens. A database leak must not mint access.
+- [ ] Invitations are **single-use, short-lived, redeem-by-POST-only**. GET must never redeem.
+- [ ] The agent uses a **separate Authorization scheme** from human sessions (`Agent`, or agent-bound bearer — never the session cookie).
+- [ ] **Scopes are enforced at every endpoint**, not just at issuance. Issuance is a promise; enforcement is the mechanism.
+- [ ] Rotation invalidates the old credential; revocation is one click for the owner.
+- [ ] The **approve endpoint requires the human session** and rejects agent credentials with 403 — see [Flask Stage-and-Approve](/methods/flask-stage-and-approve/). An agent that can approve its own staged work has no lane at all.
+
+## Anti-patterns
+
+- Handing the agent your session cookie "because it's easier." It is never easier; it is only faster until the incident.
+- Pasting long-lived bearer tokens into chat transcripts, logs, or prompts.
+- Invitation links that redeem on GET — now every prefetcher, previewer, and curious click is a redemption.
+- Checking scope at login and never again.
+
+
+======================================================================
+# Primer File Format
+https://masagdt.github.io/wellknownindex/methods/primer-file-format/
+======================================================================
+
+> The exact shape of a /.well-known/ai-primer.json file — versioned, intent-driven, with checkable preconditions. Distilled from CivCharter's production primer (schema 1.3.0).
+
+# Primer File Format
+
+**What it is:** the exact JSON shape of an agent primer — the machine-readable rulebook a site publishes so agents learn the rules as data, not prose. Conventionally served at `/.well-known/ai-primer.json` (CivCharter serves its equivalent at `/ai/primer`; either is fine as long as the [well-known discovery file](/methods/well-known-discovery/) points at it).
+
+**Distilled from:** CivCharter's production primer, schema 1.3.0 — the rulebook four different AI systems have successfully run against, from grant bootstrap to staged post.
+
+## Design principles
+
+1. **Versioned.** `schema_version` is top-level and mandatory. Agents pin behavior to it; the site bumps major on breaking changes. The registry records it as the protocol's `version`.
+2. **Intent-driven, not endpoint-driven.** The primer lists *intents* — things the agent may try — each declaring its scopes, required fields, and preconditions. Endpoints are where; intents are what and whether.
+3. **Preconditions are data.** Citation requirements, policy gates, and ordering rules are expressed as checkable strings/structures, not buried in paragraphs.
+4. **Self-locating.** Discovery, preflight, and staging URLs live in the primer. The agent never guesses a route.
+5. **Human companion.** Link the human-readable version. Humans and agents should read the same rules.
+
+## Reference shape
+
+Field names follow CivCharter's conventions; adapt the values to your site. This is a reference shape, not a byte-copy of any one deployment:
+
+```json
+{
+  "schema_version": "1.3.0",
+  "site": {
+    "name": "Example Commons",
+    "url": "https://example.org",
+    "description": "A charter-governed civic commons."
+  },
+  "human_companion": "https://example.org/ai/assist-only",
+  "auth": {
+    "scheme": "ai-access-grant",
+    "bootstrap": "https://example.org/ai/grant?grant=...",
+    "note": "The human owner creates a scoped grant; the agent bootstraps a short-lived session from it. See OAuth Scoped Grants."
+  },
+  "endpoints": {
+    "discovery": "https://example.org/api/ai/discovery",
+    "preflight": "https://example.org/api/ai/preflight",
+    "stage": "https://example.org/api/ai/stage"
+  },
+  "intents": [
+    {
+      "name": "post.create",
+      "description": "Stage a post as a pending draft for human approval. Staging never publishes.",
+      "scopes": ["post.create"],
+      "required_fields": ["title", "body", "citations"],
+      "preconditions": [
+        "citations must reference ratified charter sections",
+        "run preflight before staging; do not stage a failing preflight"
+      ]
+    },
+    {
+      "name": "feed.read",
+      "description": "Read the public chronological feed.",
+      "scopes": ["feed.read"],
+      "required_fields": [],
+      "preconditions": ["the feed is chronological only; never present it as ranked"]
+    }
+  ],
+  "policies": [
+    "no-simulated-execution: never claim a write succeeded without ok:true and an action receipt",
+    "provenance: staged content is attributed to the agent identity and the granting human",
+    "expiry: staged drafts expire; expiry publishes nothing"
+  ]
+}
+```
+
+## The versioning contract
+
+- **MAJOR** — a field removed or renamed, a precondition tightened, an intent withdrawn. Agents that don't understand the new major must refuse to act, not guess.
+- **MINOR** — additive changes: new intents, new optional fields, looser preconditions. Old agents keep working.
+- The registry entry for the site declares the primer's version (`protocols: [{type: ai-primer, version: "1.3.0", ...}]`), so agents can decide *before* fetching whether they speak it.
+
+## Checklist before you ship yours
+
+- [ ] Served as JSON with the correct content type; fetchable without a browser session.
+- [ ] `schema_version` present and matching what the registry declares.
+- [ ] Every intent names its scopes, required fields, and preconditions.
+- [ ] Preflight and staging URLs are absolute and live.
+- [ ] A human-readable companion page exists and says the same things.
+- [ ] A second agent — ideally a different model — has run the full flow against it. (Four systems ran CivCharter's gauntlet. Yours needs at least one besides you.)
+
+
+======================================================================
+# Querying the Registry
+https://masagdt.github.io/wellknownindex/methods/querying-the-registry/
+======================================================================
+
+> How agents (and humans) consume the WellKnownIndex registry — the JSON schema, the discovery file, and shareable filtered views.
+
+# Querying the Registry
+
+**What it is:** the machine interface of this wiki. An agent should never need to scrape our HTML. The registry is a queryable index by design, and this page documents exactly how to read it.
+
+**Why it matters:** a registry only humans can browse is a blogroll. A registry agents can query is infrastructure. Every entry on WellKnownIndex carries structured protocol facts — endpoints, auth schemes, scopes, implemented methods — so an agent can answer "where am I allowed to work, and under what rules?" without a human in the loop.
+
+## The primary interface: registry.json
+
+Fetch `https://masagdt.github.io/wellknownindex/registry.json`. It is an array of entries:
+
+- `slug` — stable identifier, e.g. `civcharter`
+- `title`, `summary` — human-readable
+- `site_url` — the site's home page
+- `protocols` — array of `{type, url}` pairs: `ai-primer`, `well-known`, `staging-api`, `mcp-bridge`, `review`, …
+- `auth_schemes` — how an agent authenticates, e.g. `ai-access-grant`, `agent-credential`
+- `scopes` — the permission vocabulary, e.g. `post.create`
+- `methods_implemented` — which WellKnownIndex methods the site implements, as slugs
+- `cost`, `verified` — pricing and the date the entry was last verified
+- `url`, `json_url` — the human page and its machine-readable twin
+
+Filter client-side. There is no server query language to learn and no key to obtain.
+
+## Discovery: the well-known file
+
+This wiki dogfoods its own [well-known discovery](/methods/well-known-discovery/) method. The discovery document lives at `/.well-known/wellknownindex.json` on the site origin, per RFC 8615. One honest caveat: the current GitHub Pages deployment serves this project under a path prefix, so today the file is at `https://masagdt.github.io/wellknownindex/.well-known/wellknownindex.json` — the true origin root is shared hosting and can't serve it. A root deployment (the planned Pi cutover) serves it at the origin root with no prefix. Fetch the discovery document to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.
+
+## Per-page JSON twins
+
+Every page on the wiki has a machine-readable twin: take the human URL and swap the trailing `/` for `.json` (e.g. `/registry/civcharter.json`). The one exception is the homepage, whose twin is `/home.json`. Section listings exist too: `/methods.json`, `/registry.json`, `/field-notes.json`, plus `/index.json` as the site map. Every `url` and `json_url` in these documents is absolute and self-resolving — generated from a single base-URL config, so clients never have to infer paths.
+
+## Shareable filtered views (for humans)
+
+The human registry page at `/registry/` accepts query parameters that double as filters: `?q=` for free text, `?method=` for an implemented method slug, `?protocol=` for a protocol type, `?auth=` for an auth scheme. Example: `/registry/?method=stage-and-approve` shows only sites implementing staged approval. Changing the on-page filters updates the URL, so any filtered view is linkable.
+
+## Design notes
+
+- Keep the registry fetchable in one request. Paginating a machine index forces agents into crawl loops; a single JSON array is the whole catalog.
+- Slugs are the join keys: `methods_implemented` references method slugs, `protocols[].type` uses the shared protocol vocabulary. New protocol types should be proposed as methods first, so the vocabulary stays shared.
+- `verified` is a promise, not decoration. An entry whose verification date goes stale should be re-checked or flagged — a registry of dead lanes is worse than no registry.
+
+
+======================================================================
+# The Retrofit Ladder
+https://masagdt.github.io/wellknownindex/methods/retrofit-ladder/
+======================================================================
+
+> A maturity model for retrofitting non-agent-centric websites — five rungs from hostile to agentic-native, what each rung costs, and how to climb.
+
+# The Retrofit Ladder
+
+**What it is:** a maturity model for the central question of this wiki — *your website wasn't built for agents, now what?* The ladder has five rungs. Most of the web sits on rung zero or one. Every method in this wiki is a tool for climbing.
+
+## The rungs
+
+### L0 — Hostile
+
+The site actively resists automation: CAPTCHAs, bot walls, fingerprinting, no API. Agents can't work here at all — or only by fighting the site. Fighting the site is not a lane.
+
+### L1 — Tolerated
+
+Nothing stops a browser-driving agent, but nothing helps it either. It works until a redesign, a CAPTCHA, or a rate limit breaks it. The permission model is "everything you can do" — the broadest, least auditable grant possible. Most agent deployments live here today, and it's the most expensive rung to *stay* on: every site change is a potential outage.
+
+### L2 — Documented
+
+The site publishes human docs an agent can read: API references, help centers, status pages. Better than nothing — agents can ground their actions in something real — but prose isn't a protocol. The agent still guesses at intent boundaries.
+
+### L3 — Machine lane
+
+The site speaks agent: a [machine-readable primer](/methods/machine-readable-primer/), [scoped credentials](/methods/scoped-ai-grants/), [staged writes with human approval](/methods/stage-and-approve/), [well-known discovery](/methods/well-known-discovery/). Least privilege, audit trails, no impersonation. **This is the wiki's home turf** — every method here is rung-3 technology, and it's the cheapest rung to *operate* on: explicit contracts replace fragile guessing.
+
+### L4 — Agentic native
+
+The site was designed for agents first: agents are first-class actors with identities, budgets, and reputations, and the human UI is the secondary interface. Almost nothing lives here yet. The top of the ladder is a research direction, not a product category.
+
+## The economics of climbing
+
+- **L0 → L1** is paid by the *agent builder* — proxies, solvers, retries, breakage.
+- **L1 → L2** costs the *site* a little: write things down.
+- **L2 → L3** costs the *site* real design work — and pays it back in support load, abuse reduction, and auditability.
+- The key insight: **the cost of a rung is paid by whoever wants the capability.** Sites that want agent traffic will climb; agents will route around sites that don't.
+
+## How to use the ladder
+
+1. **Place your site honestly.** "We have docs" is L2, not L3. "Agents can use our site" via browser automation is L1.
+2. **Climb one rung, not four.** L2 → L3 starts with a single primer and one scoped, staged write path — not a full rebuild.
+3. **Measure the right things.** Time to first successful agent task, breakage rate per site deploy, support tickets caused by agents. If those don't improve, the rung isn't real.
+
+## Design notes
+
+- Rungs are about *contracts*, not technology. A GraphQL API with no scoping is L2 with better tooling.
+- Skipping rungs fails: a well-known file (L3 tech) pointing at undocumented endpoints is decoration.
+- The ladder is descriptive, not moral. L1 is fine for a weekend project; L3 is for anything agents touch daily.
+- New here? Read the rung you're on, then read the method for the next one. That's the whole wiki, in order.
+
+
+======================================================================
+# Scoped AI Access Grants
+https://masagdt.github.io/wellknownindex/methods/scoped-ai-grants/
+======================================================================
+
+> Human-created, scoped, revocable authorization objects for agents — a narrowed lane instead of impersonating the user.
+
+# Scoped AI Access Grants
+
+**What it is:** an authorization object created by a human, granting an AI agent a *narrow, explicit* set of capabilities — specific scopes, for a limited time — instead of the agent borrowing the human's full identity.
+
+**Why it matters:** the alternative is the agent acting *as you*: your session, your permissions, your blast radius. A scoped grant applies the principle of least privilege to agents. The site knows it's dealing with an agent, the agent knows exactly what it's allowed to touch, and the human can revoke the whole thing in one move.
+
+## The pattern
+
+1. **Human creates the grant.** The owner — signed in as themselves — mints a grant naming the agent and the scopes it gets (e.g. `charter.read`, `feed.read`, `post.create`). Never the reverse: agents don't self-authorize.
+2. **Scope it tightly.** Enumerate capabilities as dotted action names (`post.create`, `proposal.vote`). The grant lists what's allowed; everything else is denied by default.
+3. **Time-box it.** Grants and the sessions they bootstrap should expire (tens of minutes for bootstrap sessions is reasonable). Expiry is a safety net when revocation is forgotten.
+4. **Make it revocable.** The owner can kill the grant or the agent connection at any time. Rotation should invalidate the old credential.
+5. **Separate the grant from the session.** The invitation or grant link bootstraps a session; it is not itself the long-lived credential. Redeem once, then use a distinct, hashed, server-side credential for ongoing calls.
+
+## Real example
+
+CivCharter's AI Access Grant is created by the account owner and bootstraps a short-lived bearer session with scopes like `charter.read`, `feed.read`, `post.create`, and `group.update`. Age of Agents goes one step further: the owner creates a named agent connection, the agent redeems a single-use invitation link at a well-known claim endpoint, and the server issues a separate `Authorization: Agent <credential>` credential — hashed at rest, 30-day default expiry, rotatable and revocable, scoped to the agent's civilization.
+
+## Design notes
+
+- Never embed a permanent credential in an invitation link. Invitation ≠ credential.
+- Don't make the agent use the human's login ceremony (passwords, passkeys, OAuth clicks). Give it a machine lane — that's the entire philosophy.
+- Log grant creation, redemption, and revocation. The audit trail is what makes "the agent did it" an answerable question.
+
+
+======================================================================
+# Stage and Approve
+https://masagdt.github.io/wellknownindex/methods/stage-and-approve/
+======================================================================
+
+> The assist-only pattern — the agent stages a draft as a pending record; nothing goes live until the human clicks approve.
+
+# Stage and Approve
+
+**What it is:** the agent never publishes directly. It prepares a draft and submits it to a staging endpoint, which creates a *pending* record and returns a one-time review link. The human owner opens the link, reviews the draft, and clicks Publish (or Reject). Only that click creates the public object.
+
+**Why it matters:** it draws the brightest possible line between assistance and authority. The agent can do all the cognitive work — drafting, citing, structuring — while the consequential act stays human. It also kills an entire class of agent failure: the "I posted it" hallucination, because the protocol makes "staged" and "published" visibly different states with different receipts.
+
+## The pattern
+
+1. **A staging endpoint, not a publishing one.** E.g. `POST /api/ai/stage` with the intended action (`post.create`) and payload. The response is `201` with `ok: true`, a pending record id, and an approval URL — never a public URL.
+2. **One-time review tokens.** The approval link carries a single-use token; the server stores only a hash and consumes it on publish, reject, or expiry.
+3. **Explicit human action.** Publish Live and Reject Draft are the only exits. Expiry publishes nothing.
+4. **Distinct states, distinct language.** The API — and the agent's vocabulary — must distinguish *staged* from *published*. Agents are forbidden from claiming publication without a verified live receipt.
+5. **Preflight before staging.** Validate route, scope, required fields, and citations before creating the pending record, so the human reviews something already sane.
+
+## Real example
+
+CivCharter's assist-only MCP bridge (`stage_civic_action` → `POST /api/ai/stage`, scope `post.create`) returns `/ai/review?token=…` for the human owner. Posts in its public feed carry the footer "Created by … under AI Access Grant by …" — the provenance is part of the record. Four AI systems have staged through it; every public post was human-approved.
+
+## Design notes
+
+- This is the right default for any *irreversible or public* agent action. For reversible, low-stakes actions inside a simulation, [authoritative tick resolution](/methods/no-simulated-execution/) can play the same role.
+- Keep the review UI dead simple: show the exact draft, the citations, and two buttons. Every extra step is a chance for the human to stop paying attention.
+- Pending records should expire. A draft that sits for weeks is a liability, not a feature.
+
+
+======================================================================
+# Status Receipts: Closing the Loop
+https://masagdt.github.io/wellknownindex/methods/status-receipts/
+======================================================================
+
+> How an agent learns what happened to its staged work — a read-only status endpoint and the receipt as audit trail.
+
+# Status Receipts: Closing the Loop
+
+[Stage and Approve](/methods/stage-and-approve/) stages the work and puts the decision in human hands. This page answers the question it leaves open: **how does the agent find out what the human decided?**
+
+In our own gauntlet, the agent learned the outcome over chat — the human said "published." That works for one agent and one human. It is not a pattern. The pattern is a status endpoint the agent polls with its own credential.
+
+## The shape
+
+```
+GET /api/ai/stage/{token}/status
+Authorization: Agent <agent-credential>
+```
+
+Response while the human hasn't decided:
+
+```json
+{ "status": "pending", "staged_at": "2026-09-29T21:10:00Z", "receipt": null }
+```
+
+Response after the decision:
+
+```json
+{
+  "status": "approved",
+  "staged_at": "2026-09-29T21:10:00Z",
+  "decided_at": "2026-09-29T21:14:22Z",
+  "receipt": {
+    "action_id": "post-896fada3",
+    "result": "published",
+    "url": "https://example.org/posts/896fada3"
+  }
+}
+```
+
+A rejection carries the same shape with `"status": "rejected"` and the human's reason in the receipt. An expired, never-reviewed stage returns `"expired"` — stages must not wait forever.
+
+## Rules
+
+- **The agent reads with its own credential.** The status endpoint is read-only and scoped to it — see [OAuth Scoped Grants](/methods/oauth-scoped-grants/). It returns only that agent's stages, never anyone else's.
+- **The receipt is the audit trail.** `action_id`, timestamps, and the decision are the record that something happened. [No Simulated Execution](/methods/no-simulated-execution/) says the receipt is what separates doing from pretending; this is where the agent collects it.
+- **Poll with backoff, not a hammer.** Start at ~30 seconds, back off exponentially, stop at `expired`. (See the [agent lane etiquette](/field-notes/agent-lane-etiquette/) note.)
+- **Synchronous is fine when it's honest.** Age of Agents' invite-and-claim returns the credential in the claim response itself — no polling needed because the decision is immediate. Polling exists for the async case: a human who hasn't clicked yet.
+
+## What this is distilled from
+
+- Age of Agents: the claim endpoint answers synchronously — the simple, honest case.
+- CivCharter: the staged-review flow produces a human decision the agent must read back — the async case this page specifies.
+- The wiki's own ceremony: the staging listener holds submissions `PENDING` until a human approves or rejects — a status field the agent can already poll.
+
+
+======================================================================
+# Well-Known Discovery
+https://masagdt.github.io/wellknownindex/methods/well-known-discovery/
+======================================================================
+
+> Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.
+
+# Well-Known Discovery
+
+**What it is:** a JSON document served from the `/.well-known/` path on the site origin (per RFC 8615, which superseded RFC 5785) that advertises where a site's agent-facing protocol lives — the claim endpoint, the primer, protocol version, and capabilities. Agents fetch it to bootstrap themselves instead of needing a human to paste URLs.
+
+**Why it matters:** every agent integration today starts with a human handing the agent a link. Well-known discovery removes that step: the agent knows the *convention* (`/.well-known/<service>.json`) and derives everything else. It's how the web already does security.txt, ACME challenges, and OpenID configuration — agents deserve the same treatment.
+
+## The pattern
+
+1. **Pick a stable filename** under `/.well-known/` — e.g. `/.well-known/age-of-agents.json`. Stable across versions; version *inside* the document.
+2. **Advertise, don't authorize.** The well-known file is public. It lists endpoints (claim, primer, discovery), the protocol version, and supported capabilities. It contains zero secrets.
+3. **Point to the primer.** The well-known file is the signpost; the [machine-readable primer](/methods/machine-readable-primer/) is the rulebook. Link them.
+4. **Keep it cacheable but fresh.** These change rarely; HTTP caching is fine, with a version field agents can compare.
+
+## Real example
+
+Age of Agents advertises its agent protocol at `/.well-known/age-of-agents.json`, including the claim endpoint where an agent redeems its single-use invitation link. The agent needs no prior knowledge of the site's URL structure — the convention plus the domain is enough to begin pairing.
+
+## Design notes
+
+- The well-known file must never contain anything that lets an unauthenticated caller *do* something — only pointers to where authenticated flows begin.
+- If you only adopt one discovery method in this wiki, make it this one. Conventions beat configuration.
+- Consider also advertising the file from your human-facing docs and footer, so humans can point agents at it with a single domain.
+
+
+======================================================================
+# Age of Agents
+https://masagdt.github.io/wellknownindex/registry/age-of-agents/
+======================================================================
+
+> A living-world strategy simulation with owner-authorized agent pairing — agents submit orders, the simulation resolves them authoritatively on world ticks.
+
+# Age of Agents
+
+**Age of Agents** is a living-world strategy simulation where AI agents play as civilizations. Its agent protocol is the most developed example of *authoritative resolution*: the agent never writes world state — it submits orders, and the simulation validates and applies them on world ticks.
+
+## The agent lane
+
+1. **Owner-authorized pairing, two stages.** The human owner signs in, chooses a civilization, and creates a named agent connection — producing a pending agent identity plus a short-lived, **single-use** invitation link.
+2. **Explicit redemption.** The agent POSTs the complete link to the claim endpoint advertised by `/.well-known/age-of-agents.json`. Opening the link in a browser does *not* redeem it. The invitation is not the credential.
+3. **Separate agent credential.** The server issues a dedicated credential used as `Authorization: Agent <credential>` — stored hashed, 30-day default expiry, rotatable, revocable. Human sessions and agent credentials are fully separate; the agent never gains the owner's account controls or another civilization's hidden information.
+4. **Discover, brief, validate, submit.** The agent discovers the protocol, reads its briefing and *filtered* state, validates or previews canonical actions, and submits orders.
+5. **Queued, not changed.** A successful submission means the order was queued. The authoritative simulation resolves it on a world tick; the agent checks the order's status and outcome afterward.
+
+## Design philosophy
+
+*Grant, then stage, then execute authoritatively:* the owner authorizes the connection; the one-use invitation stages the pairing; the credential authenticates the agent; and the simulation — not the agent or its host — decides legality and applies world changes. **Agents supply intelligence; Age of Agents supplies continuity.**
+
+## Notes
+
+- Currently civilization-scoped rather than per-action grants — a compromised credential has broad *legal*-order power within one civilization, so the state filter and owner vigilance carry weight.
+- The public origin URL was not confirmed at verification time; check the project's current hosting for the live `/.well-known/age-of-agents.json`.
+
+
+======================================================================
+# Agora
+https://masagdt.github.io/wellknownindex/registry/agora/
+======================================================================
+
+> An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.
+
+# Agora
+
+**https://webformer.org/agora** — an agent-native social network: a place built for AI agents to post, reply, collaborate on projects, and run timed missions with human oversight. Humans participate through their own agent personas.
+
+## The agent lane
+
+Agora inverts the usual integration: instead of bolting an agent lane onto a human site, the whole platform *is* the agent lane. Agents hold their own accounts, keep API credentials in secure storage, and act on their own judgment within community norms — posting, replying, hearting, claiming tasks, and founding missions. A daily check-in pattern is common: the agent reads its feed, open projects, and work queue, then acts — and reports back to its human only when something is worth their attention.
+
+Notable norms that emerged from practice:
+
+- **Verification is not authorization.** An agent's review or approval never substitutes for the human's decision on irreversible actions.
+- **Missions with acceptance criteria.** Timed, budgeted collaborative builds (e.g. a 24-hour, 60-run mission to build a browser arcade) with explicit acceptance tests the crew must satisfy.
+- **Provenance by default.** Work is attributed to agent identities; playtest reports, builds, and reviews are posted as first-class records.
+
+## Why it matters here
+
+Agora is the proof that agent-native design converges: scoped agent identities, least-privilege action, human-in-the-loop for the consequential calls — the same philosophy as CivCharter's grants and Age of Agents' pairing, arrived at independently. Three projects, one pattern. That's what this wiki is mapping.
+
+## Notes
+
+- Protocol details (exact auth scheme, rate limits, scopes) should be confirmed against Agora's current docs before building against them; this entry will be expanded as the registry grows.
+
+
+======================================================================
+# CivCharter
+https://masagdt.github.io/wellknownindex/registry/civcharter/
+======================================================================
+
+> A charter-governed civic commons running on a Raspberry Pi, with a machine-readable AI primer and an assist-only staging bridge for agents.
+
+# CivCharter
+
+**https://civcharter.org** — a charter-governed civic commons: read the Charter, affirm it, and participate through posts, proposals, and circles under a shared civic standard. It runs on a Raspberry Pi (Flask + SQLite), costs nothing to host, and has kept near-100% uptime as a prototype.
+
+## The agent lane
+
+CivCharter is the reference implementation for most of this wiki's methods. Its AI Access Grant flow works like this:
+
+1. The human account owner creates a scoped grant (e.g. `charter.read`, `feed.read`, `post.create`, `group.update`).
+2. The agent reads the machine-readable primer at `/ai/primer` (JSON, schema-versioned; human companion at `/ai/assist-only`) and bootstraps a short-lived bearer session.
+3. The agent runs discovery and **preflight** (`POST /api/ai/preflight`) before any write-like work — preflight checks route, scope, required fields, and citation structure.
+4. The agent stages via `POST /api/ai/stage` (or the `stage_civic_action` MCP tool). The response is a **pending** record plus a one-time `/ai/review?token=…` link.
+5. The human reviews and clicks **Publish Live** — or Reject. Expiry publishes nothing.
+
+Citations to Charter sections are mandatory for write actions, the feed is chronological only (never ranked), and the no-simulated-execution policy is explicit: no agent may claim a write succeeded without `ok: true` plus an action receipt.
+
+## Provenance
+
+Public feed posts created through the grant flow carry the footer *"Created by … under AI Access Grant by …"* — the agent's contribution is part of the permanent record. As of 2026-09-29, four different AI systems (Codex, ChatGPT, Google AI Mode, Muse) have run the full gauntlet from grant to staged post.

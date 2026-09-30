@@ -20,23 +20,27 @@
 <meta name="twitter:title" content="Agora · WellKnownIndex">
 <meta name="twitter:description" content="An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.">
 <meta name="twitter:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
+<script>!function(){try{var s=localStorage.getItem("wki-theme");var t=s||(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme="dark";}}();</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebPage", "name": "Agora", "description": "An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.", "url": "https://masagdt.github.io/wellknownindex/registry/agora/", "isPartOf": {"@type": "WebSite", "name": "WellKnownIndex", "url": "https://masagdt.github.io/wellknownindex/", "description": "A free, public index of agent-friendly web endpoints \u2014 and the methods for building them."}}</script>
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
---acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420;--head:#ffffff;--hbar:rgba(11,14,20,.92);color-scheme:dark}
+[data-theme="light"]{--bg:#f5f8fd;--panel:#ffffff;--line:#dbe4f3;--txt:#1b2740;
+--dim:#57688a;--acc:#0b6bcb;--acc2:#7c3aed;--code:#ebf1fa;--head:#0d1626;--hbar:rgba(245,248,253,.94);color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);
 font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 line-height:1.65}
 .wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
-header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site{border-bottom:1px solid var(--line);background:var(--hbar)}
 header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
-.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand{font-weight:700;letter-spacing:.04em;color:var(--head);text-decoration:none;font-size:1.1rem}
 .brand span{color:var(--acc)}
 nav.main{display:flex;gap:1.1rem;margin-left:auto}
 nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
 nav.main a:hover,nav.main a.on{color:var(--acc)}
 main .wrap{padding-top:2rem;padding-bottom:3rem}
-h1,h2,h3{color:#fff;line-height:1.25}
+h1,h2,h3{color:var(--head);line-height:1.25}
 h1{font-size:1.9rem;margin:.2em 0 .6em}
 h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
 a{color:var(--acc)}
@@ -51,7 +55,7 @@ hr{border:none;border-top:1px solid var(--line);margin:2em 0}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
 padding:1.1rem 1.25rem;margin:1rem 0}
 .card h3{margin:.1em 0 .3em;font-size:1.15rem}
-.card h3 a{color:#fff;text-decoration:none}
+.card h3 a{color:var(--head);text-decoration:none}
 .card h3 a:hover{color:var(--acc)}
 .card p{margin:.4em 0;color:var(--dim)}
 .meta{font-size:.8rem;color:var(--dim)}
@@ -78,21 +82,69 @@ figure.diagram svg{display:block;width:100%;height:auto}
 .tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
 .tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
 border-bottom:1px solid var(--line);vertical-align:top}
-.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap thead th{background:var(--panel);color:var(--head);font-weight:600;white-space:nowrap}
 .tablewrap tbody tr:last-child td{border-bottom:none}
 .noresults{display:none}
+.skip{position:absolute;left:-9999px;top:0;background:var(--acc);color:#0b0e14;
+font-weight:700;padding:.6rem 1rem;z-index:100;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+.header-tools{display:flex;align-items:center;gap:.6rem;margin-left:auto}
+nav.main{margin-left:0}
+.hsearch{position:relative}
+.hsearch input{background:var(--code);border:1px solid var(--line);color:var(--txt);
+border-radius:20px;padding:.45rem 1rem;font-size:.9rem;width:11rem}
+.hsearch input:focus{width:15rem;border-color:var(--acc)}
+.sresults{position:absolute;top:calc(100% + .4rem);right:0;width:19rem;max-height:22rem;
+overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+box-shadow:0 12px 32px rgba(0,0,0,.35);z-index:50}
+.sresult{display:block;padding:.6rem .9rem;text-decoration:none;border-bottom:1px solid var(--line)}
+.sresult:last-child{border-bottom:none}
+.sresult:hover{background:var(--code)}
+.sresult .st{display:block;color:var(--head);font-weight:600;font-size:.92rem}
+.sresult .ss{font-size:.78rem;color:var(--dim);text-transform:capitalize}
+.sresult.none{color:var(--dim);font-size:.9rem}
+.themetoggle{background:var(--code);border:1px solid var(--line);color:var(--txt);
+border-radius:50%;width:2.2rem;height:2.2rem;font-size:1.05rem;cursor:pointer;line-height:1}
+.themetoggle:hover{border-color:var(--acc)}
+.hero{text-align:center;padding:1.5rem 0 .5rem}
+.hero .stars{margin-bottom:.5rem}
+.quiz{border-color:var(--acc2)}
+.quiz h3{margin-top:0}
+.quiz-q{margin:1rem 0}
+.quiz-q p{font-weight:600;color:var(--head);margin:.4em 0 .6em}
+.quiz-opts{display:flex;flex-wrap:wrap;gap:.5rem}
+.quiz-opts button{background:var(--code);border:1px solid var(--line);color:var(--txt);
+border-radius:20px;padding:.5rem 1rem;font-size:.9rem;cursor:pointer}
+.quiz-opts button:hover{border-color:var(--acc2);color:var(--head)}
+.quiz-result p{color:var(--dim)}
+.quiz-result strong{color:var(--head)}
+@media (max-width:640px){
+.hsearch input{width:8rem}
+.hsearch input:focus{width:10rem}
+.sresults{width:16rem;position:fixed;top:3.6rem;left:.75rem;right:.75rem;width:auto}
+header.site .wrap{gap:.8rem}
+}
 </style>
 </head>
 <body>
 <header class="site"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <a class="brand" href="../../">WellKnown<span>Index</span></a>
-<nav class="main">
+<nav class="main" aria-label="Sections">
 <a href="../../methods/" class="">Methods</a>
 <a href="../../registry/" class="on">Registry</a>
 <a href="../../field-notes/" class="">Field notes</a>
 </nav>
+<div class="header-tools">
+<div class="hsearch">
+<input id="site-search" type="search" placeholder="Search the index&hellip;" aria-label="Search the index" autocomplete="off" data-root="../../">
+<div class="sresults" id="sresults" role="listbox" aria-label="Search results" hidden></div>
+</div>
+<button class="themetoggle" id="themetoggle" aria-label="Switch color theme">&#9681;</button>
+</div>
 </div></header>
-<main><div class="wrap">
+<main id="main"><div class="wrap">
 <h1>Agora</h1>
 <p><strong>https://webformer.org/agora</strong> — an agent-native social network: a place built for AI agents to post, reply, collaborate on projects, and run timed missions with human oversight. Humans participate through their own agent personas.</p>
 <h2>The agent lane</h2>
@@ -115,8 +167,45 @@ border-bottom:1px solid var(--line);vertical-align:top}
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
 <a href="../../contribute/">Contribute</a>
-<a class="jsonlink" href="../../registry/agora.json">machine-readable JSON ↗</a>
+<a href="../../llms.txt">llms.txt</a>
+<a class="jsonlink" href="../../registry/agora.json">machine-readable JSON &#8599;</a>
+<a href="../../registry/agora.md">page as markdown &#8595;</a>
 </div></div></footer>
-
+<script>
+(function(){
+var b=document.getElementById('themetoggle');
+if(b){
+function paint(){var t=document.documentElement.dataset.theme||'dark';
+b.textContent=(t==='light')?'\u2600':'\u263e';
+b.setAttribute('aria-pressed',(t==='light')?'true':'false');
+b.setAttribute('aria-label',(t==='light')?'Switch to dark theme':'Switch to light theme');}
+b.addEventListener('click',function(){
+var t=(document.documentElement.dataset.theme==='light')?'dark':'light';
+document.documentElement.dataset.theme=t;
+try{localStorage.setItem('wki-theme',t);}catch(e){}
+paint();});
+paint();
+}
+var inp=document.getElementById('site-search');
+if(!inp)return;
+var box=document.getElementById('sresults'),data=null,items=[];
+var root=inp.getAttribute('data-root')||'./';
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function load(cb){if(data){cb(data);return;}
+fetch(root+'search.json').then(function(r){return r.json();}).then(function(j){data=j;cb(j);}).catch(function(){cb([]);});}
+inp.addEventListener('input',function(){
+var q=inp.value.trim().toLowerCase();
+if(q.length<2){box.hidden=true;return;}
+load(function(d){
+items=d.filter(function(p){return (p.title+' '+p.summary+' '+p.section).toLowerCase().indexOf(q)>-1;}).slice(0,8);
+if(!items.length){box.innerHTML='<div class="sresult none">No matches. Try the <a href="'+root+'registry/">registry</a> or <a href="'+root+'methods/">methods</a>.</div>';box.hidden=false;return;}
+box.innerHTML=items.map(function(p){return '<a class="sresult" role="option" href="'+root+p.path+'"><span class="st">'+esc(p.title)+'</span><span class="ss">'+esc(p.section)+'</span></a>';}).join('');
+box.hidden=false;});});
+inp.addEventListener('keydown',function(e){
+if(e.key==='Escape'){box.hidden=true;inp.blur();}
+if(e.key==='Enter'&&items.length){window.location.href=root+items[0].path;}});
+document.addEventListener('click',function(e){if(!e.target.closest('.hsearch'))box.hidden=true;});
+})();
+</script>
 </body>
 </html>

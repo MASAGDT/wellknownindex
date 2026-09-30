@@ -493,24 +493,115 @@ DIAGRAMS = {
 }
 
 
+# "Which method do you need?" — a 3-question weighted quiz shown on the
+# Methods index page. Weights point at method slugs; titles resolve at build.
+QUIZ_QUESTIONS = [
+    {"q": "What do you want agents to do with your site?",
+     "opts": [
+         {"t": "Read my content accurately",
+          "w": {"machine-readable-primer": 2, "primer-file-format": 1,
+                "well-known-discovery": 1}},
+         {"t": "Take actions — post, book, change things",
+          "w": {"stage-and-approve": 2, "flask-stage-and-approve": 1,
+                "status-receipts": 1}},
+         {"t": "Prove identity and get permission first",
+          "w": {"oauth-scoped-grants": 2, "scoped-ai-grants": 1,
+                "agent-credentials": 1}},
+         {"t": "Not sure yet — where do I even start?",
+          "w": {"retrofit-ladder": 3, "matrix": 1}},
+     ]},
+    {"q": "Who gives the final okay when an agent acts?",
+     "opts": [
+         {"t": "A human reviews each action",
+          "w": {"stage-and-approve": 2, "ceremony-blueprint": 1}},
+         {"t": "Pre-approved scopes decide",
+          "w": {"oauth-scoped-grants": 2, "scoped-ai-grants": 1}},
+         {"t": "It is read-only — no approval needed",
+          "w": {"machine-readable-primer": 2, "well-known-discovery": 1}},
+         {"t": "The agent reports back when it is done",
+          "w": {"status-receipts": 2, "stage-and-approve": 1}},
+     ]},
+    {"q": "What kind of site is it?",
+     "opts": [
+         {"t": "A content or docs site",
+          "w": {"machine-readable-primer": 2, "primer-file-format": 1}},
+         {"t": "An app with user accounts",
+          "w": {"stage-and-approve": 2, "oauth-scoped-grants": 1}},
+         {"t": "I run tools over MCP, or want assist-only",
+          "w": {"mcp-bridge": 3}},
+         {"t": "I want my site listed in a registry",
+          "w": {"ceremony-blueprint": 2, "querying-the-registry": 1}},
+     ]},
+]
+
+
+def quiz_block(pages):
+    """HTML + JS for the method-picker quiz (Methods index only)."""
+    titles = {p["slug"].split("/")[-1]: p["title"] for p in pages
+              if p["section"] == "methods"}
+    questions = jdumps(QUIZ_QUESTIONS).replace("</", "<\\/")
+    title_map = jdumps(titles).replace("</", "<\\/")
+    html_part = (
+        "<div class='card quiz' id='wki-quiz'>\n"
+        "<h3>Which method do you need?</h3>\n"
+        "<p class='meta'>Three questions, sixty seconds — "
+        "we will point you at the right pattern.</p>\n"
+        "<div id='quiz-body'></div>\n</div>\n"
+    )
+    js_part = (
+        "<script>\n(function(){\n"
+        "var root=document.getElementById('wki-quiz');if(!root)return;\n"
+        "var body=document.getElementById('quiz-body');\n"
+        f"var QUESTIONS={questions};\n"
+        f"var TITLES={title_map};\n"
+        "var scores={},qi=0;\n"
+        "function esc(s){return String(s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c];});}\n"
+        "function renderQ(){\n"
+        "var q=QUESTIONS[qi];\n"
+        "var h='<div class=\"quiz-q\"><p>'+(qi+1)+'. '+esc(q.q)+'</p><div class=\"quiz-opts\">';\n"
+        "q.opts.forEach(function(o,i){h+='<button type=\"button\" data-i=\"'+i+'\">'+esc(o.t)+'</button>';});\n"
+        "body.innerHTML=h+'</div></div>';\n"
+        "Array.prototype.forEach.call(body.querySelectorAll('button'),function(b){\n"
+        "b.addEventListener('click',function(){\n"
+        "var w=q.opts[+b.getAttribute('data-i')].w;\n"
+        "for(var k in w){scores[k]=(scores[k]||0)+w[k];}\n"
+        "qi++;\n"
+        "if(qi<QUESTIONS.length){renderQ();}else{renderR();}\n"
+        "});});}\n"
+        "function renderR(){\n"
+        "var ranked=Object.keys(scores).sort(function(a,b){return scores[b]-scores[a];}).slice(0,2);\n"
+        "var h='<div class=\"quiz-result\"><p><strong>Start here:</strong></p><ul>';\n"
+        "ranked.forEach(function(s){h+='<li><a href=\"./'+s+'/\">'+esc(TITLES[s]||s)+'</a></li>';});\n"
+        "h+='</ul><p>Or climb the <a href=\"./retrofit-ladder/\">Retrofit Ladder</a> from the bottom, '\n"
+        "+'or browse the <a href=\"./matrix/\">Methods Matrix</a> for the full map.</p>';\n"
+        "h+='<div class=\"quiz-opts\"><button type=\"button\" id=\"quiz-again\">Start over</button></div>';\n"
+        "body.innerHTML=h+'</div>';\n"
+        "document.getElementById('quiz-again').addEventListener('click',function(){scores={};qi=0;renderQ();});}\n"
+        "renderQ();\n})();\n</script>"
+    )
+    return html_part, js_part
+
+
 # ---------------------------------------------------------------- template
 CSS = """
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
---acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420;--head:#ffffff;--hbar:rgba(11,14,20,.92);color-scheme:dark}
+[data-theme="light"]{--bg:#f5f8fd;--panel:#ffffff;--line:#dbe4f3;--txt:#1b2740;
+--dim:#57688a;--acc:#0b6bcb;--acc2:#7c3aed;--code:#ebf1fa;--head:#0d1626;--hbar:rgba(245,248,253,.94);color-scheme:light}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--txt);
 font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
 line-height:1.65}
 .wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
-header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site{border-bottom:1px solid var(--line);background:var(--hbar)}
 header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
-.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand{font-weight:700;letter-spacing:.04em;color:var(--head);text-decoration:none;font-size:1.1rem}
 .brand span{color:var(--acc)}
 nav.main{display:flex;gap:1.1rem;margin-left:auto}
 nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
 nav.main a:hover,nav.main a.on{color:var(--acc)}
 main .wrap{padding-top:2rem;padding-bottom:3rem}
-h1,h2,h3{color:#fff;line-height:1.25}
+h1,h2,h3{color:var(--head);line-height:1.25}
 h1{font-size:1.9rem;margin:.2em 0 .6em}
 h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
 a{color:var(--acc)}
@@ -525,7 +616,7 @@ hr{border:none;border-top:1px solid var(--line);margin:2em 0}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
 padding:1.1rem 1.25rem;margin:1rem 0}
 .card h3{margin:.1em 0 .3em;font-size:1.15rem}
-.card h3 a{color:#fff;text-decoration:none}
+.card h3 a{color:var(--head);text-decoration:none}
 .card h3 a:hover{color:var(--acc)}
 .card p{margin:.4em 0;color:var(--dim)}
 .meta{font-size:.8rem;color:var(--dim)}
@@ -552,10 +643,92 @@ figure.diagram svg{display:block;width:100%;height:auto}
 .tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
 .tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
 border-bottom:1px solid var(--line);vertical-align:top}
-.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap thead th{background:var(--panel);color:var(--head);font-weight:600;white-space:nowrap}
 .tablewrap tbody tr:last-child td{border-bottom:none}
 .noresults{display:none}
+.skip{position:absolute;left:-9999px;top:0;background:var(--acc);color:#0b0e14;
+font-weight:700;padding:.6rem 1rem;z-index:100;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px;border-radius:4px}
+.header-tools{display:flex;align-items:center;gap:.6rem;margin-left:auto}
+nav.main{margin-left:0}
+.hsearch{position:relative}
+.hsearch input{background:var(--code);border:1px solid var(--line);color:var(--txt);
+border-radius:20px;padding:.45rem 1rem;font-size:.9rem;width:11rem}
+.hsearch input:focus{width:15rem;border-color:var(--acc)}
+.sresults{position:absolute;top:calc(100% + .4rem);right:0;width:19rem;max-height:22rem;
+overflow-y:auto;background:var(--panel);border:1px solid var(--line);border-radius:10px;
+box-shadow:0 12px 32px rgba(0,0,0,.35);z-index:50}
+.sresult{display:block;padding:.6rem .9rem;text-decoration:none;border-bottom:1px solid var(--line)}
+.sresult:last-child{border-bottom:none}
+.sresult:hover{background:var(--code)}
+.sresult .st{display:block;color:var(--head);font-weight:600;font-size:.92rem}
+.sresult .ss{font-size:.78rem;color:var(--dim);text-transform:capitalize}
+.sresult.none{color:var(--dim);font-size:.9rem}
+.themetoggle{background:var(--code);border:1px solid var(--line);color:var(--txt);
+border-radius:50%;width:2.2rem;height:2.2rem;font-size:1.05rem;cursor:pointer;line-height:1}
+.themetoggle:hover{border-color:var(--acc)}
+.hero{text-align:center;padding:1.5rem 0 .5rem}
+.hero .stars{margin-bottom:.5rem}
+.quiz{border-color:var(--acc2)}
+.quiz h3{margin-top:0}
+.quiz-q{margin:1rem 0}
+.quiz-q p{font-weight:600;color:var(--head);margin:.4em 0 .6em}
+.quiz-opts{display:flex;flex-wrap:wrap;gap:.5rem}
+.quiz-opts button{background:var(--code);border:1px solid var(--line);color:var(--txt);
+border-radius:20px;padding:.5rem 1rem;font-size:.9rem;cursor:pointer}
+.quiz-opts button:hover{border-color:var(--acc2);color:var(--head)}
+.quiz-result p{color:var(--dim)}
+.quiz-result strong{color:var(--head)}
+@media (max-width:640px){
+.hsearch input{width:8rem}
+.hsearch input:focus{width:10rem}
+.sresults{width:16rem;position:fixed;top:3.6rem;left:.75rem;right:.75rem;width:auto}
+header.site .wrap{gap:.8rem}
+}
 """
+
+# Theme init runs before first paint so a saved light theme never flashes dark.
+THEME_INIT = """<script>!function(){try{var s=localStorage.getItem("wki-theme");var t=s||(window.matchMedia("(prefers-color-scheme: light)").matches?"light":"dark");document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme="dark";}}();</script>"""
+
+# Site-wide behavior: theme toggle + client-side search over search.json.
+# Dependency-free, works on any static host.
+GLOBAL_JS = """<script>
+(function(){
+var b=document.getElementById('themetoggle');
+if(b){
+function paint(){var t=document.documentElement.dataset.theme||'dark';
+b.textContent=(t==='light')?'\\u2600':'\\u263e';
+b.setAttribute('aria-pressed',(t==='light')?'true':'false');
+b.setAttribute('aria-label',(t==='light')?'Switch to dark theme':'Switch to light theme');}
+b.addEventListener('click',function(){
+var t=(document.documentElement.dataset.theme==='light')?'dark':'light';
+document.documentElement.dataset.theme=t;
+try{localStorage.setItem('wki-theme',t);}catch(e){}
+paint();});
+paint();
+}
+var inp=document.getElementById('site-search');
+if(!inp)return;
+var box=document.getElementById('sresults'),data=null,items=[];
+var root=inp.getAttribute('data-root')||'./';
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function load(cb){if(data){cb(data);return;}
+fetch(root+'search.json').then(function(r){return r.json();}).then(function(j){data=j;cb(j);}).catch(function(){cb([]);});}
+inp.addEventListener('input',function(){
+var q=inp.value.trim().toLowerCase();
+if(q.length<2){box.hidden=true;return;}
+load(function(d){
+items=d.filter(function(p){return (p.title+' '+p.summary+' '+p.section).toLowerCase().indexOf(q)>-1;}).slice(0,8);
+if(!items.length){box.innerHTML='<div class="sresult none">No matches. Try the <a href="'+root+'registry/">registry</a> or <a href="'+root+'methods/">methods</a>.</div>';box.hidden=false;return;}
+box.innerHTML=items.map(function(p){return '<a class="sresult" role="option" href="'+root+p.path+'"><span class="st">'+esc(p.title)+'</span><span class="ss">'+esc(p.section)+'</span></a>';}).join('');
+box.hidden=false;});});
+inp.addEventListener('keydown',function(e){
+if(e.key==='Escape'){box.hidden=true;inp.blur();}
+if(e.key==='Enter'&&items.length){window.location.href=root+items[0].path;}});
+document.addEventListener('click',function(e){if(!e.target.closest('.hsearch'))box.hidden=true;});
+})();
+</script>"""
 
 TEMPLATE = """<!DOCTYPE html>
 <html lang="en">
@@ -579,39 +752,66 @@ TEMPLATE = """<!DOCTYPE html>
 <meta name="twitter:title" content="{title} · WellKnownIndex">
 <meta name="twitter:description" content="{description}">
 <meta name="twitter:image" content="{og_image}">
+{theme_init}
+<script type="application/ld+json">{jsonld}</script>
 <style>{css}</style>
 </head>
 <body>
 <header class="site"><div class="wrap">
+<a class="skip" href="#main">Skip to content</a>
 <a class="brand" href="{root}">WellKnown<span>Index</span></a>
-<nav class="main">
+<nav class="main" aria-label="Sections">
 <a href="{root}methods/" class="{m_on}">Methods</a>
 <a href="{root}registry/" class="{r_on}">Registry</a>
 <a href="{root}field-notes/" class="{f_on}">Field notes</a>
 </nav>
+<div class="header-tools">
+<div class="hsearch">
+<input id="site-search" type="search" placeholder="Search the index&hellip;" aria-label="Search the index" autocomplete="off" data-root="{root}">
+<div class="sresults" id="sresults" role="listbox" aria-label="Search results" hidden></div>
+</div>
+<button class="themetoggle" id="themetoggle" aria-label="Switch color theme">&#9681;</button>
+</div>
 </div></header>
-<main><div class="wrap">
+<main id="main"><div class="wrap">
 {body}
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
 <a href="{root}contribute/">Contribute</a>
-<a class="jsonlink" href="{json_url}">machine-readable JSON ↗</a>
+<a href="{root}llms.txt">llms.txt</a>
+<a class="jsonlink" href="{json_url}">machine-readable JSON &#8599;</a>
+<a href="{md_url}">page as markdown &#8595;</a>
 </div></div></footer>
-{extra_js}
+{extra_js}{global_js}
 </body>
 </html>
 """
 
 
 def page_html(title, body_html, section, root, json_url, extra_js="",
-              page_url="", description=""):
+              page_url="", description="", md_url=""):
     on = {s: ("on" if s == section else "") for s in ("methods", "registry", "field-notes")}
+    desc = description or SITE_TAGLINE
+    jsonld = jdumps({
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": title,
+        "description": desc,
+        "url": page_url or SITE_URL + "/",
+        "isPartOf": {
+            "@type": "WebSite",
+            "name": SITE_TITLE,
+            "url": SITE_URL + "/",
+            "description": SITE_TAGLINE,
+        },
+    }).replace("</", "<\\/")
     return TEMPLATE.format(
         title=html.escape(title), css=CSS, body=body_html, root=root,
-        json_url=json_url, extra_js=extra_js,
+        json_url=json_url, md_url=md_url, extra_js=extra_js,
+        global_js=GLOBAL_JS, theme_init=THEME_INIT, jsonld=jsonld,
         page_url=page_url or SITE_URL + "/",
-        description=html.escape(description or SITE_TAGLINE, quote=True),
+        description=html.escape(desc, quote=True),
         og_image=SITE_URL + "/og-image.jpg",
         m_on=on["methods"], r_on=on["registry"], f_on=on["field-notes"],
     )
@@ -693,9 +893,10 @@ def main():
         out_dir = DOCS if str(rel) == "index" else DOCS / rel
         out_dir.mkdir(parents=True, exist_ok=True)
         json_url = root + (str(rel) + ".json" if str(rel) != "index" else "home.json")
+        md_url = root + (str(rel) + ".md" if str(rel) != "index" else "home.md")
         page_url = SITE_URL + ("/" if str(rel) == "index" else f"/{rel}/")
         html_page = page_html(title, body_html, section, root, json_url,
-                              page_url=page_url, description=summary)
+                              page_url=page_url, description=summary, md_url=md_url)
         (out_dir / "index.html").write_text(html_page, encoding="utf-8")
 
         # JSON twin — absolute, self-resolving URLs from the single base
@@ -714,7 +915,7 @@ def main():
         twin_path.write_text(jdumps(twin, indent=2), encoding="utf-8")
 
         pages.append({"slug": str(rel), "section": section, "title": title,
-                      "summary": summary, "meta": meta})
+                      "summary": summary, "meta": meta, "body": body})
 
     # section index pages (methods, registry, field-notes)
     for sec, sec_title in SECTIONS.items():
@@ -816,11 +1017,18 @@ function apply(){
                         "and credential/grant flows we haven't catalogued yet.</p>\n")
         body_html = (f"<div class='stars'>✦ ✦ ✦</div>\n<h1>{sec_title}</h1>\n"
                      f"{add_line}{filter_box}\n" + "\n".join(cards))
+        if sec == "methods":
+            quiz_html, quiz_js = quiz_block(pages)
+            body_html = body_html.replace(
+                f"<h1>{sec_title}</h1>\n",
+                f"<h1>{sec_title}</h1>\n{quiz_html}", 1)
+            extra_js = quiz_js + extra_js
         sec_dir = DOCS / sec
         sec_dir.mkdir(parents=True, exist_ok=True)
         (sec_dir / "index.html").write_text(
             page_html(sec_title, body_html, sec, "../", f"../{sec}.json", extra_js,
-                      page_url=f"{SITE_URL}/{sec}/", description=SITE_TAGLINE),
+                      page_url=f"{SITE_URL}/{sec}/", description=SITE_TAGLINE,
+                      md_url=f"../{sec}.md"),
             encoding="utf-8",
         )
         # section JSON listing — absolute URLs (WKI-02)
@@ -893,7 +1101,16 @@ function apply(){
             "contribute": f"{SITE_URL}/contribute/",
             "contribute_json": f"{SITE_URL}/contribute.json",
             "entry_schema": f"{SITE_URL}/schema/registry-entry.json",
+            "llms_txt": f"{SITE_URL}/llms.txt",
+            "llms_full_txt": f"{SITE_URL}/llms-full.txt",
+            "search_index": f"{SITE_URL}/search.json",
         },
+        "machine_surfaces": (
+            "Every page is triple-rendered: human HTML, a .json twin, and a "
+            ".md markdown twin. llms.txt summarizes the site for language "
+            "models; llms-full.txt carries the complete text; search.json "
+            "powers client-side search."
+        ),
         "registry_page_filters": {
             "q": "free-text search",
             "method": "implemented method slug, e.g. stage-and-approve",
@@ -927,7 +1144,8 @@ function apply(){
     )
     (DOCS / "404.html").write_text(
         page_html("Not found", notfound_body, "home", "./", "./home.json",
-                  page_url=SITE_URL + "/", description=SITE_TAGLINE),
+                  page_url=SITE_URL + "/", description=SITE_TAGLINE,
+                  md_url="./home.md"),
         encoding="utf-8",
     )
 
@@ -946,6 +1164,79 @@ function apply(){
         + "</urlset>\n"
     )
     (DOCS / "sitemap.xml").write_text(sitemap_xml, encoding="utf-8")
+
+    # search.json — client-side search index (title, summary, section, path)
+    search_index = [
+        {"title": p["title"], "summary": p["summary"], "section": p["section"],
+         "path": "" if p["slug"] == "index" else p["slug"] + "/"}
+        for p in pages
+    ]
+    (DOCS / "search.json").write_text(jdumps(search_index, indent=2), encoding="utf-8")
+
+    # per-page markdown twins — clean source text for agents and readers.
+    # Mirrors the .json twin naming: home.md for the homepage.
+    def _md_page(p):
+        url = SITE_URL + ("/" if p["slug"] == "index" else f"/{p['slug']}/")
+        jsu = SITE_URL + ("/home.json" if p["slug"] == "index" else f"/{p['slug']}.json")
+        head = f"# {p['title']}\n"
+        if p["summary"]:
+            head += f"\n> {p['summary']}\n"
+        head += f"\nHTML: {url}\nJSON: {jsu}\n\n---\n\n"
+        return head + p["body"].rstrip() + "\n"
+
+    for p in pages:
+        md_path = DOCS / ("home.md" if p["slug"] == "index" else p["slug"] + ".md")
+        md_path.parent.mkdir(parents=True, exist_ok=True)
+        md_path.write_text(_md_page(p), encoding="utf-8")
+
+    # section markdown listings (methods.md, registry.md, field-notes.md)
+    for sec, sec_title in SECTIONS.items():
+        items = [p for p in pages if p["section"] == sec]
+        lines = [f"# {sec_title}\n", f"\n{SITE_URL}/{sec}/\n"]
+        for p in sorted(items, key=lambda x: x["title"]):
+            slug = p["slug"].split("/")[-1]
+            lines.append(
+                f"\n## {p['title']}\n\n{p['summary']}\n\n"
+                f"- HTML: {SITE_URL}/{sec}/{slug}/\n"
+                f"- JSON: {SITE_URL}/{sec}/{slug}.json\n"
+                f"- Markdown: {SITE_URL}/{sec}/{slug}.md\n")
+        (DOCS / f"{sec}.md").write_text("".join(lines), encoding="utf-8")
+
+    # llms.txt — the agent-facing summary of the whole site
+    llms_lines = [
+        f"# {SITE_TITLE}\n",
+        f"\n> {SITE_TAGLINE}\n",
+        "\nEvery page on this site is triple-rendered: human HTML, a `.json` "
+        "twin, and a `.md` markdown twin. Fetch `/llms-full.txt` for the "
+        "complete text of every page, or `/index.json` for the "
+        "machine-readable site map.\n",
+    ]
+    for sec, sec_title in SECTIONS.items():
+        llms_lines.append(f"\n## {sec_title}\n")
+        sec_items = sorted([p for p in pages if p["section"] == sec],
+                           key=lambda x: x["title"])
+        for p in sec_items:
+            url = SITE_URL + ("/" if p["slug"] == "index" else f"/{p['slug']}/")
+            llms_lines.append(f"- [{p['title']}]({url}): {p['summary']}\n")
+    llms_lines.append(
+        "\n## Contribute\n\n"
+        f"- [Contribute]({SITE_URL}/contribute/): propose a registry entry, "
+        "a method, or a field note.\n")
+    (DOCS / "llms.txt").write_text("".join(llms_lines), encoding="utf-8")
+
+    # llms-full.txt — the entire site as markdown, for agents that want it all
+    full_lines = [
+        f"# {SITE_TITLE} — complete text\n",
+        f"\n> {SITE_TAGLINE}\n",
+        f"\nSource: {SITE_URL}/ — generated {date.today().isoformat()}.\n",
+    ]
+    for p in sorted(pages, key=lambda x: x["slug"]):
+        url = SITE_URL + ("/" if p["slug"] == "index" else f"/{p['slug']}/")
+        full_lines.append(f"\n\n{'=' * 70}\n# {p['title']}\n{url}\n{'=' * 70}\n\n")
+        if p["summary"]:
+            full_lines.append(f"> {p['summary']}\n\n")
+        full_lines.append(p["body"].rstrip() + "\n")
+    (DOCS / "llms-full.txt").write_text("".join(full_lines), encoding="utf-8")
 
     print(f"built {len(pages)} pages -> {DOCS}")
 
