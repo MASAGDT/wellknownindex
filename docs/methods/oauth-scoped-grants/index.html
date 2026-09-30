@@ -4,6 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OAuth Scoped Grants · WellKnownIndex</title>
+<meta name="description" content="How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session — distilled from Age of Agents&#x27; pairing flow and CivCharter&#x27;s grant bootstrap.">
+<meta name="theme-color" content="#0b0e14">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="manifest" href="../../site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WellKnownIndex">
+<meta property="og:title" content="OAuth Scoped Grants · WellKnownIndex">
+<meta property="og:description" content="How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session — distilled from Age of Agents&#x27; pairing flow and CivCharter&#x27;s grant bootstrap.">
+<meta property="og:url" content="https://masagdt.github.io/wellknownindex/methods/oauth-scoped-grants/">
+<meta property="og:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OAuth Scoped Grants · WellKnownIndex">
+<meta name="twitter:description" content="How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session — distilled from Age of Agents&#x27; pairing flow and CivCharter&#x27;s grant bootstrap.">
+<meta name="twitter:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
 --acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
@@ -92,6 +108,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <p>You don&#x27;t need an OAuth server to do this — but if you think in OAuth terms, the mapping is:</p>
 <p>| OAuth concept | Agent-lane equivalent | |---|---| | Authorization grant | The invitation link (A) or grant link (B) — owner-minted, short-lived | | Access token | The agent credential — bound to the agent identity, hashed at rest | | Scope | Least-privilege scopes (<code>post.create</code>, not <code>admin</code>) | | Redirect dance | Replaced by owner-created links, because the &quot;client&quot; is headless | | Refresh token | Deliberately absent in the simple form; re-pairing is the refresh |</p>
 <p>If you already run OAuth: issue the agent a confidential-client token with narrow scopes and a distinct audience/<code>token_type</code> for agents. Never reuse the human&#x27;s login session token, and never let the agent credential pass as the human at the approve endpoint.</p>
+<p>At-scale proof: this is the same shape as GitHub&#x27;s fine-grained personal access tokens — hashed at rest, scoped to resources and actions, revocable independently of the human&#x27;s session. The model works at planetary scale; the wiki&#x27;s version just names the agent as a first-class credential species.</p>
 <h2>Implementation checklist</h2>
 <ul>
 <li>[ ] Store only <strong>hashes</strong> of invitations, credentials, and tokens. A database leak must not mint access.</li>

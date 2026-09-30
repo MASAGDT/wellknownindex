@@ -1,0 +1,1 @@
+{"background_color":"#0b0e14","description":"A free, public index of agent-friendly web endpoints — and the methods for building them.","display":"standalone","icons":[{"sizes":"180x180","src":"apple-touch-icon.png","type":"image/png"},{"sizes":"any","src":"favicon.svg","type":"image/svg+xml"}],"name":"WellKnownIndex","short_name":"WKI","start_url":"./","theme_color":"#0b0e14"}

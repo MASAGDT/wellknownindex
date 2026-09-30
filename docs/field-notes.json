@@ -19,5 +19,12 @@
     "summary": "A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.",
     "url": "./capability-gate/",
     "json_url": "./capability-gate.json"
+  },
+  {
+    "slug": "field-notes/agent-lane-etiquette",
+    "title": "Run a Polite Agent Lane",
+    "summary": "Cache the primer, rate-limit per credential, identify your agents, back off on 429 \u2014 operating notes from running agent lanes on real hardware.",
+    "url": "./agent-lane-etiquette/",
+    "json_url": "./agent-lane-etiquette.json"
   }
 ]

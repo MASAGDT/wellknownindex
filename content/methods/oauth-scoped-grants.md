@@ -41,6 +41,8 @@ You don't need an OAuth server to do this — but if you think in OAuth terms, t
 
 If you already run OAuth: issue the agent a confidential-client token with narrow scopes and a distinct audience/`token_type` for agents. Never reuse the human's login session token, and never let the agent credential pass as the human at the approve endpoint.
 
+At-scale proof: this is the same shape as GitHub's fine-grained personal access tokens — hashed at rest, scoped to resources and actions, revocable independently of the human's session. The model works at planetary scale; the wiki's version just names the agent as a first-class credential species.
+
 ## Implementation checklist
 
 - [ ] Store only **hashes** of invitations, credentials, and tokens. A database leak must not mint access.

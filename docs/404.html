@@ -3,22 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Field note: Queued is not changed · WellKnownIndex</title>
-<meta name="description" content="A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.">
+<title>Not found · WellKnownIndex</title>
+<meta name="description" content="A free, public index of agent-friendly web endpoints — and the methods for building them.">
 <meta name="theme-color" content="#0b0e14">
-<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
-<link rel="icon" href="../../favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
-<link rel="manifest" href="../../site.webmanifest">
+<link rel="icon" href="./favicon.svg" type="image/svg+xml">
+<link rel="icon" href="./favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="manifest" href="./site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="WellKnownIndex">
-<meta property="og:title" content="Field note: Queued is not changed · WellKnownIndex">
-<meta property="og:description" content="A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.">
-<meta property="og:url" content="https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed/">
+<meta property="og:title" content="Not found · WellKnownIndex">
+<meta property="og:description" content="A free, public index of agent-friendly web endpoints — and the methods for building them.">
+<meta property="og:url" content="https://masagdt.github.io/wellknownindex/">
 <meta property="og:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Field note: Queued is not changed · WellKnownIndex">
-<meta name="twitter:description" content="A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.">
+<meta name="twitter:title" content="Not found · WellKnownIndex">
+<meta name="twitter:description" content="A free, public index of agent-friendly web endpoints — and the methods for building them.">
 <meta name="twitter:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
@@ -78,27 +78,23 @@ figure.diagram svg{display:block;width:100%;height:auto}
 </head>
 <body>
 <header class="site"><div class="wrap">
-<a class="brand" href="../../">WellKnown<span>Index</span></a>
+<a class="brand" href="./">WellKnown<span>Index</span></a>
 <nav class="main">
-<a href="../../methods/" class="">Methods</a>
-<a href="../../registry/" class="">Registry</a>
-<a href="../../field-notes/" class="on">Field notes</a>
+<a href="./methods/" class="">Methods</a>
+<a href="./registry/" class="">Registry</a>
+<a href="./field-notes/" class="">Field notes</a>
 </nav>
 </div></header>
 <main><div class="wrap">
-<h1>Field note: Queued is not changed</h1>
-<p><strong>Observed:</strong> across two independent systems, same lesson.</p>
-<ul>
-<li><strong>CivCharter:</strong> <code>POST /api/ai/stage</code> returns HTTP 201 with <code>ok: true</code> — and <code>published_live: false</code>. The draft is <em>pending</em>. It becomes a post only when a human clicks Publish Live. An agent that reports &quot;posted!&quot; at the 201 is wrong in exactly the way the protocol was designed to prevent.</li>
-<li><strong>Age of Agents:</strong> submitting an order returns success meaning the order was <em>queued</em>. The authoritative simulation resolves it on a world tick. The agent must check the order&#x27;s status afterward to learn the outcome.</li>
-</ul>
-<p><strong>The rule:</strong> treat every write as a two-phase event — <em>request</em> and <em>resolution</em> — and never claim the second from the first. The vocabulary matters: say &quot;staged,&quot; &quot;queued,&quot; &quot;submitted,&quot; or &quot;pending.&quot; Save &quot;published,&quot; &quot;applied,&quot; and &quot;done&quot; for when a receipt, a status check, or a human action confirms them.</p>
-<p><strong>Lesson for agent-lane designers:</strong> make the honest vocabulary the <em>easy</em> vocabulary. Return <code>status: &quot;pending&quot;</code> and agents will say &quot;pending.&quot; Return a bare 200 with no receipt and even a careful agent has to guess what happened. And state the rule in your primer&#x27;s forbidden-claims list — &quot;submission complete&quot; with nothing but a request to show for it is the canonical failure.</p>
+<div class='stars'>✦ ✦ ✦</div>
+<h1>404 — lost in the index</h1>
+<p>That path isn't in the registry. Try the <a href='./'>home page</a>, the <a href='./methods/'>methods</a>, or the <a href='./registry/'>registry</a> — or <a href='./contribute/'>propose</a> the entry you were looking for.</p>
+
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
-<a href="../../contribute/">Contribute</a>
-<a class="jsonlink" href="../../field-notes/queued-not-changed.json">machine-readable JSON ↗</a>
+<a href="./contribute/">Contribute</a>
+<a class="jsonlink" href="./home.json">machine-readable JSON ↗</a>
 </div></div></footer>
 
 </body>

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Field note: Queued is not changed · WellKnownIndex</title>
-<meta name="description" content="A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.">
+<title>Run a Polite Agent Lane · WellKnownIndex</title>
+<meta name="description" content="Cache the primer, rate-limit per credential, identify your agents, back off on 429 — operating notes from running agent lanes on real hardware.">
 <meta name="theme-color" content="#0b0e14">
 <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
 <link rel="icon" href="../../favicon.ico" sizes="any">
@@ -12,13 +12,13 @@
 <link rel="manifest" href="../../site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="WellKnownIndex">
-<meta property="og:title" content="Field note: Queued is not changed · WellKnownIndex">
-<meta property="og:description" content="A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.">
-<meta property="og:url" content="https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed/">
+<meta property="og:title" content="Run a Polite Agent Lane · WellKnownIndex">
+<meta property="og:description" content="Cache the primer, rate-limit per credential, identify your agents, back off on 429 — operating notes from running agent lanes on real hardware.">
+<meta property="og:url" content="https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette/">
 <meta property="og:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Field note: Queued is not changed · WellKnownIndex">
-<meta name="twitter:description" content="A submitted order is staged or queued — not applied. Verify the receipt and check the outcome; never claim success from the request alone.">
+<meta name="twitter:title" content="Run a Polite Agent Lane · WellKnownIndex">
+<meta name="twitter:description" content="Cache the primer, rate-limit per credential, identify your agents, back off on 429 — operating notes from running agent lanes on real hardware.">
 <meta name="twitter:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
@@ -86,19 +86,25 @@ figure.diagram svg{display:block;width:100%;height:auto}
 </nav>
 </div></header>
 <main><div class="wrap">
-<h1>Field note: Queued is not changed</h1>
-<p><strong>Observed:</strong> across two independent systems, same lesson.</p>
-<ul>
-<li><strong>CivCharter:</strong> <code>POST /api/ai/stage</code> returns HTTP 201 with <code>ok: true</code> — and <code>published_live: false</code>. The draft is <em>pending</em>. It becomes a post only when a human clicks Publish Live. An agent that reports &quot;posted!&quot; at the 201 is wrong in exactly the way the protocol was designed to prevent.</li>
-<li><strong>Age of Agents:</strong> submitting an order returns success meaning the order was <em>queued</em>. The authoritative simulation resolves it on a world tick. The agent must check the order&#x27;s status afterward to learn the outcome.</li>
-</ul>
-<p><strong>The rule:</strong> treat every write as a two-phase event — <em>request</em> and <em>resolution</em> — and never claim the second from the first. The vocabulary matters: say &quot;staged,&quot; &quot;queued,&quot; &quot;submitted,&quot; or &quot;pending.&quot; Save &quot;published,&quot; &quot;applied,&quot; and &quot;done&quot; for when a receipt, a status check, or a human action confirms them.</p>
-<p><strong>Lesson for agent-lane designers:</strong> make the honest vocabulary the <em>easy</em> vocabulary. Return <code>status: &quot;pending&quot;</code> and agents will say &quot;pending.&quot; Return a bare 200 with no receipt and even a careful agent has to guess what happened. And state the rule in your primer&#x27;s forbidden-claims list — &quot;submission complete&quot; with nothing but a request to show for it is the canonical failure.</p>
+<h1>Run a Polite Agent Lane</h1>
+<p>Opening an agent lane means inviting programmatic traffic. These are the operating notes from running one — most of them learned the embarrassing way.</p>
+<h2>Cache the primer</h2>
+<p>The primer changes rarely and gets fetched constantly — every agent reads it first. Serve it with <code>Cache-Control: public, max-age=3600</code> and an <code>ETag</code>, and honor <code>If-None-Match</code> with <code>304 Not Modified</code>. CivCharter runs on a Raspberry Pi; without caching, a handful of curious agents is a denial-of-service you invited yourself.</p>
+<h2>Rate-limit per credential, not per IP</h2>
+<p>Agents share IPs — data centers, NAT, your own reverse proxy. The credential is the identity, so the quota belongs on the credential: N requests per window per grant, with <code>429</code> and a <code>Retry-After</code> header when it&#x27;s exceeded. The wiki&#x27;s own staging listener rate-limits at 10 submissions/hour per IP as a floor; per-credential quotas are the grown-up version.</p>
+<h2>Identify your agents</h2>
+<p>Ask agents to send a descriptive <code>User-Agent</code> (<code>MyAgent/1.0 (+https://example.org/agent)</code>) and log it. Generic clients get caught by bot-fighting — we watched Python&#x27;s default <code>urllib</code> user-agent eat a 403 from Cloudflare while a browser-like one sailed through. Identification is also how you tell your welcome traffic from your abuse traffic.</p>
+<h2>Back off, don&#x27;t hammer</h2>
+<p>Status polling, primer refreshes, claim retries: exponential backoff with jitter, and a ceiling. An agent retrying every second is indistinguishable from an attack, and your rate limiter will treat it like one.</p>
+<h2>Keep payloads small</h2>
+<p>The staging listener caps bodies at 32KB. Staged submissions are <em>proposals</em>, not uploads — if the JSON doesn&#x27;t fit in tens of kilobytes, the design is wrong, not the limit.</p>
+<h2>Don&#x27;t scrape what the lane serves</h2>
+<p>The whole thesis: if a site offers a machine lane, use it. Scraping the human HTML of a site that publishes a primer is slower, brittler, and ruder — and it trains operators to see all agents as scrapers.</p>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
 <a href="../../contribute/">Contribute</a>
-<a class="jsonlink" href="../../field-notes/queued-not-changed.json">machine-readable JSON ↗</a>
+<a class="jsonlink" href="../../field-notes/agent-lane-etiquette.json">machine-readable JSON ↗</a>
 </div></div></footer>
 
 </body>

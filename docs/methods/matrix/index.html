@@ -4,6 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Methods Matrix · WellKnownIndex</title>
+<meta name="description" content="The L3 build manual — exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.">
+<meta name="theme-color" content="#0b0e14">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+<link rel="manifest" href="../../site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WellKnownIndex">
+<meta property="og:title" content="The Methods Matrix · WellKnownIndex">
+<meta property="og:description" content="The L3 build manual — exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.">
+<meta property="og:url" content="https://masagdt.github.io/wellknownindex/methods/matrix/">
+<meta property="og:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Methods Matrix · WellKnownIndex">
+<meta name="twitter:description" content="The L3 build manual — exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.">
+<meta name="twitter:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
 <style>
 :root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
 --acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
@@ -73,10 +89,10 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <h1>The Methods Matrix</h1>
 <p>The <a href="../../methods/">method pages</a> describe the <em>patterns</em> for giving a website an agent lane. This is the level below: the exact formats, flows, and endpoint designs you&#x27;d hand an engineer — distilled from running systems, not invented.</p>
 <p>The editorial rule for everything under this heading: <strong>distill, don&#x27;t invent.</strong> Every spec here comes from a site in the <a href="../../registry/">registry</a> that already runs it in production.</p>
-<p>| L3 rung | Pattern | Build manual | |---|---|---| | Machine-readable primer | <a href="../../methods/machine-readable-primer/">Machine-Readable Primer</a> | <a href="../../methods/primer-file-format/">Primer File Format</a> — the exact shape of <code>/.well-known/ai-primer.json</code>, distilled from CivCharter&#x27;s production primer (schema 1.3.0) | | Scoped AI grants | <a href="../../methods/scoped-ai-grants/">Scoped AI Grants</a> | <a href="../../methods/oauth-scoped-grants/">OAuth Scoped Grants</a> — OAuth-shaped agent credentials with zero session impersonation, distilled from Age of Agents&#x27; pairing flow and CivCharter&#x27;s grant bootstrap | | Stage and approve | <a href="../../methods/stage-and-approve/">Stage and Approve</a> | <a href="../../methods/flask-stage-and-approve/">Flask Stage-and-Approve</a> — reference endpoint design (preflight → stage → review → approve), Flask-first, distilled from CivCharter&#x27;s <code>/api/ai/*</code> lane | | Registry + ceremony | <a href="../../contribute/">Contribute</a> | <a href="../../methods/ceremony-blueprint/">Ceremony Blueprint</a> — the validation rules and reference Flask listener for staged registry submissions; the wiki eating its own stage-and-approve cooking |</p>
+<p>| L3 rung | Pattern | Build manual | |---|---|---| | Machine-readable primer | <a href="../../methods/machine-readable-primer/">Machine-Readable Primer</a> | <a href="../../methods/primer-file-format/">Primer File Format</a> — the exact shape of <code>/.well-known/ai-primer.json</code>, distilled from CivCharter&#x27;s production primer (schema 1.3.0) | | Scoped AI grants | <a href="../../methods/scoped-ai-grants/">Scoped AI Grants</a> | <a href="../../methods/oauth-scoped-grants/">OAuth Scoped Grants</a> — OAuth-shaped agent credentials with zero session impersonation, distilled from Age of Agents&#x27; pairing flow and CivCharter&#x27;s grant bootstrap | | Stage and approve | <a href="../../methods/stage-and-approve/">Stage and Approve</a> | <a href="../../methods/flask-stage-and-approve/">Flask Stage-and-Approve</a> — reference endpoint design (preflight → stage → review → approve), Flask-first, distilled from CivCharter&#x27;s <code>/api/ai/*</code> lane | | Status receipts | <a href="../../methods/stage-and-approve/">Stage and Approve</a> | <a href="../../methods/status-receipts/">Status Receipts</a> — how the agent learns the outcome: read-only status polling with its own credential, the receipt as audit trail | | Registry + ceremony | <a href="../../contribute/">Contribute</a> | <a href="../../methods/ceremony-blueprint/">Ceremony Blueprint</a> — the validation rules and reference Flask listener for staged registry submissions; the wiki eating its own stage-and-approve cooking |</p>
 <h2>How to use this</h2>
 <p>Building an agent lane for the first time? Read the three build-manual pages in order: publish the primer, issue the grants, add the staging endpoints. Running the wiki&#x27;s own submission queue? Start with the ceremony blueprint.</p>
-<p>Found a running implementation this matrix doesn&#x27;t cover yet? That&#x27;s a <a href="../../field-notes/">field note</a> waiting to happen — or a registry entry via <a href="../../contribute/">Contribute</a>.</p>
+<p>Found a running implementation this matrix doesn&#x27;t cover yet? That&#x27;s a <a href="../../field-notes/">field note</a> waiting to happen — or a registry entry via <a href="../../contribute/">Contribute</a>. New to the vocabulary? The <a href="../../glossary/">glossary</a> defines every slug and term in one place.</p>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>

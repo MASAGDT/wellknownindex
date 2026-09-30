@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Glossary: The Vocabulary · WellKnownIndex</title>
+<meta name="description" content="Every slug, scheme, and term the wiki uses — method, protocol, auth, ceremony — defined in one place.">
+<meta name="theme-color" content="#0b0e14">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="manifest" href="../site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WellKnownIndex">
+<meta property="og:title" content="Glossary: The Vocabulary · WellKnownIndex">
+<meta property="og:description" content="Every slug, scheme, and term the wiki uses — method, protocol, auth, ceremony — defined in one place.">
+<meta property="og:url" content="https://masagdt.github.io/wellknownindex/glossary/">
+<meta property="og:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Glossary: The Vocabulary · WellKnownIndex">
+<meta name="twitter:description" content="Every slug, scheme, and term the wiki uses — method, protocol, auth, ceremony — defined in one place.">
+<meta name="twitter:image" content="https://masagdt.github.io/wellknownindex/og-image.jpg">
+<style>
+:root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand span{color:var(--acc)}
+nav.main{display:flex;gap:1.1rem;margin-left:auto}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
+nav.main a:hover,nav.main a.on{color:var(--acc)}
+main .wrap{padding-top:2rem;padding-bottom:3rem}
+h1,h2,h3{color:#fff;line-height:1.25}
+h1{font-size:1.9rem;margin:.2em 0 .6em}
+h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
+a{color:var(--acc)}
+code{background:var(--code);border:1px solid var(--line);border-radius:4px;
+padding:.1em .35em;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
+padding:1rem;overflow-x:auto}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--acc2);margin:1.2em 0;padding:.2em 1em;
+color:var(--dim);background:var(--panel);border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:1.1rem 1.25rem;margin:1rem 0}
+.card h3{margin:.1em 0 .3em;font-size:1.15rem}
+.card h3 a{color:#fff;text-decoration:none}
+.card h3 a:hover{color:var(--acc)}
+.card p{margin:.4em 0;color:var(--dim)}
+.meta{font-size:.8rem;color:var(--dim)}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);
+border-radius:20px;padding:.05em .7em;margin:.15em .25em .15em 0;color:var(--dim)}
+footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
+gap:1.5rem;flex-wrap:wrap;align-items:center}
+footer.site .jsonlink{margin-left:auto}
+input.filter,select.filter{background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem}
+input.filter{width:100%;margin:1rem 0}
+.frow{display:flex;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem}
+.frow select{flex:1;min-width:9rem}
+.kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
+font-size:.92rem}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0}
+.stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
+border-radius:12px;padding:1.25rem .75rem}
+figure.diagram svg{display:block;width:100%;height:auto}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../">WellKnown<span>Index</span></a>
+<nav class="main">
+<a href="../methods/" class="on">Methods</a>
+<a href="../registry/" class="">Registry</a>
+<a href="../field-notes/" class="">Field notes</a>
+</nav>
+</div></header>
+<main><div class="wrap">
+<h1>Glossary: The Vocabulary</h1>
+<p>The wiki uses a small, deliberate vocabulary. These are the terms, exactly as the <a href="../schema/registry-entry.json">registry schema</a> and the method pages use them.</p>
+<p><strong>Agent lane</strong> — the narrow, machine-readable path a site offers agents, distinct from its human UI. The alternative to agents driving a browser aimed at humans.</p>
+<p><strong>Method</strong> — a reusable integration pattern, named by a slug like <code>stage-and-approve</code> or <code>well-known-discovery</code>. Methods are what the <a href="../methods/">Methods</a> section catalogs.</p>
+<p><strong>Protocol</strong> — a concrete machine-readable contract a site publishes, named by a <code>type</code> slug plus a <code>url</code>: e.g. <code>{type: &quot;ai-primer&quot;, url: &quot;https://example.org/ai/primer&quot;}</code>. A site can publish several; each may declare a <code>version</code>.</p>
+<p><strong>Protocol version</strong> — the <code>version</code> field on a protocol entry (e.g. <code>&quot;1.3.0&quot;</code>). Lets an agent pin behavior before it fetches.</p>
+<p><strong>Auth scheme</strong> — how an agent proves who it is: a slug like <code>agent-bearer</code>, <code>oauth-scoped-grant</code>, or <code>invite-claim</code>. Normalized to lowercase slugs in the registry.</p>
+<p><strong>Scope</strong> — a named permission boundary on a credential (<code>draft:write</code>, <code>stage:submit</code>). Scopes are enforced at every endpoint, not just at issuance.</p>
+<p><strong>Grant</strong> — an issued credential plus its scopes: what the agent actually holds.</p>
+<p><strong>Credential species</strong> — the idea that agent credentials are a different <em>kind</em> of credential from human sessions, not just a different value. Separate issuance, separate storage (hashes, never plaintext), separate revocation — see <a href="../methods/agent-credentials/">Agent Credentials</a>.</p>
+<p><strong>Primer</strong> — the machine-readable file (usually <code>/.well-known/ai-primer.json</code>) where a site tells agents what it is, what it allows, and what it forbids — see <a href="../methods/primer-file-format/">Primer File Format</a>.</p>
+<p><strong>Preflight</strong> — the check-before-you-act call: the agent submits intent, the server answers what <em>would</em> happen, nothing is persisted.</p>
+<p><strong>Stage</strong> — the agent&#x27;s proposed work, held in a pending state. Staging never publishes.</p>
+<p><strong>Receipt</strong> — the record of a decision: what was approved or rejected, when, and by whom. Collected via <a href="../methods/status-receipts/">Status Receipts</a>.</p>
+<p><strong>Ceremony</strong> — the full propose → verify → publish pipeline with human approval in the middle. The wiki&#x27;s own submission flow is the reference implementation — see <a href="../methods/ceremony-blueprint/">Ceremony Blueprint</a>.</p>
+<p><strong>Retrofit ladder</strong> — the L0–L4 scale for how agent-ready a site is: L0 Hostile, L1 Tolerated, L2 Documented, L3 Machine lane, L4 Agentic native. See <a href="../methods/retrofit-ladder/">Retrofit Ladder</a>.</p>
+<p><strong>Registry entry</strong> — one site&#x27;s machine-readable record in the <a href="../registry/">registry</a>: site URL, protocols, auth schemes, scopes, methods implemented, cost, and verification status.</p>
+<p><strong>Machine-readable twin</strong> — the JSON version of every wiki page, served alongside the human HTML. The wiki dogfoods its own thesis: humans read the page, agents read the twin.</p>
+</div></main>
+<footer class="site"><div class="wrap">
+<span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a href="../contribute/">Contribute</a>
+<a class="jsonlink" href="../glossary.json">machine-readable JSON ↗</a>
+</div></div></footer>
+
+</body>
+</html>

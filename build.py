@@ -265,6 +265,19 @@ def _d_stage():
     return _svg("".join(p), h=268)
 
 
+def _d_status():
+    p = [_node(20, 40, 100, 64, "Agent"),
+         _arrow(120, 72, 150, 72, "polls"),
+         _node(155, 40, 110, 64, "Status", "read-only", "#6ee7ff"),
+         _arrow(265, 72, 295, 72, "returns"),
+         _node(300, 40, 130, 64, "Receipt", "pending/decided"),
+         _node(155, 150, 110, 55, "Human", "decides", "#a78bfa"),
+         _arrow(210, 150, 210, 104, "", lx=222, ly=128),
+         "<text x='222' y='128' fill='#8b95ad' font-size='11'>decides</text>",
+         _cap(320, 252, "The agent reads outcomes with its own credential · the receipt is the audit trail.")]
+    return _svg("".join(p), h=262)
+
+
 def _d_ceremony():
     p = [_node(20, 50, 100, 64, "Agent"),
          _arrow(120, 82, 150, 82, "POSTs JSON"),
@@ -355,6 +368,7 @@ DIAGRAMS = {
     "mcp-bridge": _d_mcp(),
     "querying-the-registry": _d_query(),
     "ceremony-blueprint": _d_ceremony(),
+    "status-receipt": _d_status(),
 }
 
 
@@ -421,6 +435,22 @@ TEMPLATE = """<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title} · WellKnownIndex</title>
+<meta name="description" content="{description}">
+<meta name="theme-color" content="#0b0e14">
+<link rel="icon" href="{root}favicon.svg" type="image/svg+xml">
+<link rel="icon" href="{root}favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="{root}apple-touch-icon.png">
+<link rel="manifest" href="{root}site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WellKnownIndex">
+<meta property="og:title" content="{title} · WellKnownIndex">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{og_image}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{title} · WellKnownIndex">
+<meta name="twitter:description" content="{description}">
+<meta name="twitter:image" content="{og_image}">
 <style>{css}</style>
 </head>
 <body>
@@ -446,11 +476,15 @@ TEMPLATE = """<!DOCTYPE html>
 """
 
 
-def page_html(title, body_html, section, root, json_url, extra_js=""):
+def page_html(title, body_html, section, root, json_url, extra_js="",
+              page_url="", description=""):
     on = {s: ("on" if s == section else "") for s in ("methods", "registry", "field-notes")}
     return TEMPLATE.format(
         title=html.escape(title), css=CSS, body=body_html, root=root,
         json_url=json_url, extra_js=extra_js,
+        page_url=page_url or SITE_URL + "/",
+        description=html.escape(description or SITE_TAGLINE, quote=True),
+        og_image=SITE_URL + "/og-image.jpg",
         m_on=on["methods"], r_on=on["registry"], f_on=on["field-notes"],
     )
 
@@ -509,7 +543,9 @@ def main():
         out_dir = DOCS if str(rel) == "index" else DOCS / rel
         out_dir.mkdir(parents=True, exist_ok=True)
         json_url = root + (str(rel) + ".json" if str(rel) != "index" else "home.json")
-        html_page = page_html(title, body_html, section, root, json_url)
+        page_url = SITE_URL + ("/" if str(rel) == "index" else f"/{rel}/")
+        html_page = page_html(title, body_html, section, root, json_url,
+                              page_url=page_url, description=summary)
         (out_dir / "index.html").write_text(html_page, encoding="utf-8")
 
         # JSON twin
@@ -611,13 +647,17 @@ function apply(){
         add_line = ""
         if sec == "registry":
             add_line = ("<p class='meta'>Know an agent-friendly site? "
-                        "<a href='../contribute/'>Add it to the registry</a>.</p>\n")
+                        "<a href='../contribute/'>Add it to the registry</a>.</p>\n"
+                        "<p class='meta'><strong>Most wanted:</strong> public MCP servers, "
+                        "sites publishing agent docs or primers, staged-write APIs, "
+                        "and credential/grant flows we haven't catalogued yet.</p>\n")
         body_html = (f"<div class='stars'>✦ ✦ ✦</div>\n<h1>{sec_title}</h1>\n"
                      f"{add_line}{filter_box}\n" + "\n".join(cards))
         sec_dir = DOCS / sec
         sec_dir.mkdir(parents=True, exist_ok=True)
         (sec_dir / "index.html").write_text(
-            page_html(sec_title, body_html, sec, "../", f"../{sec}.json", extra_js),
+            page_html(sec_title, body_html, sec, "../", f"../{sec}.json", extra_js,
+                      page_url=f"{SITE_URL}/{sec}/", description=SITE_TAGLINE),
             encoding="utf-8",
         )
         # section JSON listing
@@ -699,6 +739,36 @@ function apply(){
     (wk_dir / "wellknownindex.json").write_text(jdumps(discovery, indent=2), encoding="utf-8")
     # disable Jekyll so dot-directories like .well-known are served verbatim
     (DOCS / ".nojekyll").write_text("", encoding="utf-8")
+
+    # 404 page — GitHub Pages serves this for unknown paths
+    notfound_body = (
+        "<div class='stars'>✦ ✦ ✦</div>\n<h1>404 — lost in the index</h1>\n"
+        "<p>That path isn't in the registry. Try the "
+        "<a href='./'>home page</a>, the <a href='./methods/'>methods</a>, "
+        "or the <a href='./registry/'>registry</a> — "
+        "or <a href='./contribute/'>propose</a> the entry you were looking for.</p>\n"
+    )
+    (DOCS / "404.html").write_text(
+        page_html("Not found", notfound_body, "home", "./", "./home.json",
+                  page_url=SITE_URL + "/", description=SITE_TAGLINE),
+        encoding="utf-8",
+    )
+
+    # robots.txt + sitemap.xml for crawlers (human and machine)
+    (DOCS / "robots.txt").write_text(
+        f"User-agent: *\nAllow: /\n\nSitemap: {SITE_URL}/sitemap.xml\n",
+        encoding="utf-8",
+    )
+    locs = [SITE_URL + "/"]
+    locs += [f"{SITE_URL}/{p['slug']}/" for p in pages if p["slug"] != "index"]
+    locs += [f"{SITE_URL}/{s}/" for s in SECTIONS]
+    sitemap_xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "".join(f"  <url><loc>{u}</loc></url>\n" for u in locs)
+        + "</urlset>\n"
+    )
+    (DOCS / "sitemap.xml").write_text(sitemap_xml, encoding="utf-8")
 
     print(f"built {len(pages)} pages -> {DOCS}")
 

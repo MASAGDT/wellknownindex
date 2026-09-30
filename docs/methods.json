@@ -21,6 +21,13 @@
     "json_url": "./flask-stage-and-approve.json"
   },
   {
+    "slug": "glossary",
+    "title": "Glossary: The Vocabulary",
+    "summary": "Every slug, scheme, and term the wiki uses \u2014 method, protocol, auth, ceremony \u2014 defined in one place.",
+    "url": "./glossary/",
+    "json_url": "./glossary.json"
+  },
+  {
     "slug": "methods/no-simulated-execution",
     "title": "No Simulated Execution",
     "summary": "Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.",
@@ -61,6 +68,13 @@
     "summary": "The assist-only pattern \u2014 the agent stages a draft as a pending record; nothing goes live until the human clicks approve.",
     "url": "./stage-and-approve/",
     "json_url": "./stage-and-approve.json"
+  },
+  {
+    "slug": "methods/status-receipts",
+    "title": "Status Receipts: Closing the Loop",
+    "summary": "How an agent learns what happened to its staged work \u2014 a read-only status endpoint and the receipt as audit trail.",
+    "url": "./status-receipts/",
+    "json_url": "./status-receipts.json"
   },
   {
     "slug": "methods/mcp-bridge",
