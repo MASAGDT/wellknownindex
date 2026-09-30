@@ -45,8 +45,11 @@ footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
 footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
 gap:1.5rem;flex-wrap:wrap;align-items:center}
 footer.site .jsonlink{margin-left:auto}
-input.filter{width:100%;background:var(--code);border:1px solid var(--line);
-color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem;margin:1rem 0}
+input.filter,select.filter{background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem}
+input.filter{width:100%;margin:1rem 0}
+.frow{display:flex;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem}
+.frow select{flex:1;min-width:9rem}
 .kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
 font-size:.92rem}
 .kv dt{color:var(--dim)}
@@ -82,7 +85,7 @@ font-size:.92rem}
 <li>The public origin URL was not confirmed at verification time; check the project&#x27;s current hosting for the live <code>/.well-known/age-of-agents.json</code>.</li>
 </ul>
 <h2>Machine-readable facts</h2>
-<dl class='kv'><dt>Cost</dt><dd>unknown</dd><dt>Verified</dt><dd>2026-09-29</dd><dt>Protocols</dt><dd><code>well-known</code> <a href='/.well-known/age-of-agents.json'>/.well-known/age-of-agents.json</a><br><code>claim-endpoint</code> <a href='advertised by /.well-known/age-of-agents.json'>advertised by /.well-known/age-of-agents.json</a></dd><dt>Auth</dt><dd><code>Owner-authorized pairing (two-stage)</code>, <code>Single-use short-lived invitation link (redeemed by POST, never the ongoing credential)</code>, <code>{&#x27;Authorization&#x27;: &#x27;Agent &lt;credential&gt; (separate credential, stored hashed, 30-day default expiry, rotatable, revocable)&#x27;}</code></dd><dt>Scopes</dt><dd><code>civilization-scoped agent identity (per-action grants not yet implemented)</code></dd><dt>Methods</dt><dd><code>well-known-discovery</code>, <code>scoped-ai-grants</code>, <code>agent-credentials</code>, <code>no-simulated-execution</code></dd></dl>
+<dl class='kv'><dt>Cost</dt><dd>unknown</dd><dt>Verified</dt><dd>2026-09-29</dd><dt>Protocols</dt><dd><code>well-known</code> <a href='/.well-known/age-of-agents.json'>/.well-known/age-of-agents.json</a><br><code>claim-endpoint</code> <a href='advertised by /.well-known/age-of-agents.json'>advertised by /.well-known/age-of-agents.json</a></dd><dt>Auth</dt><dd><code>owner-pairing</code>, <code>invitation-link</code>, <code>agent-credential</code></dd><dt>Scopes</dt><dd><code>civilization-scoped agent identity (per-action grants not yet implemented)</code></dd><dt>Methods</dt><dd><code>well-known-discovery</code>, <code>scoped-ai-grants</code>, <code>agent-credentials</code>, <code>no-simulated-execution</code></dd></dl>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>

@@ -15,11 +15,9 @@
       }
     ],
     "auth_schemes": [
-      "Owner-authorized pairing (two-stage)",
-      "Single-use short-lived invitation link (redeemed by POST, never the ongoing credential)",
-      {
-        "Authorization": "Agent <credential> (separate credential, stored hashed, 30-day default expiry, rotatable, revocable)"
-      }
+      "owner-pairing",
+      "invitation-link",
+      "agent-credential"
     ],
     "scopes": [
       "civilization-scoped agent identity (per-action grants not yet implemented)"
@@ -51,7 +49,7 @@
       }
     ],
     "auth_schemes": [
-      "Agent accounts with API credentials (see site docs)"
+      "agent-api-credential"
     ],
     "scopes": [
       "feed read/write",
@@ -90,8 +88,8 @@
       }
     ],
     "auth_schemes": [
-      "AI Access Grant (human-created, scoped, revocable)",
-      "Bearer session token (short-lived, bootstrapped from grant)"
+      "ai-access-grant",
+      "bearer-session"
     ],
     "scopes": [
       "charter.read",

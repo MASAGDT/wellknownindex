@@ -36,6 +36,8 @@ SECTIONS = {
 
 SITE_TITLE = "WellKnownIndex"
 SITE_TAGLINE = "A free, public index of agent-friendly web endpoints — and the methods for building them."
+# Canonical origin of the published site. Update if a custom domain is added.
+SITE_URL = "https://masagdt.github.io/wellknownindex"
 
 
 # ---------------------------------------------------------------- frontmatter
@@ -202,8 +204,11 @@ footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
 footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
 gap:1.5rem;flex-wrap:wrap;align-items:center}
 footer.site .jsonlink{margin-left:auto}
-input.filter{width:100%;background:var(--code);border:1px solid var(--line);
-color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem;margin:1rem 0}
+input.filter,select.filter{background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem}
+input.filter{width:100%;margin:1rem 0}
+.frow{display:flex;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem}
+.frow select{flex:1;min-width:9rem}
 .kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
 font-size:.92rem}
 .kv dt{color:var(--dim)}
@@ -317,33 +322,82 @@ def main():
     for sec, sec_title in SECTIONS.items():
         items = [p for p in pages if p["section"] == sec]
         cards = []
+        facet_methods, facet_protocols, facet_auth = [], [], []
+        if sec == "registry":
+            facet_methods = sorted({str(m) for p in items
+                                    for m in (p["meta"].get("methods_implemented") or [])})
+            facet_protocols = sorted({str(pr.get("type")) for p in items
+                                      for pr in (p["meta"].get("protocols") or [])
+                                      if pr.get("type")})
+            facet_auth = sorted({str(a) for p in items
+                                 for a in (p["meta"].get("auth_schemes") or [])})
         for p in sorted(items, key=lambda x: x["title"]):
             slug = p["slug"].split("/")[-1]
             tags = ""
+            data_attrs = ""
             if sec == "registry":
                 meths = p["meta"].get("methods_implemented") or []
                 tags = "".join(f"<span class='tag'>{html.escape(m)}</span>" for m in meths)
                 cost = p["meta"].get("cost")
                 if cost:
                     tags += f"<span class='tag'>cost: {html.escape(str(cost))}</span>"
+                meth_vals = " ".join(str(m).lower() for m in meths)
+                prot_vals = " ".join(str(pr.get("type", "")).lower()
+                                     for pr in (p["meta"].get("protocols") or []))
+                auth_vals = " ".join(str(a).lower()
+                                      for a in (p["meta"].get("auth_schemes") or []))
+                data_attrs = (f" data-methods='{html.escape(meth_vals)}'"
+                              f" data-protocols='{html.escape(prot_vals)}'"
+                              f" data-auth='{html.escape(auth_vals)}'"
+                              f" data-cost='{html.escape(str(cost or '').lower())}'")
             cards.append(
-                f"<div class='card' data-search='{html.escape((p['title'] + ' ' + p['summary']).lower())}'>"
+                f"<div class='card' data-search='{html.escape((p['title'] + ' ' + p['summary']).lower())}'{data_attrs}>"
                 f"<h3><a href='./{slug}/'>{html.escape(p['title'])}</a></h3>"
                 f"<p>{html.escape(p['summary'])}</p>{tags}</div>"
             )
         filter_box = ""
         extra_js = ""
         if sec == "registry":
-            filter_box = ("<input class='filter' id='q' type='search' "
-                          "placeholder='Filter registry — try \"primer\", \"free\", \"mcp-bridge\"…'>")
+            def _opts(vals):
+                return "".join(
+                    f"<option value='{html.escape(v)}'>{html.escape(v)}</option>"
+                    for v in vals)
+            filter_box = (
+                "<input class='filter' id='q' type='search' "
+                "placeholder='Filter registry — try \"primer\", \"free\", \"mcp-bridge\"…'>"
+                "<div class='frow'>"
+                f"<select class='filter' id='f_method'><option value=''>Method: all</option>{_opts(facet_methods)}</select>"
+                f"<select class='filter' id='f_protocol'><option value=''>Protocol: all</option>{_opts(facet_protocols)}</select>"
+                f"<select class='filter' id='f_auth'><option value=''>Auth: all</option>{_opts(facet_auth)}</select>"
+                "</div>"
+            )
             extra_js = """<script>
-const q=document.getElementById('q');
-q.addEventListener('input',()=>{
-  const needle=q.value.toLowerCase();
+const q=document.getElementById('q'),fm=document.getElementById('f_method'),
+fp=document.getElementById('f_protocol'),fa=document.getElementById('f_auth');
+function currentFilters(){return{q:q.value,method:fm.value,protocol:fp.value,auth:fa.value};}
+function apply(){
+  const f=currentFilters(),needle=f.q.toLowerCase();
   document.querySelectorAll('.card').forEach(c=>{
-    c.style.display=c.dataset.search.includes(needle)?'':'none';
+    const okT=!needle||c.dataset.search.includes(needle);
+    const okM=!f.method||c.dataset.methods.split(' ').includes(f.method.toLowerCase());
+    const okP=!f.protocol||c.dataset.protocols.split(' ').includes(f.protocol.toLowerCase());
+    const okA=!f.auth||c.dataset.auth.split(' ').includes(f.auth.toLowerCase());
+    c.style.display=(okT&&okM&&okP&&okA)?'':'none';
   });
-});
+  const sp=new URLSearchParams();
+  for(const kv of Object.entries(f)){if(kv[1])sp.set(kv[0],kv[1]);}
+  history.replaceState(null,'',sp.toString()?('?'+sp.toString()):location.pathname);
+}
+[q,fm,fp,fa].forEach(el=>el.addEventListener('input',apply));
+(function init(){
+  const sp=new URLSearchParams(location.search);
+  if(sp.get('q'))q.value=sp.get('q');
+  for(const pair of[[fm,'method'],[fp,'protocol'],[fa,'auth']]){
+    const v=sp.get(pair[1]);
+    if(v&&[...pair[0].options].some(o=>o.value===v))pair[0].value=v;
+  }
+  apply();
+})();
 </script>"""
         body_html = (f"<div class='stars'>✦ ✦ ✦</div>\n<h1>{sec_title}</h1>\n"
                      f"{filter_box}\n" + "\n".join(cards))
@@ -392,6 +446,34 @@ q.addEventListener('input',()=>{
         "registry": "./registry.json",
     }
     (DOCS / "index.json").write_text(jdumps(sitemap, indent=2), encoding="utf-8")
+
+    # .well-known discovery file — the wiki dogfoods its own well-known-discovery method
+    wk_dir = DOCS / ".well-known"
+    wk_dir.mkdir(parents=True, exist_ok=True)
+    discovery = {
+        "service": SITE_TITLE,
+        "description": SITE_TAGLINE,
+        "version": "1.0",
+        "updated": date.today().isoformat(),
+        "endpoints": {
+            "registry": f"{SITE_URL}/registry.json",
+            "site_index": f"{SITE_URL}/index.json",
+            "methods": f"{SITE_URL}/methods.json",
+            "field_notes": f"{SITE_URL}/field-notes.json",
+            "registry_human": f"{SITE_URL}/registry/",
+        },
+        "registry_page_filters": {
+            "q": "free-text search",
+            "method": "implemented method slug, e.g. stage-and-approve",
+            "protocol": "protocol type, e.g. ai-primer",
+            "auth": "auth scheme identifier",
+        },
+        "contributing": "https://github.com/MASAGDT/wellknownindex/issues",
+        "license_note": "Free public commons. No ads, no tracking.",
+    }
+    (wk_dir / "wellknownindex.json").write_text(jdumps(discovery, indent=2), encoding="utf-8")
+    # disable Jekyll so dot-directories like .well-known are served verbatim
+    (DOCS / ".nojekyll").write_text("", encoding="utf-8")
 
     print(f"built {len(pages)} pages -> {DOCS}")
 

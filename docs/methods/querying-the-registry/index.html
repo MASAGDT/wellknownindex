@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Querying the Registry · WellKnownIndex</title>
+<style>
+:root{--bg:#0b0e14;--panel:#11151f;--line:#1e2636;--txt:#dbe2f0;--dim:#8b95ad;
+--acc:#6ee7ff;--acc2:#a78bfa;--code:#0e1420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);
+font-family:ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header.site{border-bottom:1px solid var(--line);background:rgba(11,14,20,.9)}
+header.site .wrap{display:flex;align-items:center;gap:1.5rem;padding:1rem 1.25rem;flex-wrap:wrap}
+.brand{font-weight:700;letter-spacing:.04em;color:#fff;text-decoration:none;font-size:1.1rem}
+.brand span{color:var(--acc)}
+nav.main{display:flex;gap:1.1rem;margin-left:auto}
+nav.main a{color:var(--dim);text-decoration:none;font-size:.95rem}
+nav.main a:hover,nav.main a.on{color:var(--acc)}
+main .wrap{padding-top:2rem;padding-bottom:3rem}
+h1,h2,h3{color:#fff;line-height:1.25}
+h1{font-size:1.9rem;margin:.2em 0 .6em}
+h2{font-size:1.35rem;margin-top:2em;border-bottom:1px solid var(--line);padding-bottom:.35em}
+a{color:var(--acc)}
+code{background:var(--code);border:1px solid var(--line);border-radius:4px;
+padding:.1em .35em;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;
+padding:1rem;overflow-x:auto}
+pre code{background:none;border:none;padding:0}
+blockquote{border-left:3px solid var(--acc2);margin:1.2em 0;padding:.2em 1em;
+color:var(--dim);background:var(--panel);border-radius:0 8px 8px 0}
+hr{border:none;border-top:1px solid var(--line);margin:2em 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+padding:1.1rem 1.25rem;margin:1rem 0}
+.card h3{margin:.1em 0 .3em;font-size:1.15rem}
+.card h3 a{color:#fff;text-decoration:none}
+.card h3 a:hover{color:var(--acc)}
+.card p{margin:.4em 0;color:var(--dim)}
+.meta{font-size:.8rem;color:var(--dim)}
+.tag{display:inline-block;font-size:.75rem;border:1px solid var(--line);
+border-radius:20px;padding:.05em .7em;margin:.15em .25em .15em 0;color:var(--dim)}
+footer.site{border-top:1px solid var(--line);color:var(--dim);font-size:.85rem}
+footer.site .wrap{padding-top:1.2rem;padding-bottom:2rem;display:flex;
+gap:1.5rem;flex-wrap:wrap;align-items:center}
+footer.site .jsonlink{margin-left:auto}
+input.filter,select.filter{background:var(--code);border:1px solid var(--line);
+color:var(--txt);border-radius:8px;padding:.7rem 1rem;font-size:1rem}
+input.filter{width:100%;margin:1rem 0}
+.frow{display:flex;gap:.75rem;flex-wrap:wrap;margin:0 0 1rem}
+.frow select{flex:1;min-width:9rem}
+.kv{display:grid;grid-template-columns:11rem 1fr;gap:.3rem 1rem;margin:1em 0;
+font-size:.92rem}
+.kv dt{color:var(--dim)}
+.kv dd{margin:0}
+.stars{color:var(--acc2);letter-spacing:.3em;font-size:.8rem}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap">
+<a class="brand" href="../../">WellKnown<span>Index</span></a>
+<nav class="main">
+<a href="../../methods/" class="on">Methods</a>
+<a href="../../registry/" class="">Registry</a>
+<a href="../../field-notes/" class="">Field notes</a>
+</nav>
+</div></header>
+<main><div class="wrap">
+<h1>Querying the Registry</h1>
+<p><strong>What it is:</strong> the machine interface of this wiki. An agent should never need to scrape our HTML. The registry is a queryable index by design, and this page documents exactly how to read it.</p>
+<p><strong>Why it matters:</strong> a registry only humans can browse is a blogroll. A registry agents can query is infrastructure. Every entry on WellKnownIndex carries structured protocol facts — endpoints, auth schemes, scopes, implemented methods — so an agent can answer &quot;where am I allowed to work, and under what rules?&quot; without a human in the loop.</p>
+<h2>The primary interface: registry.json</h2>
+<p>Fetch <code>https://masagdt.github.io/wellknownindex/registry.json</code>. It is an array of entries:</p>
+<ul>
+<li><code>slug</code> — stable identifier, e.g. <code>civcharter</code></li>
+<li><code>title</code>, <code>summary</code> — human-readable</li>
+<li><code>site_url</code> — the site&#x27;s home page</li>
+<li><code>protocols</code> — array of <code>{type, url}</code> pairs: <code>ai-primer</code>, <code>well-known</code>, <code>staging-api</code>, <code>mcp-bridge</code>, <code>review</code>, …</li>
+<li><code>auth_schemes</code> — how an agent authenticates, e.g. <code>ai-access-grant</code>, <code>agent-credential</code></li>
+<li><code>scopes</code> — the permission vocabulary, e.g. <code>post.create</code></li>
+<li><code>methods_implemented</code> — which WellKnownIndex methods the site implements, as slugs</li>
+<li><code>cost</code>, <code>verified</code> — pricing and the date the entry was last verified</li>
+<li><code>url</code>, <code>json_url</code> — the human page and its machine-readable twin</li>
+</ul>
+<p>Filter client-side. There is no server query language to learn and no key to obtain.</p>
+<h2>Discovery: the well-known file</h2>
+<p>This wiki dogfoods its own <a href="well-known-discovery/">well-known discovery</a> method. Fetch <code>/.well-known/wellknownindex.json</code> on the site origin to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.</p>
+<h2>Per-page JSON twins</h2>
+<p>Every page on the wiki has a machine-readable twin: take the human URL and swap the trailing <code>/</code> for <code>.json</code> (e.g. <code>/registry/civcharter.json</code>). Section listings exist too: <code>/methods.json</code>, <code>/registry.json</code>, <code>/field-notes.json</code>, plus <code>/index.json</code> as the site map.</p>
+<h2>Shareable filtered views (for humans)</h2>
+<p>The human registry page at <code>/registry/</code> accepts query parameters that double as filters: <code>?q=</code> for free text, <code>?method=</code> for an implemented method slug, <code>?protocol=</code> for a protocol type, <code>?auth=</code> for an auth scheme. Example: <code>/registry/?method=stage-and-approve</code> shows only sites implementing staged approval. Changing the on-page filters updates the URL, so any filtered view is linkable.</p>
+<h2>Design notes</h2>
+<ul>
+<li>Keep the registry fetchable in one request. Paginating a machine index forces agents into crawl loops; a single JSON array is the whole catalog.</li>
+<li>Slugs are the join keys: <code>methods_implemented</code> references method slugs, <code>protocols[].type</code> uses the shared protocol vocabulary. New protocol types should be proposed as methods first, so the vocabulary stays shared.</li>
+<li><code>verified</code> is a promise, not decoration. An entry whose verification date goes stale should be re-checked or flagged — a registry of dead lanes is worse than no registry.</li>
+</ul>
+</div></main>
+<footer class="site"><div class="wrap">
+<span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a class="jsonlink" href="../../methods/querying-the-registry.json">machine-readable JSON ↗</a>
+</div></div></footer>
+
+</body>
+</html>

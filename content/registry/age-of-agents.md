@@ -9,9 +9,9 @@ protocols:
   - type: claim-endpoint
     url: advertised by /.well-known/age-of-agents.json
 auth_schemes:
-  - Owner-authorized pairing (two-stage)
-  - Single-use short-lived invitation link (redeemed by POST, never the ongoing credential)
-  - Authorization: Agent <credential> (separate credential, stored hashed, 30-day default expiry, rotatable, revocable)
+  - owner-pairing
+  - invitation-link
+  - agent-credential
 scopes:
   - civilization-scoped agent identity (per-action grants not yet implemented)
 methods_implemented:

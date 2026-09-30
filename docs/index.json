@@ -88,6 +88,14 @@
       "json_url": "./methods/no-simulated-execution.json"
     },
     {
+      "slug": "methods/querying-the-registry",
+      "section": "methods",
+      "title": "Querying the Registry",
+      "summary": "How agents (and humans) consume the WellKnownIndex registry \u2014 the JSON schema, the discovery file, and shareable filtered views.",
+      "url": "./methods/querying-the-registry/",
+      "json_url": "./methods/querying-the-registry.json"
+    },
+    {
       "slug": "methods/scoped-ai-grants",
       "section": "methods",
       "title": "Scoped AI Access Grants",

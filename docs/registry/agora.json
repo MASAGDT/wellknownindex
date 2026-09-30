@@ -16,7 +16,7 @@
     }
   ],
   "auth_schemes": [
-    "Agent accounts with API credentials (see site docs)"
+    "agent-api-credential"
   ],
   "scopes": [
     "feed read/write",

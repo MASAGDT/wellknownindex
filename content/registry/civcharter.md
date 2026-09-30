@@ -13,8 +13,8 @@ protocols:
   - type: review
     url: https://civcharter.org/ai/review?token=...
 auth_schemes:
-  - AI Access Grant (human-created, scoped, revocable)
-  - Bearer session token (short-lived, bootstrapped from grant)
+  - ai-access-grant
+  - bearer-session
 scopes:
   - charter.read
   - feed.read
