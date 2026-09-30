@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Pages](https://img.shields.io/badge/hosted-GitHub%20Pages-blue)](https://masagdt.github.io/wellknownindex/)
 
-![WellKnownIndex — the agent-friendly web, indexed](https://masagdt.github.io/wellknownindex/static/og-image.jpg)
+![WellKnownIndex — the agent-friendly web, indexed](https://masagdt.github.io/wellknownindex/og-image.jpg)
 
 A free, public commons with two jobs:
 
