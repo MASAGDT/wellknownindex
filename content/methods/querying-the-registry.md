@@ -28,7 +28,7 @@ Filter client-side. There is no server query language to learn and no key to obt
 
 ## Discovery: the well-known file
 
-This wiki dogfoods its own [well-known discovery](well-known-discovery.html) method. Fetch `/.well-known/wellknownindex.json` on the site origin to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.
+This wiki dogfoods its own [well-known discovery](/methods/well-known-discovery/) method. Fetch `/.well-known/wellknownindex.json` on the site origin to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.
 
 ## Per-page JSON twins
 

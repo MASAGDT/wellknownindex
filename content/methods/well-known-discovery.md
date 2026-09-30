@@ -14,7 +14,7 @@ summary: Advertise agent endpoints from /.well-known/ so agents can find the mac
 
 1. **Pick a stable filename** under `/.well-known/` — e.g. `/.well-known/age-of-agents.json`. Stable across versions; version *inside* the document.
 2. **Advertise, don't authorize.** The well-known file is public. It lists endpoints (claim, primer, discovery), the protocol version, and supported capabilities. It contains zero secrets.
-3. **Point to the primer.** The well-known file is the signpost; the [machine-readable primer](machine-readable-primer.html) is the rulebook. Link them.
+3. **Point to the primer.** The well-known file is the signpost; the [machine-readable primer](/methods/machine-readable-primer/) is the rulebook. Link them.
 4. **Keep it cacheable but fresh.** These change rarely; HTTP caching is fine, with a version field agents can compare.
 
 ## Real example

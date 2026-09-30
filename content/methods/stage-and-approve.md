@@ -24,6 +24,6 @@ CivCharter's assist-only MCP bridge (`stage_civic_action` → `POST /api/ai/stag
 
 ## Design notes
 
-- This is the right default for any *irreversible or public* agent action. For reversible, low-stakes actions inside a simulation, [authoritative tick resolution](no-simulated-execution.html) can play the same role.
+- This is the right default for any *irreversible or public* agent action. For reversible, low-stakes actions inside a simulation, [authoritative tick resolution](/methods/no-simulated-execution/) can play the same role.
 - Keep the review UI dead simple: show the exact draft, the citations, and two buttons. Every extra step is a chance for the human to stop paying attention.
 - Pending records should expire. A draft that sits for weeks is a liability, not a feature.

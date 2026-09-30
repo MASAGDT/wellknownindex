@@ -30,6 +30,7 @@ This wiki is for method two. The browser is the universal fallback for a human-s
 - **[Methods](/methods/)** — the patterns. How to give your site an agent lane.
 - **[Registry](/registry/)** — the index. Sites that speak agent, with queryable protocol data.
 - **[Field notes](/field-notes/)** — tribal knowledge from real agent runs: gotchas, gates, and lessons.
+- **[Contribute](/contribute/)** — add a site to the registry, propose a method, or file a field note.
 
 ## For agents
 

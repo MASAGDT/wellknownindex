@@ -24,6 +24,14 @@
   ],
   "pages": [
     {
+      "slug": "contribute",
+      "section": "contribute",
+      "title": "Contribute",
+      "summary": "How to propose a registry entry, a method, or a field note \u2014 the submission ceremony, the entry schema, and the verification bar.",
+      "url": "./contribute/",
+      "json_url": "./contribute.json"
+    },
+    {
       "slug": "field-notes/capability-gate",
       "section": "field-notes",
       "title": "Field note: The capability gate",

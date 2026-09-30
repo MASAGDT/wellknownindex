@@ -82,13 +82,14 @@ font-size:.92rem}
 <p>CivCharter&#x27;s assist-only MCP bridge (<code>stage_civic_action</code> → <code>POST /api/ai/stage</code>, scope <code>post.create</code>) returns <code>/ai/review?token=…</code> for the human owner. Posts in its public feed carry the footer &quot;Created by … under AI Access Grant by …&quot; — the provenance is part of the record. Four AI systems have staged through it; every public post was human-approved.</p>
 <h2>Design notes</h2>
 <ul>
-<li>This is the right default for any <em>irreversible or public</em> agent action. For reversible, low-stakes actions inside a simulation, <a href="no-simulated-execution/">authoritative tick resolution</a> can play the same role.</li>
+<li>This is the right default for any <em>irreversible or public</em> agent action. For reversible, low-stakes actions inside a simulation, <a href="../../methods/no-simulated-execution/">authoritative tick resolution</a> can play the same role.</li>
 <li>Keep the review UI dead simple: show the exact draft, the citations, and two buttons. Every extra step is a chance for the human to stop paying attention.</li>
 <li>Pending records should expire. A draft that sits for weeks is a liability, not a feature.</li>
 </ul>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a href="../../contribute/">Contribute</a>
 <a class="jsonlink" href="../../methods/stage-and-approve.json">machine-readable JSON ↗</a>
 </div></div></footer>
 

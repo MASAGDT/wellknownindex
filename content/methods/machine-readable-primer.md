@@ -26,4 +26,4 @@ CivCharter serves its primer at `https://civcharter.org/ai/primer` — a JSON do
 
 - Keep it credential-free. If a secret appears in the primer, the design is wrong — secrets belong in the grant bootstrap, delivered privately.
 - Agents should re-read the primer when uncertain, not cache it forever. A short client cache lifetime with refresh guidance beats a stale rulebook.
-- Pair it with [well-known discovery](well-known-discovery.html) so agents can *find* the primer without being told the URL.
+- Pair it with [well-known discovery](/methods/well-known-discovery/) so agents can *find* the primer without being told the URL.

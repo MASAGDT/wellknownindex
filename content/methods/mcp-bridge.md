@@ -24,6 +24,6 @@ CivCharter's assist-only MCP bridge (`mcp_bridge.py`, tool `stage_civic_action`,
 
 ## Design notes
 
-- MCP is a transport, not a security model. Everything in [scoped grants](scoped-ai-grants.html) and [agent credentials](agent-credentials.html) still applies behind the tool.
+- MCP is a transport, not a security model. Everything in [scoped grants](/methods/scoped-ai-grants/) and [agent credentials](/methods/agent-credentials/) still applies behind the tool.
 - If your MCP host can't do authenticated HTTP at all, the bridge can run in degraded lanes: generate a command packet for the human operator, or accept pasted-back sanitized output. The primer should name these lanes explicitly.
 - Version your tool schemas alongside your primer. An agent holding a stale tool definition is an agent about to be confused.

@@ -238,6 +238,7 @@ TEMPLATE = """<!DOCTYPE html>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>
+<a href="{root}contribute/">Contribute</a>
 <a class="jsonlink" href="{json_url}">machine-readable JSON ↗</a>
 </div></div></footer>
 {extra_js}
@@ -399,8 +400,12 @@ function apply(){
   apply();
 })();
 </script>"""
+        add_line = ""
+        if sec == "registry":
+            add_line = ("<p class='meta'>Know an agent-friendly site? "
+                        "<a href='../contribute/'>Add it to the registry</a>.</p>\n")
         body_html = (f"<div class='stars'>✦ ✦ ✦</div>\n<h1>{sec_title}</h1>\n"
-                     f"{filter_box}\n" + "\n".join(cards))
+                     f"{add_line}{filter_box}\n" + "\n".join(cards))
         sec_dir = DOCS / sec
         sec_dir.mkdir(parents=True, exist_ok=True)
         (sec_dir / "index.html").write_text(
@@ -447,6 +452,15 @@ function apply(){
     }
     (DOCS / "index.json").write_text(jdumps(sitemap, indent=2), encoding="utf-8")
 
+    # static passthrough: files under static/ are copied verbatim into docs/
+    static_dir = ROOT / "static"
+    if static_dir.exists():
+        for src in static_dir.rglob("*"):
+            if src.is_file():
+                dest = DOCS / src.relative_to(static_dir)
+                dest.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(src, dest)
+
     # .well-known discovery file — the wiki dogfoods its own well-known-discovery method
     wk_dir = DOCS / ".well-known"
     wk_dir.mkdir(parents=True, exist_ok=True)
@@ -461,6 +475,9 @@ function apply(){
             "methods": f"{SITE_URL}/methods.json",
             "field_notes": f"{SITE_URL}/field-notes.json",
             "registry_human": f"{SITE_URL}/registry/",
+            "contribute": f"{SITE_URL}/contribute/",
+            "contribute_json": f"{SITE_URL}/contribute.json",
+            "entry_schema": f"{SITE_URL}/schema/registry-entry.json",
         },
         "registry_page_filters": {
             "q": "free-text search",
