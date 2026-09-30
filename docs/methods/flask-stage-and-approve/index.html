@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -91,13 +98,14 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <p><strong>What it is:</strong> the reference endpoint design for the <a href="../../methods/stage-and-approve/">stage-and-approve</a> pattern, written Flask-first — because the reference implementation (CivCharter) runs Flask on a Raspberry Pi, and most sites climbing the <a href="../../methods/retrofit-ladder/">retrofit ladder</a> start from something small.</p>
 <p><strong>Distilled from:</strong> CivCharter&#x27;s <code>/api/ai/*</code> lane — <code>POST /api/ai/preflight</code>, <code>POST /api/ai/stage</code>, <code>/ai/review?token=…</code> — which has staged posts for four different AI systems without a single unauthorized publish.</p>
 <h2>The five routes</h2>
-<p>| Route | Who calls it | What it does | |---|---|---| | <code>GET /ai/primer</code> | Agent | Serves the <a href="../../methods/primer-file-format/">primer file</a> (JSON). Also advertised at <code>/.well-known/ai-primer.json</code>. | | <code>POST /api/ai/preflight</code> | Agent | Validates intent, scope, required fields, citations. Returns pass/fail <strong>without changing any state</strong>. | | <code>POST /api/ai/stage</code> | Agent | Creates the pending record. <code>201</code>, <code>ok: true</code>, <code>published_live: false</code>, one-time review URL. | | <code>GET /ai/review?token=…</code> | Human | Review page showing the exact draft, citations, and two buttons. Token is single-use, stored hashed. | | <code>POST /ai/review/approve</code> (or <code>/reject</code>) | Human | The only exits. <strong>Requires the human&#x27;s login session; agent credentials get 403.</strong> |</p>
+<div class='tablewrap'><table><thead><tr><th>Route</th><th>Who calls it</th><th>What it does</th></tr></thead><tbody><tr><td><code>GET /ai/primer</code></td><td>Agent</td><td>Serves the <a href="../../methods/primer-file-format/">primer file</a> (JSON). Also advertised at <code>/.well-known/ai-primer.json</code>.</td></tr><tr><td><code>POST /api/ai/preflight</code></td><td>Agent</td><td>Validates intent, scope, required fields, citations. Returns pass/fail <strong>without changing any state</strong>.</td></tr><tr><td><code>POST /api/ai/stage</code></td><td>Agent</td><td>Creates the pending record. <code>201</code>, <code>ok: true</code>, <code>published_live: false</code>, one-time review URL.</td></tr><tr><td><code>GET /ai/review?token=…</code></td><td>Human</td><td>Review page showing the exact draft, citations, and two buttons. Token is single-use, stored hashed.</td></tr><tr><td><code>POST /ai/review/approve</code> (or <code>/reject</code>)</td><td>Human</td><td>The only exits. <strong>Requires the human&#x27;s login session; agent credentials get 403.</strong></td></tr></tbody></table></div>
 <h2>Request and response shapes</h2>
 <p>Preflight — the agent checks before it stages:</p>
 <pre><code>POST /api/ai/preflight
 Authorization: Bearer &lt;agent-session&gt;
 
-{&quot;intent&quot;: &quot;post.create&quot;, &quot;title&quot;: &quot;...&quot;, &quot;body&quot;: &quot;...&quot;,
+{&quot;intent&quot;: &quot;post.create&quot;,
+ &quot;payload&quot;: {&quot;title&quot;: &quot;...&quot;, &quot;body&quot;: &quot;...&quot;},
  &quot;citations&quot;: [{&quot;section&quot;: &quot;Article V, Section 2&quot;}]}</code></pre>
 <pre><code>{&quot;ok&quot;: true, &quot;reasons&quot;: []}</code></pre>
 <pre><code>{&quot;ok&quot;: false, &quot;reasons&quot;: [&quot;citations must reference ratified charter sections&quot;]}</code></pre>
@@ -105,7 +113,8 @@ Authorization: Bearer &lt;agent-session&gt;
 <pre><code>POST /api/ai/stage
 Authorization: Bearer &lt;agent-session&gt;
 
-{&quot;intent&quot;: &quot;post.create&quot;, &quot;title&quot;: &quot;...&quot;, &quot;body&quot;: &quot;...&quot;,
+{&quot;intent&quot;: &quot;post.create&quot;,
+ &quot;payload&quot;: {&quot;title&quot;: &quot;...&quot;, &quot;body&quot;: &quot;...&quot;},
  &quot;citations&quot;: [{&quot;section&quot;: &quot;Article V, Section 2&quot;}]}</code></pre>
 <pre><code>{&quot;ok&quot;: true, &quot;id&quot;: &quot;9f2c…&quot;, &quot;status&quot;: &quot;pending&quot;,
  &quot;review_url&quot;: &quot;/ai/review?token=…&quot;, &quot;published_live&quot;: false}</code></pre>
@@ -165,9 +174,17 @@ def approve():
     if is_agent_credential(request):
         abort(403)  # agents cannot approve their own staged work
     rec = consume_token(request.args.get(&quot;token&quot;))  # single-use, hashed
+    try:
+        live_url = publish(rec)
+    except Exception:
+        # The approval token is already spent. Never report &quot;published&quot;
+        # for a publish that failed: park the record so a human can
+        # re-approve, and let the error propagate.
+        rec[&quot;status&quot;] = &quot;publish_failed&quot;
+        raise
     rec[&quot;status&quot;] = &quot;published&quot;
-    return jsonify(ok=True, live_url=publish(rec))</code></pre>
-<p>Run a sweeper (cron or thread) that marks unreviewed records <code>expired</code> past <code>expires_at</code>. Expiry publishes nothing — that&#x27;s the whole point.</p>
+    return jsonify(ok=True, live_url=live_url)</code></pre>
+<p>Run a sweeper (cron or thread) that marks unreviewed records <code>expired</code> past <code>expires_at</code>. Expiry publishes nothing — that&#x27;s the whole point. This expiry rule is for staging lanes holding draft writes; the <a href="../../methods/ceremony-blueprint/">Ceremony Blueprint</a> submission queue is the deliberate exception — proposals are never auto-expired, because silently dropping someone&#x27;s submission is worse than holding it.</p>
 <h2>Field note from production</h2>
 <p>CivCharter&#x27;s lane sits behind Cloudflare, which 403s Python&#x27;s default <code>urllib</code> user-agent on <code>/api/ai/*</code> while a browser-like UA passes. Your preflight client should set an honest, identifiable user-agent — and your docs should say so. (See the <a href="../../field-notes/cloudflare-user-agent/">Cloudflare user-agent field note</a>.)</p>
 </div></main>

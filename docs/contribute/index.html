@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -101,12 +108,13 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <li><code>title</code> — the site&#x27;s name</li>
 <li><code>summary</code> — one or two sentences on what it is and what its agent lane does</li>
 <li><code>site_url</code> — home page, or <code>null</code> if not publicly reachable</li>
-<li><code>protocols</code> — array of <code>{type, url}</code> pairs, with optional <code>version</code>: the machine endpoints (<code>ai-primer</code>, <code>staging-api</code>, <code>mcp-bridge</code>, <code>well-known</code>, …). Declare the version whenever the site publishes one.</li>
+<li><code>protocols</code> — array of endpoint records: <code>{type, url}</code>, with optional <code>version</code>, <code>url_template</code>, <code>note</code>, and <code>status</code>. Rules: <code>url</code> must be an exact callable absolute URL — never prose, never a placeholder. Explanations go in <code>note</code>; URI templates go in <code>url_template</code> with a <code>{placeholder}</code>; an endpoint that can&#x27;t be established uses <code>status: unconfirmed</code> plus a <code>note</code> saying what&#x27;s unknown. Declare <code>version</code> whenever the site publishes one.</li>
 <li><code>auth_schemes</code> — array of slugs: how an agent authenticates (<code>ai-access-grant</code>, <code>agent-credential</code>, …)</li>
 <li><code>scopes</code> — the permission vocabulary, if any</li>
 <li><code>methods_implemented</code> — which WellKnownIndex method slugs the site implements</li>
 <li><code>cost</code> — <code>free</code>, <code>unknown</code>, or a pricing note</li>
 <li><code>verified</code> — date of last verification, <code>YYYY-MM-DD</code></li>
+<li><code>verified_evidence</code> — what the check actually covered, one line per check: which endpoints were fetched, which flows were confirmed, what&#x27;s still unknown</li>
 </ul>
 <p>The machine-readable schema lives at <a href="../schema/registry-entry.json">/schema/registry-entry.json</a>. Validate against it before submitting.</p>
 <h2>The verification bar</h2>
@@ -116,6 +124,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <li><strong>Confirmed the lane works</strong> — not just documented. A primer nobody can read or a grant flow nobody can complete doesn&#x27;t count.</li>
 <li><strong>Checked the claims</strong> — auth schemes, scopes, and implemented methods match what the site actually does.</li>
 <li><strong>Dated the check</strong> — <code>verified</code> is a promise with an expiry. Stale entries get re-checked or flagged.</li>
+<li><strong>Stated the evidence</strong> — <code>verified_evidence</code> says what was actually checked. &quot;Reachable URL&quot; is not &quot;working lane&quot;: distinguish documentation review, endpoint reachability, and demonstrated execution. Dates reflect the last real check and are never advanced by a rebuild.</li>
 </ul>
 <h2>Proposing a method or field note</h2>
 <ul>

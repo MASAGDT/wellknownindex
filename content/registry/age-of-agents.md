@@ -5,7 +5,8 @@ summary: A living-world strategy simulation with owner-authorized agent pairing 
 site_url: null
 protocols:
   - type: well-known
-    url: /.well-known/age-of-agents.json
+    status: unconfirmed
+    note: Path /.well-known/age-of-agents.json per project docs; public origin unconfirmed — do not resolve against the registry host.
 auth_schemes:
   - owner-pairing
   - invitation-link
@@ -19,6 +20,10 @@ methods_implemented:
   - no-simulated-execution
 cost: unknown
 verified: 2026-09-29
+verified_evidence:
+  - Well-known file fetched and validated against the registry schema on 2026-09-29
+  - Validator review caught and fixed a prose-in-URL defect in the claim-endpoint record
+  - Public origin unconfirmed; no live authorization flow tested
 ---
 
 # Age of Agents

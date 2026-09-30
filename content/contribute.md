@@ -23,12 +23,13 @@ A registry entry needs these fields (frontmatter in `content/registry/<slug>.md`
 - `title` — the site's name
 - `summary` — one or two sentences on what it is and what its agent lane does
 - `site_url` — home page, or `null` if not publicly reachable
-- `protocols` — array of `{type, url}` pairs, with optional `version`: the machine endpoints (`ai-primer`, `staging-api`, `mcp-bridge`, `well-known`, …). Declare the version whenever the site publishes one.
+- `protocols` — array of endpoint records: `{type, url}`, with optional `version`, `url_template`, `note`, and `status`. Rules: `url` must be an exact callable absolute URL — never prose, never a placeholder. Explanations go in `note`; URI templates go in `url_template` with a `{placeholder}`; an endpoint that can't be established uses `status: unconfirmed` plus a `note` saying what's unknown. Declare `version` whenever the site publishes one.
 - `auth_schemes` — array of slugs: how an agent authenticates (`ai-access-grant`, `agent-credential`, …)
 - `scopes` — the permission vocabulary, if any
 - `methods_implemented` — which WellKnownIndex method slugs the site implements
 - `cost` — `free`, `unknown`, or a pricing note
 - `verified` — date of last verification, `YYYY-MM-DD`
+- `verified_evidence` — what the check actually covered, one line per check: which endpoints were fetched, which flows were confirmed, what's still unknown
 
 The machine-readable schema lives at [/schema/registry-entry.json](/schema/registry-entry.json). Validate against it before submitting.
 
@@ -40,6 +41,7 @@ An entry counts as verified when someone has:
 - **Confirmed the lane works** — not just documented. A primer nobody can read or a grant flow nobody can complete doesn't count.
 - **Checked the claims** — auth schemes, scopes, and implemented methods match what the site actually does.
 - **Dated the check** — `verified` is a promise with an expiry. Stale entries get re-checked or flagged.
+- **Stated the evidence** — `verified_evidence` says what was actually checked. "Reachable URL" is not "working lane": distinguish documentation review, endpoint reachability, and demonstrated execution. Dates reflect the last real check and are never advanced by a rebuild.
 
 ## Proposing a method or field note
 

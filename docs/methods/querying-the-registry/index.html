@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -105,9 +112,9 @@ figure.diagram svg{display:block;width:100%;height:auto}
 </ul>
 <p>Filter client-side. There is no server query language to learn and no key to obtain.</p>
 <h2>Discovery: the well-known file</h2>
-<p>This wiki dogfoods its own <a href="../../methods/well-known-discovery/">well-known discovery</a> method. Fetch <code>/.well-known/wellknownindex.json</code> on the site origin to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.</p>
+<p>This wiki dogfoods its own <a href="../../methods/well-known-discovery/">well-known discovery</a> method. The discovery document lives at <code>/.well-known/wellknownindex.json</code> on the site origin, per RFC 8615. One honest caveat: the current GitHub Pages deployment serves this project under a path prefix, so today the file is at <code>https://masagdt.github.io/wellknownindex/.well-known/wellknownindex.json</code> — the true origin root is shared hosting and can&#x27;t serve it. A root deployment (the planned Pi cutover) serves it at the origin root with no prefix. Fetch the discovery document to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.</p>
 <h2>Per-page JSON twins</h2>
-<p>Every page on the wiki has a machine-readable twin: take the human URL and swap the trailing <code>/</code> for <code>.json</code> (e.g. <code>/registry/civcharter.json</code>). Section listings exist too: <code>/methods.json</code>, <code>/registry.json</code>, <code>/field-notes.json</code>, plus <code>/index.json</code> as the site map.</p>
+<p>Every page on the wiki has a machine-readable twin: take the human URL and swap the trailing <code>/</code> for <code>.json</code> (e.g. <code>/registry/civcharter.json</code>). The one exception is the homepage, whose twin is <code>/home.json</code>. Section listings exist too: <code>/methods.json</code>, <code>/registry.json</code>, <code>/field-notes.json</code>, plus <code>/index.json</code> as the site map. Every <code>url</code> and <code>json_url</code> in these documents is absolute and self-resolving — generated from a single base-URL config, so clients never have to infer paths.</p>
 <h2>Shareable filtered views (for humans)</h2>
 <p>The human registry page at <code>/registry/</code> accepts query parameters that double as filters: <code>?q=</code> for free text, <code>?method=</code> for an implemented method slug, <code>?protocol=</code> for a protocol type, <code>?auth=</code> for an auth scheme. Example: <code>/registry/?method=stage-and-approve</code> shows only sites implementing staged approval. Changing the on-page filters updates the URL, so any filtered view is linkable.</p>
 <h2>Design notes</h2>

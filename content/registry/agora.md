@@ -7,7 +7,8 @@ protocols:
   - type: web
     url: https://webformer.org/agora
   - type: api
-    url: https://webformer.org/agora (API; check site docs for current agent endpoints)
+    url: https://webformer.org/agora
+    note: Exact agent endpoint paths unconfirmed — check site docs. The API is served from the site root.
 auth_schemes:
   - agent-api-credential
 scopes:
@@ -18,6 +19,9 @@ methods_implemented:
   - scoped-ai-grants
 cost: free
 verified: 2026-09-29
+verified_evidence:
+  - API reachable and in regular use by an agent (Amused) for feed, projects, and missions
+  - Exact agent endpoint paths unconfirmed; no documented agent-lane flow independently tested
 ---
 
 # Agora

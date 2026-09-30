@@ -1,25 +1,25 @@
 {
   "site": "WellKnownIndex",
   "tagline": "A free, public index of agent-friendly web endpoints \u2014 and the methods for building them.",
-  "generated": "2026-09-29",
+  "generated": "2026-09-30",
   "sections": [
     {
       "slug": "methods",
       "title": "Methods",
-      "url": "./methods/",
-      "json_url": "./methods.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods.json"
     },
     {
       "slug": "registry",
       "title": "Registry",
-      "url": "./registry/",
-      "json_url": "./registry.json"
+      "url": "https://masagdt.github.io/wellknownindex/registry/",
+      "json_url": "https://masagdt.github.io/wellknownindex/registry.json"
     },
     {
       "slug": "field-notes",
       "title": "Field notes",
-      "url": "./field-notes/",
-      "json_url": "./field-notes.json"
+      "url": "https://masagdt.github.io/wellknownindex/field-notes/",
+      "json_url": "https://masagdt.github.io/wellknownindex/field-notes.json"
     }
   ],
   "pages": [
@@ -28,201 +28,201 @@
       "section": "contribute",
       "title": "Contribute",
       "summary": "How to propose a registry entry, a method, or a field note \u2014 the submission ceremony, the entry schema, and the verification bar.",
-      "url": "./contribute/",
-      "json_url": "./contribute.json"
+      "url": "https://masagdt.github.io/wellknownindex/contribute/",
+      "json_url": "https://masagdt.github.io/wellknownindex/contribute.json"
     },
     {
       "slug": "field-notes/agent-lane-etiquette",
       "section": "field-notes",
       "title": "Run a Polite Agent Lane",
       "summary": "Cache the primer, rate-limit per credential, identify your agents, back off on 429 \u2014 operating notes from running agent lanes on real hardware.",
-      "url": "./field-notes/agent-lane-etiquette/",
-      "json_url": "./field-notes/agent-lane-etiquette.json"
+      "url": "https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette/",
+      "json_url": "https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette.json"
     },
     {
       "slug": "field-notes/capability-gate",
       "section": "field-notes",
       "title": "Field note: The capability gate",
       "summary": "A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.",
-      "url": "./field-notes/capability-gate/",
-      "json_url": "./field-notes/capability-gate.json"
+      "url": "https://masagdt.github.io/wellknownindex/field-notes/capability-gate/",
+      "json_url": "https://masagdt.github.io/wellknownindex/field-notes/capability-gate.json"
     },
     {
       "slug": "field-notes/cloudflare-user-agent",
       "section": "field-notes",
       "title": "Field note: Cloudflare blocks Python's default User-Agent",
       "summary": "API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.",
-      "url": "./field-notes/cloudflare-user-agent/",
-      "json_url": "./field-notes/cloudflare-user-agent.json"
+      "url": "https://masagdt.github.io/wellknownindex/field-notes/cloudflare-user-agent/",
+      "json_url": "https://masagdt.github.io/wellknownindex/field-notes/cloudflare-user-agent.json"
     },
     {
       "slug": "field-notes/queued-not-changed",
       "section": "field-notes",
       "title": "Field note: Queued is not changed",
       "summary": "A submitted order is staged or queued \u2014 not applied. Verify the receipt and check the outcome; never claim success from the request alone.",
-      "url": "./field-notes/queued-not-changed/",
-      "json_url": "./field-notes/queued-not-changed.json"
+      "url": "https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed/",
+      "json_url": "https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed.json"
     },
     {
       "slug": "index",
       "section": "home",
       "title": "WellKnownIndex",
       "summary": "A free, public commons documenting how to build agent-friendly web endpoints \u2014 and indexing the sites that have them. Every page renders for humans and machines.",
-      "url": "./",
-      "json_url": "./home.json"
+      "url": "https://masagdt.github.io/wellknownindex/",
+      "json_url": "https://masagdt.github.io/wellknownindex/home.json"
     },
     {
       "slug": "methods/agent-credentials",
       "section": "methods",
       "title": "Agent Credential Schemes",
       "summary": "Invitation is not credential. Issue separate, hashed, expirable agent credentials \u2014 never reuse the human's session.",
-      "url": "./methods/agent-credentials/",
-      "json_url": "./methods/agent-credentials.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/agent-credentials/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/agent-credentials.json"
     },
     {
       "slug": "methods/ceremony-blueprint",
       "section": "methods",
       "title": "Ceremony Blueprint",
       "summary": "The validation rules and reference Flask listener for staged registry submissions \u2014 the wiki eating its own stage-and-approve cooking.",
-      "url": "./methods/ceremony-blueprint/",
-      "json_url": "./methods/ceremony-blueprint.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/ceremony-blueprint/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/ceremony-blueprint.json"
     },
     {
       "slug": "methods/flask-stage-and-approve",
       "section": "methods",
       "title": "Flask Stage-and-Approve",
       "summary": "A Flask-first reference for staged-write endpoints \u2014 preflight, stage, review, approve \u2014 distilled from CivCharter's /api/ai/* lane.",
-      "url": "./methods/flask-stage-and-approve/",
-      "json_url": "./methods/flask-stage-and-approve.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/flask-stage-and-approve/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/flask-stage-and-approve.json"
     },
     {
       "slug": "methods/glossary",
       "section": "methods",
       "title": "Glossary: The Vocabulary",
       "summary": "Every slug, scheme, and term the wiki uses \u2014 method, protocol, auth, ceremony \u2014 defined in one place.",
-      "url": "./methods/glossary/",
-      "json_url": "./methods/glossary.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/glossary/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/glossary.json"
     },
     {
       "slug": "methods/machine-readable-primer",
       "section": "methods",
       "title": "The Machine-Readable Primer",
       "summary": "A schema-versioned JSON document that tells an AI agent exactly what it may do, what it must never claim, and where human authority begins.",
-      "url": "./methods/machine-readable-primer/",
-      "json_url": "./methods/machine-readable-primer.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/machine-readable-primer/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/machine-readable-primer.json"
     },
     {
       "slug": "methods/matrix",
       "section": "methods",
       "title": "The Methods Matrix",
       "summary": "The L3 build manual \u2014 exact file formats, grant flows, and endpoint designs distilled from the three field-tested implementations in the registry.",
-      "url": "./methods/matrix/",
-      "json_url": "./methods/matrix.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/matrix/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/matrix.json"
     },
     {
       "slug": "methods/mcp-bridge",
       "section": "methods",
       "title": "The Assist-Only MCP Bridge",
       "summary": "Expose scoped staging tools over MCP so agents draft into a review queue \u2014 they can prepare anything, publish nothing.",
-      "url": "./methods/mcp-bridge/",
-      "json_url": "./methods/mcp-bridge.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/mcp-bridge/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/mcp-bridge.json"
     },
     {
       "slug": "methods/no-simulated-execution",
       "section": "methods",
       "title": "No Simulated Execution",
       "summary": "Never claim a write succeeded without a verified receipt. Queued is not changed; staged is not published.",
-      "url": "./methods/no-simulated-execution/",
-      "json_url": "./methods/no-simulated-execution.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/no-simulated-execution/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/no-simulated-execution.json"
     },
     {
       "slug": "methods/oauth-scoped-grants",
       "section": "methods",
       "title": "OAuth Scoped Grants",
       "summary": "How to issue OAuth-shaped scoped credentials to agents without ever sharing a human session \u2014 distilled from Age of Agents' pairing flow and CivCharter's grant bootstrap.",
-      "url": "./methods/oauth-scoped-grants/",
-      "json_url": "./methods/oauth-scoped-grants.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/oauth-scoped-grants/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/oauth-scoped-grants.json"
     },
     {
       "slug": "methods/primer-file-format",
       "section": "methods",
       "title": "Primer File Format",
       "summary": "The exact shape of a /.well-known/ai-primer.json file \u2014 versioned, intent-driven, with checkable preconditions. Distilled from CivCharter's production primer (schema 1.3.0).",
-      "url": "./methods/primer-file-format/",
-      "json_url": "./methods/primer-file-format.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/primer-file-format/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/primer-file-format.json"
     },
     {
       "slug": "methods/querying-the-registry",
       "section": "methods",
       "title": "Querying the Registry",
       "summary": "How agents (and humans) consume the WellKnownIndex registry \u2014 the JSON schema, the discovery file, and shareable filtered views.",
-      "url": "./methods/querying-the-registry/",
-      "json_url": "./methods/querying-the-registry.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/querying-the-registry/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/querying-the-registry.json"
     },
     {
       "slug": "methods/retrofit-ladder",
       "section": "methods",
       "title": "The Retrofit Ladder",
       "summary": "A maturity model for retrofitting non-agent-centric websites \u2014 five rungs from hostile to agentic-native, what each rung costs, and how to climb.",
-      "url": "./methods/retrofit-ladder/",
-      "json_url": "./methods/retrofit-ladder.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/retrofit-ladder/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/retrofit-ladder.json"
     },
     {
       "slug": "methods/scoped-ai-grants",
       "section": "methods",
       "title": "Scoped AI Access Grants",
       "summary": "Human-created, scoped, revocable authorization objects for agents \u2014 a narrowed lane instead of impersonating the user.",
-      "url": "./methods/scoped-ai-grants/",
-      "json_url": "./methods/scoped-ai-grants.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/scoped-ai-grants/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/scoped-ai-grants.json"
     },
     {
       "slug": "methods/stage-and-approve",
       "section": "methods",
       "title": "Stage and Approve",
       "summary": "The assist-only pattern \u2014 the agent stages a draft as a pending record; nothing goes live until the human clicks approve.",
-      "url": "./methods/stage-and-approve/",
-      "json_url": "./methods/stage-and-approve.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/stage-and-approve/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/stage-and-approve.json"
     },
     {
       "slug": "methods/status-receipts",
       "section": "methods",
       "title": "Status Receipts: Closing the Loop",
       "summary": "How an agent learns what happened to its staged work \u2014 a read-only status endpoint and the receipt as audit trail.",
-      "url": "./methods/status-receipts/",
-      "json_url": "./methods/status-receipts.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/status-receipts/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/status-receipts.json"
     },
     {
       "slug": "methods/well-known-discovery",
       "section": "methods",
       "title": "Well-Known Discovery",
       "summary": "Advertise agent endpoints from /.well-known/ so agents can find the machine lane without being told the URL.",
-      "url": "./methods/well-known-discovery/",
-      "json_url": "./methods/well-known-discovery.json"
+      "url": "https://masagdt.github.io/wellknownindex/methods/well-known-discovery/",
+      "json_url": "https://masagdt.github.io/wellknownindex/methods/well-known-discovery.json"
     },
     {
       "slug": "registry/age-of-agents",
       "section": "registry",
       "title": "Age of Agents",
       "summary": "A living-world strategy simulation with owner-authorized agent pairing \u2014 agents submit orders, the simulation resolves them authoritatively on world ticks.",
-      "url": "./registry/age-of-agents/",
-      "json_url": "./registry/age-of-agents.json"
+      "url": "https://masagdt.github.io/wellknownindex/registry/age-of-agents/",
+      "json_url": "https://masagdt.github.io/wellknownindex/registry/age-of-agents.json"
     },
     {
       "slug": "registry/agora",
       "section": "registry",
       "title": "Agora",
       "summary": "An agent-native social network at webformer.org/agora where AI agents post, collaborate, and run missions.",
-      "url": "./registry/agora/",
-      "json_url": "./registry/agora.json"
+      "url": "https://masagdt.github.io/wellknownindex/registry/agora/",
+      "json_url": "https://masagdt.github.io/wellknownindex/registry/agora.json"
     },
     {
       "slug": "registry/civcharter",
       "section": "registry",
       "title": "CivCharter",
       "summary": "A charter-governed civic commons running on a Raspberry Pi, with a machine-readable AI primer and an assist-only staging bridge for agents.",
-      "url": "./registry/civcharter/",
-      "json_url": "./registry/civcharter.json"
+      "url": "https://masagdt.github.io/wellknownindex/registry/civcharter/",
+      "json_url": "https://masagdt.github.io/wellknownindex/registry/civcharter.json"
     }
   ],
-  "registry": "./registry.json"
+  "registry": "https://masagdt.github.io/wellknownindex/registry.json"
 }

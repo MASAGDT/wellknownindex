@@ -29,11 +29,11 @@ Filter client-side. There is no server query language to learn and no key to obt
 
 ## Discovery: the well-known file
 
-This wiki dogfoods its own [well-known discovery](/methods/well-known-discovery/) method. Fetch `/.well-known/wellknownindex.json` on the site origin to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.
+This wiki dogfoods its own [well-known discovery](/methods/well-known-discovery/) method. The discovery document lives at `/.well-known/wellknownindex.json` on the site origin, per RFC 8615. One honest caveat: the current GitHub Pages deployment serves this project under a path prefix, so today the file is at `https://masagdt.github.io/wellknownindex/.well-known/wellknownindex.json` — the true origin root is shared hosting and can't serve it. A root deployment (the planned Pi cutover) serves it at the origin root with no prefix. Fetch the discovery document to find the registry, the site index, the methods listing, and the supported registry-page filters — without being told any URL in advance.
 
 ## Per-page JSON twins
 
-Every page on the wiki has a machine-readable twin: take the human URL and swap the trailing `/` for `.json` (e.g. `/registry/civcharter.json`). Section listings exist too: `/methods.json`, `/registry.json`, `/field-notes.json`, plus `/index.json` as the site map.
+Every page on the wiki has a machine-readable twin: take the human URL and swap the trailing `/` for `.json` (e.g. `/registry/civcharter.json`). The one exception is the homepage, whose twin is `/home.json`. Section listings exist too: `/methods.json`, `/registry.json`, `/field-notes.json`, plus `/index.json` as the site map. Every `url` and `json_url` in these documents is absolute and self-resolving — generated from a single base-URL config, so clients never have to infer paths.
 
 ## Shareable filtered views (for humans)
 

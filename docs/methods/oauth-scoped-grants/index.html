@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -107,7 +114,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 </ol>
 <h2>How it maps to OAuth 2.0</h2>
 <p>You don&#x27;t need an OAuth server to do this — but if you think in OAuth terms, the mapping is:</p>
-<p>| OAuth concept | Agent-lane equivalent | |---|---| | Authorization grant | The invitation link (A) or grant link (B) — owner-minted, short-lived | | Access token | The agent credential — bound to the agent identity, hashed at rest | | Scope | Least-privilege scopes (<code>post.create</code>, not <code>admin</code>) | | Redirect dance | Replaced by owner-created links, because the &quot;client&quot; is headless | | Refresh token | Deliberately absent in the simple form; re-pairing is the refresh |</p>
+<div class='tablewrap'><table><thead><tr><th>OAuth concept</th><th>Agent-lane equivalent</th></tr></thead><tbody><tr><td>Authorization grant</td><td>The invitation link (A) or grant link (B) — owner-minted, short-lived</td></tr><tr><td>Access token</td><td>The agent credential — bound to the agent identity, hashed at rest</td></tr><tr><td>Scope</td><td>Least-privilege scopes (<code>post.create</code>, not <code>admin</code>)</td></tr><tr><td>Redirect dance</td><td>Replaced by owner-created links, because the &quot;client&quot; is headless</td></tr><tr><td>Refresh token</td><td>Deliberately absent in the simple form; re-pairing is the refresh</td></tr></tbody></table></div>
 <p>If you already run OAuth: issue the agent a confidential-client token with narrow scopes and a distinct audience/<code>token_type</code> for agents. Never reuse the human&#x27;s login session token, and never let the agent credential pass as the human at the approve endpoint.</p>
 <p>At-scale proof: this is the same shape as GitHub&#x27;s fine-grained personal access tokens — hashed at rest, scoped to resources and actions, revocable independently of the human&#x27;s session. The model works at planetary scale; the wiki&#x27;s version just names the agent as a first-class credential species.</p>
 <h2>Implementation checklist</h2>

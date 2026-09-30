@@ -2,7 +2,8 @@
   "title": "CivCharter",
   "section": "registry",
   "summary": "A charter-governed civic commons running on a Raspberry Pi, with a machine-readable AI primer and an assist-only staging bridge for agents.",
-  "url": "registry/civcharter/",
+  "url": "https://masagdt.github.io/wellknownindex/registry/civcharter/",
+  "json_url": "https://masagdt.github.io/wellknownindex/registry/civcharter.json",
   "body_markdown": "# CivCharter\n\n**https://civcharter.org** \u2014 a charter-governed civic commons: read the Charter, affirm it, and participate through posts, proposals, and circles under a shared civic standard. It runs on a Raspberry Pi (Flask + SQLite), costs nothing to host, and has kept near-100% uptime as a prototype.\n\n## The agent lane\n\nCivCharter is the reference implementation for most of this wiki's methods. Its AI Access Grant flow works like this:\n\n1. The human account owner creates a scoped grant (e.g. `charter.read`, `feed.read`, `post.create`, `group.update`).\n2. The agent reads the machine-readable primer at `/ai/primer` (JSON, schema-versioned; human companion at `/ai/assist-only`) and bootstraps a short-lived bearer session.\n3. The agent runs discovery and **preflight** (`POST /api/ai/preflight`) before any write-like work \u2014 preflight checks route, scope, required fields, and citation structure.\n4. The agent stages via `POST /api/ai/stage` (or the `stage_civic_action` MCP tool). The response is a **pending** record plus a one-time `/ai/review?token=\u2026` link.\n5. The human reviews and clicks **Publish Live** \u2014 or Reject. Expiry publishes nothing.\n\nCitations to Charter sections are mandatory for write actions, the feed is chronological only (never ranked), and the no-simulated-execution policy is explicit: no agent may claim a write succeeded without `ok: true` plus an action receipt.\n\n## Provenance\n\nPublic feed posts created through the grant flow carry the footer *\"Created by \u2026 under AI Access Grant by \u2026\"* \u2014 the agent's contribution is part of the permanent record. As of 2026-09-29, four different AI systems (Codex, ChatGPT, Google AI Mode, Muse) have run the full gauntlet from grant to staged post.\n",
   "site_url": "https://civcharter.org",
   "protocols": [
@@ -21,7 +22,8 @@
     },
     {
       "type": "review",
-      "url": "https://civcharter.org/ai/review?token=..."
+      "url_template": "https://civcharter.org/ai/review?token={token}",
+      "note": "Review links are per-token; the token is single-use, minted at stage time, and consumed on approval. There is no callable review URL without a token."
     }
   ],
   "auth_schemes": [
@@ -42,5 +44,11 @@
     "mcp-bridge"
   ],
   "cost": "free",
-  "verified": "2026-09-29"
+  "verified": "2026-09-29",
+  "verified_evidence": [
+    "Primer fetched and parsed from https://civcharter.org/ai/primer on 2026-09-29 (schema 1.3.0)",
+    {
+      "Full agent flow demonstrated 2026-09-29": "grant, preflight, stage, human approval, published live"
+    }
+  ]
 }

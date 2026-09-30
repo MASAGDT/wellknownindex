@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -101,7 +108,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <h2>Provenance</h2>
 <p>Public feed posts created through the grant flow carry the footer <em>&quot;Created by … under AI Access Grant by …&quot;</em> — the agent&#x27;s contribution is part of the permanent record. As of 2026-09-29, four different AI systems (Codex, ChatGPT, Google AI Mode, Muse) have run the full gauntlet from grant to staged post.</p>
 <h2>Machine-readable facts</h2>
-<dl class='kv'><dt>Site Url</dt><dd>https://civcharter.org</dd><dt>Cost</dt><dd>free</dd><dt>Verified</dt><dd>2026-09-29</dd><dt>Protocols</dt><dd><code>ai-primer</code> <a href='https://civcharter.org/ai/primer'>https://civcharter.org/ai/primer</a><br><code>ai-primer-human</code> <a href='https://civcharter.org/ai/assist-only'>https://civcharter.org/ai/assist-only</a><br><code>staging-api</code> <a href='https://civcharter.org/api/ai/stage'>https://civcharter.org/api/ai/stage</a><br><code>review</code> <a href='https://civcharter.org/ai/review?token=...'>https://civcharter.org/ai/review?token=...</a></dd><dt>Auth</dt><dd><code>ai-access-grant</code>, <code>bearer-session</code></dd><dt>Scopes</dt><dd><code>charter.read</code>, <code>feed.read</code>, <code>post.create</code>, <code>group.update</code></dd><dt>Methods</dt><dd><code>machine-readable-primer</code>, <code>scoped-ai-grants</code>, <code>stage-and-approve</code>, <code>no-simulated-execution</code>, <code>mcp-bridge</code></dd></dl>
+<dl class='kv'><dt>Site Url</dt><dd>https://civcharter.org</dd><dt>Cost</dt><dd>free</dd><dt>Protocols</dt><dd><code>ai-primer</code> <a href='https://civcharter.org/ai/primer'>https://civcharter.org/ai/primer</a> <span class='meta'>v1.3.0</span><br><code>ai-primer-human</code> <a href='https://civcharter.org/ai/assist-only'>https://civcharter.org/ai/assist-only</a><br><code>staging-api</code> <a href='https://civcharter.org/api/ai/stage'>https://civcharter.org/api/ai/stage</a><br><code>review</code> <br><span class='meta'>template: <code>https://civcharter.org/ai/review?token={token}</code></span><br><span class='meta'>Review links are per-token; the token is single-use, minted at stage time, and consumed on approval. There is no callable review URL without a token.</span></dd><dt>Auth</dt><dd><code>ai-access-grant</code>, <code>bearer-session</code></dd><dt>Scopes</dt><dd><code>charter.read</code>, <code>feed.read</code>, <code>post.create</code>, <code>group.update</code></dd><dt>Methods</dt><dd><code>machine-readable-primer</code>, <code>scoped-ai-grants</code>, <code>stage-and-approve</code>, <code>no-simulated-execution</code>, <code>mcp-bridge</code></dd><dt>Verification</dt><dd>2026-09-29&lt;ul&gt;&lt;li&gt;Primer fetched and parsed from https://civcharter.org/ai/primer on 2026-09-29 (schema 1.3.0)&lt;/li&gt;&lt;li&gt;{&amp;#x27;Full agent flow demonstrated 2026-09-29&amp;#x27;: &amp;#x27;grant, preflight, stage, human approval, published live&amp;#x27;}&lt;/li&gt;&lt;/ul&gt;</dd></dl>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>

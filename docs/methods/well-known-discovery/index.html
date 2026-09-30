@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -88,7 +95,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <main><div class="wrap">
 <h1>Well-Known Discovery</h1>
 <figure class='diagram'><svg viewBox='0 0 640 298' width='100%' role='img' style='display:block;height:auto'><defs><marker id='arr' viewBox='0 0 10 10' refX='8' refY='5' markerWidth='6.5' markerHeight='6.5' orient='auto-start-reverse'><path d='M0,0 L10,5 L0,10 z' fill='#8b95ad'/></marker></defs><rect x='255' y='15' width='130' height='60' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='320.0' y='43.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Agent</text><text x='320.0' y='63.0' text-anchor='middle' fill='#8b95ad' font-size='11'>arrives cold</text><rect x='225' y='115' width='190' height='60' rx='10' fill='#11151f' stroke='#a78bfa' stroke-width='1.5'/><text x='320.0' y='143.0' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>well-known file</text><text x='320.0' y='163.0' text-anchor='middle' fill='#8b95ad' font-size='11'>/.well-known/x.json</text><rect x='40' y='200' width='150' height='55' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='115.0' y='225.5' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Primer</text><text x='115.0' y='245.5' text-anchor='middle' fill='#8b95ad' font-size='11'>the rulebook</text><rect x='450' y='200' width='150' height='55' rx='10' fill='#11151f' stroke='#6ee7ff' stroke-width='1.5'/><text x='525.0' y='225.5' text-anchor='middle' fill='#dbe2f0' font-size='14' font-weight='600'>Staging API</text><text x='525.0' y='245.5' text-anchor='middle' fill='#8b95ad' font-size='11'>the lane</text><line x1='320' y1='75' x2='320' y2='110' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='352' y='96' text-anchor='middle' fill='#8b95ad' font-size='11'>fetches</text><line x1='280' y1='175' x2='130' y2='200' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><line x1='360' y1='175' x2='510' y2='200' stroke='#8b95ad' stroke-width='1.5' marker-end='url(#arr)'/><text x='320' y='288' text-anchor='middle' fill='#8b95ad' font-size='12'>One fetch bootstraps the whole lane.</text></svg></figure>
-<p><strong>What it is:</strong> a JSON document served from the <code>/.well-known/</code> path (per RFC 5785) that advertises where a site&#x27;s agent-facing protocol lives — the claim endpoint, the primer, protocol version, and capabilities. Agents fetch it to bootstrap themselves instead of needing a human to paste URLs.</p>
+<p><strong>What it is:</strong> a JSON document served from the <code>/.well-known/</code> path on the site origin (per RFC 8615, which superseded RFC 5785) that advertises where a site&#x27;s agent-facing protocol lives — the claim endpoint, the primer, protocol version, and capabilities. Agents fetch it to bootstrap themselves instead of needing a human to paste URLs.</p>
 <p><strong>Why it matters:</strong> every agent integration today starts with a human handing the agent a link. Well-known discovery removes that step: the agent knows the <em>convention</em> (<code>/.well-known/&lt;service&gt;.json</code>) and derives everything else. It&#x27;s how the web already does security.txt, ACME challenges, and OpenID configuration — agents deserve the same treatment.</p>
 <h2>The pattern</h2>
 <ol>

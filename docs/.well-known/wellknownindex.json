@@ -2,7 +2,7 @@
   "service": "WellKnownIndex",
   "description": "A free, public index of agent-friendly web endpoints \u2014 and the methods for building them.",
   "version": "1.0",
-  "updated": "2026-09-29",
+  "updated": "2026-09-30",
   "endpoints": {
     "registry": "https://masagdt.github.io/wellknownindex/registry.json",
     "site_index": "https://masagdt.github.io/wellknownindex/index.json",
@@ -18,6 +18,10 @@
     "method": "implemented method slug, e.g. stage-and-approve",
     "protocol": "protocol type, e.g. ai-primer",
     "auth": "auth scheme identifier"
+  },
+  "deployment": {
+    "base_url": "https://masagdt.github.io/wellknownindex",
+    "discovery_note": "Project-path deployment on GitHub Pages: the discovery document lives under the project prefix, not the origin root. A root deployment serves it at /.well-known/wellknownindex.json per RFC 8615."
   },
   "contributing": "https://github.com/MASAGDT/wellknownindex/issues",
   "license": "https://github.com/MASAGDT/wellknownindex/blob/main/LICENSE",

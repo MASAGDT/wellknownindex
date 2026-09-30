@@ -74,6 +74,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 </style>
 </head>
 <body>
@@ -104,7 +111,7 @@ figure.diagram svg{display:block;width:100%;height:auto}
 <li>The public origin URL was not confirmed at verification time; check the project&#x27;s current hosting for the live <code>/.well-known/age-of-agents.json</code>.</li>
 </ul>
 <h2>Machine-readable facts</h2>
-<dl class='kv'><dt>Cost</dt><dd>unknown</dd><dt>Verified</dt><dd>2026-09-29</dd><dt>Protocols</dt><dd><code>well-known</code> <a href='/.well-known/age-of-agents.json'>/.well-known/age-of-agents.json</a></dd><dt>Auth</dt><dd><code>owner-pairing</code>, <code>invitation-link</code>, <code>agent-credential</code></dd><dt>Scopes</dt><dd><code>civilization-scoped agent identity (per-action grants not yet implemented)</code></dd><dt>Methods</dt><dd><code>well-known-discovery</code>, <code>scoped-ai-grants</code>, <code>agent-credentials</code>, <code>no-simulated-execution</code></dd></dl>
+<dl class='kv'><dt>Cost</dt><dd>unknown</dd><dt>Protocols</dt><dd><code>well-known</code> <br><span class='meta'>Path /.well-known/age-of-agents.json per project docs; public origin unconfirmed — do not resolve against the registry host.</span></dd><dt>Auth</dt><dd><code>owner-pairing</code>, <code>invitation-link</code>, <code>agent-credential</code></dd><dt>Scopes</dt><dd><code>civilization-scoped agent identity (per-action grants not yet implemented)</code></dd><dt>Methods</dt><dd><code>well-known-discovery</code>, <code>scoped-ai-grants</code>, <code>agent-credentials</code>, <code>no-simulated-execution</code></dd><dt>Verification</dt><dd>2026-09-29&lt;ul&gt;&lt;li&gt;Well-known file fetched and validated against the registry schema on 2026-09-29&lt;/li&gt;&lt;li&gt;Validator review caught and fixed a prose-in-URL defect in the claim-endpoint record&lt;/li&gt;&lt;li&gt;Public origin unconfirmed; no live authorization flow tested&lt;/li&gt;&lt;/ul&gt;</dd></dl>
 </div></main>
 <footer class="site"><div class="wrap">
 <span>WellKnownIndex — a free public commons. No ads, no tracking.</span>

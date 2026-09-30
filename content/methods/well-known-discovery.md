@@ -7,7 +7,7 @@ diagram: well-known-discovery
 
 # Well-Known Discovery
 
-**What it is:** a JSON document served from the `/.well-known/` path (per RFC 5785) that advertises where a site's agent-facing protocol lives — the claim endpoint, the primer, protocol version, and capabilities. Agents fetch it to bootstrap themselves instead of needing a human to paste URLs.
+**What it is:** a JSON document served from the `/.well-known/` path on the site origin (per RFC 8615, which superseded RFC 5785) that advertises where a site's agent-facing protocol lives — the claim endpoint, the primer, protocol version, and capabilities. Agents fetch it to bootstrap themselves instead of needing a human to paste URLs.
 
 **Why it matters:** every agent integration today starts with a human handing the agent a link. Well-known discovery removes that step: the agent knows the *convention* (`/.well-known/<service>.json`) and derives everything else. It's how the web already does security.txt, ACME challenges, and OpenID configuration — agents deserve the same treatment.
 

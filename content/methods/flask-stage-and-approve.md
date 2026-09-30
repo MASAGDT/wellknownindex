@@ -29,7 +29,8 @@ Preflight — the agent checks before it stages:
 POST /api/ai/preflight
 Authorization: Bearer <agent-session>
 
-{"intent": "post.create", "title": "...", "body": "...",
+{"intent": "post.create",
+ "payload": {"title": "...", "body": "..."},
  "citations": [{"section": "Article V, Section 2"}]}
 ```
 ```json
@@ -45,7 +46,8 @@ Stage — the pending record is born unpublished:
 POST /api/ai/stage
 Authorization: Bearer <agent-session>
 
-{"intent": "post.create", "title": "...", "body": "...",
+{"intent": "post.create",
+ "payload": {"title": "...", "body": "..."},
  "citations": [{"section": "Article V, Section 2"}]}
 ```
 ```json
@@ -119,11 +121,19 @@ def approve():
     if is_agent_credential(request):
         abort(403)  # agents cannot approve their own staged work
     rec = consume_token(request.args.get("token"))  # single-use, hashed
+    try:
+        live_url = publish(rec)
+    except Exception:
+        # The approval token is already spent. Never report "published"
+        # for a publish that failed: park the record so a human can
+        # re-approve, and let the error propagate.
+        rec["status"] = "publish_failed"
+        raise
     rec["status"] = "published"
-    return jsonify(ok=True, live_url=publish(rec))
+    return jsonify(ok=True, live_url=live_url)
 ```
 
-Run a sweeper (cron or thread) that marks unreviewed records `expired` past `expires_at`. Expiry publishes nothing — that's the whole point.
+Run a sweeper (cron or thread) that marks unreviewed records `expired` past `expires_at`. Expiry publishes nothing — that's the whole point. This expiry rule is for staging lanes holding draft writes; the [Ceremony Blueprint](/methods/ceremony-blueprint/) submission queue is the deliberate exception — proposals are never auto-expired, because silently dropping someone's submission is worse than holding it.
 
 ## Field note from production
 

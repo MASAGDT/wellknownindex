@@ -12,7 +12,8 @@ protocols:
   - type: staging-api
     url: https://civcharter.org/api/ai/stage
   - type: review
-    url: https://civcharter.org/ai/review?token=...
+    url_template: https://civcharter.org/ai/review?token={token}
+    note: Review links are per-token; the token is single-use, minted at stage time, and consumed on approval. There is no callable review URL without a token.
 auth_schemes:
   - ai-access-grant
   - bearer-session
@@ -29,6 +30,9 @@ methods_implemented:
   - mcp-bridge
 cost: free
 verified: 2026-09-29
+verified_evidence:
+  - Primer fetched and parsed from https://civcharter.org/ai/primer on 2026-09-29 (schema 1.3.0)
+  - Full agent flow demonstrated 2026-09-29: grant, preflight, stage, human approval, published live
 ---
 
 # CivCharter

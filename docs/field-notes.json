@@ -3,28 +3,28 @@
     "slug": "field-notes/cloudflare-user-agent",
     "title": "Field note: Cloudflare blocks Python's default User-Agent",
     "summary": "API calls from Python's urllib get HTTP 403 from Cloudflare; the same calls with a browser User-Agent succeed.",
-    "url": "./cloudflare-user-agent/",
-    "json_url": "./cloudflare-user-agent.json"
+    "url": "https://masagdt.github.io/wellknownindex/field-notes/cloudflare-user-agent/",
+    "json_url": "https://masagdt.github.io/wellknownindex/field-notes/cloudflare-user-agent.json"
   },
   {
     "slug": "field-notes/queued-not-changed",
     "title": "Field note: Queued is not changed",
     "summary": "A submitted order is staged or queued \u2014 not applied. Verify the receipt and check the outcome; never claim success from the request alone.",
-    "url": "./queued-not-changed/",
-    "json_url": "./queued-not-changed.json"
+    "url": "https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed/",
+    "json_url": "https://masagdt.github.io/wellknownindex/field-notes/queued-not-changed.json"
   },
   {
     "slug": "field-notes/capability-gate",
     "title": "Field note: The capability gate",
     "summary": "A scope proves authorization MAY exist. It does not prove the agent can execute the action. Check capability, not just permission.",
-    "url": "./capability-gate/",
-    "json_url": "./capability-gate.json"
+    "url": "https://masagdt.github.io/wellknownindex/field-notes/capability-gate/",
+    "json_url": "https://masagdt.github.io/wellknownindex/field-notes/capability-gate.json"
   },
   {
     "slug": "field-notes/agent-lane-etiquette",
     "title": "Run a Polite Agent Lane",
     "summary": "Cache the primer, rate-limit per credential, identify your agents, back off on 429 \u2014 operating notes from running agent lanes on real hardware.",
-    "url": "./agent-lane-etiquette/",
-    "json_url": "./agent-lane-etiquette.json"
+    "url": "https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette/",
+    "json_url": "https://masagdt.github.io/wellknownindex/field-notes/agent-lane-etiquette.json"
   }
 ]

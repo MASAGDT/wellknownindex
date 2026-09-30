@@ -55,6 +55,59 @@ def parse_md(path):
 
 
 # ------------------------------------------------------- minimal markdown
+def _check_protocol(md_path, pr):
+    """WKI-03: exact endpoints, templates, and notes stay separated.
+
+    `url` must be a clean absolute URL or absent; prose goes in `note`,
+    URI templates go in `url_template` with a {placeholder}. An endpoint
+    that cannot be established uses `status: unconfirmed` plus a `note`
+    explaining what is unknown — never a guessed URL.
+    """
+    u = pr.get("url")
+    t = pr.get("url_template")
+    ptype = pr.get("type", "?")
+    status = pr.get("status", "confirmed")
+    if status not in ("confirmed", "unconfirmed"):
+        raise SystemExit(
+            f"ERROR {md_path}: protocol '{ptype}' has unknown status {status!r}; "
+            "use 'confirmed' or 'unconfirmed'.")
+    if u and (not re.match(r"^https?://\S+$", str(u)) or "..." in str(u)):
+        raise SystemExit(
+            f"ERROR {md_path}: protocol '{ptype}' url is not a clean absolute "
+            f"URL: {u!r} — move prose to 'note', templates to 'url_template', "
+            "unknowns to status 'unconfirmed'.")
+    if status == "unconfirmed":
+        if not pr.get("note"):
+            raise SystemExit(
+                f"ERROR {md_path}: protocol '{ptype}' is unconfirmed but has no "
+                "'note' explaining what is unknown.")
+        return
+    if not u and not t:
+        raise SystemExit(
+            f"ERROR {md_path}: protocol '{ptype}' needs url or url_template; "
+            "use status 'unconfirmed' with a note if the endpoint is unknown.")
+    if u and (not re.match(r"^https?://\S+$", str(u)) or "..." in str(u)):
+        raise SystemExit(
+            f"ERROR {md_path}: protocol '{ptype}' url is not a clean absolute "
+            f"URL: {u!r} — move prose to 'note', templates to 'url_template'.")
+    if t and (" " in str(t) or "{" not in str(t)):
+        raise SystemExit(
+            f"ERROR {md_path}: protocol '{ptype}' url_template must contain "
+            f"a {{placeholder}} and no spaces: {t!r}")
+def _split_row(s):
+    s = s.strip()
+    if s.startswith("|"):
+        s = s[1:]
+    if s.endswith("|"):
+        s = s[:-1]
+    return [c.strip() for c in s.split("|")]
+
+
+def _is_table_sep(s):
+    cells = _split_row(s)
+    return bool(cells) and all(re.match(r"^:?-+:?$", c) for c in cells)
+
+
 def inline(md):
     md = html.escape(md)
     md = re.sub(r"`([^`]+?)`", r"<code>\1</code>", md)
@@ -145,13 +198,35 @@ def render_markdown(body, depth):
                 out.append("<ol>")
                 list_stack.append("ol")
             out.append(f"<li>{inline(re.sub(r'^\d+\.\s+', '', s))}</li>")
+        elif s.startswith("|") and i + 1 < len(lines) and _is_table_sep(lines[i + 1]):
+            close_lists()
+            headers = _split_row(s)
+            j = i + 2
+            rows = []
+            while j < len(lines) and lines[j].strip().startswith("|"):
+                if _is_table_sep(lines[j]):
+                    j += 1
+                    continue
+                rows.append(_split_row(lines[j].strip()))
+                j += 1
+            thead = "<tr>" + "".join(f"<th>{inline(c)}</th>" for c in headers) + "</tr>"
+            tbody = "".join(
+                "<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>"
+                for r in rows
+            )
+            out.append(
+                "<div class='tablewrap'><table><thead>"
+                + thead + "</thead><tbody>" + tbody
+                + "</tbody></table></div>"
+            )
+            i = j - 1
         else:
             close_lists()
             # gather paragraph lines
             para = [s]
             j = i + 1
             while j < len(lines) and lines[j].strip() and not re.match(
-                r"^(#{1,3}\s|```|>|[-*]\s+|\d+\.\s+|---$)", lines[j].strip()
+                r"^(#{1,3}\s|```|>|[-*]\s+|\d+\.\s+|---$|\|)", lines[j].strip()
             ):
                 para.append(lines[j].strip())
                 j += 1
@@ -473,6 +548,13 @@ font-size:.92rem}
 figure.diagram{margin:1.5rem 0;background:var(--panel);border:1px solid var(--line);
 border-radius:12px;padding:1.25rem .75rem}
 figure.diagram svg{display:block;width:100%;height:auto}
+.tablewrap{overflow-x:auto;margin:1.2em 0;border:1px solid var(--line);border-radius:8px}
+.tablewrap table{border-collapse:collapse;width:100%;font-size:.92rem;margin:0}
+.tablewrap th,.tablewrap td{text-align:left;padding:.6em .9em;
+border-bottom:1px solid var(--line);vertical-align:top}
+.tablewrap thead th{background:var(--panel);color:#fff;font-weight:600;white-space:nowrap}
+.tablewrap tbody tr:last-child td{border-bottom:none}
+.noresults{display:none}
 """
 
 TEMPLATE = """<!DOCTYPE html>
@@ -553,8 +635,10 @@ def main():
 
         # machine-readable fact box for registry entries
         if section == "registry":
+            for pr in (meta.get("protocols") or []):
+                _check_protocol(md_path, pr)
             facts = []
-            for key in ("site_url", "cost", "verified"):
+            for key in ("site_url", "cost"):
                 if meta.get(key) is not None:
                     facts.append((key.replace("_", " ").title(), meta[key]))
             for key, label in (("protocols", "Protocols"), ("auth_schemes", "Auth"),
@@ -562,14 +646,34 @@ def main():
                 vals = meta.get(key) or []
                 if vals:
                     if key == "protocols":
-                        rendered = "<br>".join(
-                            f"<code>{html.escape(p.get('type',''))}</code> "
-                            f"<a href='{html.escape(p.get('url',''))}'>{html.escape(p.get('url',''))}</a>"
-                            for p in vals
-                        )
+                        parts = []
+                        for p in vals:
+                            bits = f"<code>{html.escape(p.get('type', ''))}</code> "
+                            if p.get("url"):
+                                u = html.escape(p["url"])
+                                bits += f"<a href='{u}'>{u}</a>"
+                            if p.get("url_template"):
+                                bits += ("<br><span class='meta'>template: "
+                                         f"<code>{html.escape(p['url_template'])}</code></span>")
+                            if p.get("version"):
+                                bits += (f" <span class='meta'>v"
+                                         f"{html.escape(str(p['version']))}</span>")
+                            if p.get("note"):
+                                bits += (f"<br><span class='meta'>"
+                                         f"{html.escape(p['note'])}</span>")
+                            parts.append(bits)
+                        rendered = "<br>".join(parts)
                     else:
                         rendered = ", ".join(f"<code>{html.escape(str(v))}</code>" for v in vals)
                     facts.append((label, rendered))
+            # WKI-04: verification is a date plus stated evidence, not a bare date
+            if meta.get("verified") is not None:
+                ev = "".join(
+                    f"<li>{html.escape(str(e))}</li>"
+                    for e in (meta.get("verified_evidence") or []))
+                facts.append(("Verification",
+                              html.escape(str(meta["verified"]))
+                              + (f"<ul>{ev}</ul>" if ev else "")))
             if facts:
                 rows = "".join(
                     f"<dt>{html.escape(k)}</dt><dd>{v if k in ('Protocols',) else html.escape(str(v)) if not str(v).startswith('<') else v}</dd>"
@@ -594,10 +698,13 @@ def main():
                               page_url=page_url, description=summary)
         (out_dir / "index.html").write_text(html_page, encoding="utf-8")
 
-        # JSON twin
+        # JSON twin — absolute, self-resolving URLs from the single base
+        # config (WKI-02). Homepage twin is home.json: the documented exception.
+        is_home = str(rel) == "index"
         twin = {
             "title": title, "section": section, "summary": summary,
-            "url": (str(rel) + "/") if str(rel) != "index" else "./",
+            "url": SITE_URL + ("/" if is_home else f"/{rel}/"),
+            "json_url": SITE_URL + ("/home.json" if is_home else f"/{rel}.json"),
             "body_markdown": body,
         }
         for k, v in meta.items():
@@ -632,6 +739,9 @@ def main():
                 cost = p["meta"].get("cost")
                 if cost:
                     tags += f"<span class='tag'>cost: {html.escape(str(cost))}</span>"
+                ver = p["meta"].get("verified")
+                if ver:
+                    tags += f"<span class='tag'>verified {html.escape(str(ver))}</span>"
                 meth_vals = " ".join(str(m).lower() for m in meths)
                 prot_vals = " ".join(str(pr.get("type", "")).lower()
                                      for pr in (p["meta"].get("protocols") or []))
@@ -661,6 +771,9 @@ def main():
                 f"<select class='filter' id='f_protocol'><option value=''>Protocol: all</option>{_opts(facet_protocols)}</select>"
                 f"<select class='filter' id='f_auth'><option value=''>Auth: all</option>{_opts(facet_auth)}</select>"
                 "</div>"
+                "<p class='meta noresults' id='noresults'>No entries match those "
+                "filters — try clearing one, or "
+                "<a href='../contribute/'>propose the missing site</a>.</p>"
             )
             extra_js = """<script>
 const q=document.getElementById('q'),fm=document.getElementById('f_method'),
@@ -668,13 +781,17 @@ fp=document.getElementById('f_protocol'),fa=document.getElementById('f_auth');
 function currentFilters(){return{q:q.value,method:fm.value,protocol:fp.value,auth:fa.value};}
 function apply(){
   const f=currentFilters(),needle=f.q.toLowerCase();
+  let vis=0;
   document.querySelectorAll('.card').forEach(c=>{
     const okT=!needle||c.dataset.search.includes(needle);
     const okM=!f.method||c.dataset.methods.split(' ').includes(f.method.toLowerCase());
     const okP=!f.protocol||c.dataset.protocols.split(' ').includes(f.protocol.toLowerCase());
     const okA=!f.auth||c.dataset.auth.split(' ').includes(f.auth.toLowerCase());
-    c.style.display=(okT&&okM&&okP&&okA)?'':'none';
+    const show=(okT&&okM&&okP&&okA);
+    c.style.display=show?'':'none';
+    if(show)vis++;
   });
+  document.getElementById('noresults').style.display=vis?'none':'';
   const sp=new URLSearchParams();
   for(const kv of Object.entries(f)){if(kv[1])sp.set(kv[0],kv[1]);}
   history.replaceState(null,'',sp.toString()?('?'+sp.toString()):location.pathname);
@@ -706,10 +823,10 @@ function apply(){
                       page_url=f"{SITE_URL}/{sec}/", description=SITE_TAGLINE),
             encoding="utf-8",
         )
-        # section JSON listing
+        # section JSON listing — absolute URLs (WKI-02)
         sec_json = [{"slug": p["slug"], "title": p["title"], "summary": p["summary"],
-                     "url": f"./{p['slug'].split('/')[-1]}/",
-                     "json_url": f"./{p['slug'].split('/')[-1]}.json"}
+                     "url": f"{SITE_URL}/{sec}/{p['slug'].split('/')[-1]}/",
+                     "json_url": f"{SITE_URL}/{sec}/{p['slug'].split('/')[-1]}.json"}
                     for p in sorted(items, key=lambda x: x["title"])]
         (DOCS / f"{sec}.json").write_text(jdumps(sec_json, indent=2), encoding="utf-8")
 
@@ -727,22 +844,26 @@ function apply(){
             "scopes": m.get("scopes") or [],
             "methods_implemented": m.get("methods_implemented") or [],
             "cost": m.get("cost"), "verified": m.get("verified"),
-            "url": f"./registry/{slug}/", "json_url": f"./registry/{slug}.json",
+            "verified_evidence": m.get("verified_evidence") or [],
+            "url": f"{SITE_URL}/registry/{slug}/",
+            "json_url": f"{SITE_URL}/registry/{slug}.json",
         })
     (DOCS / "registry.json").write_text(jdumps(registry, indent=2), encoding="utf-8")
 
-    # index.json — site map
+    # index.json — site map, absolute URLs (WKI-02)
     sitemap = {
         "site": SITE_TITLE, "tagline": SITE_TAGLINE,
         "generated": date.today().isoformat(),
-        "sections": [{"slug": s, "title": t, "url": f"./{s}/", "json_url": f"./{s}.json"}
+        "sections": [{"slug": s, "title": t, "url": f"{SITE_URL}/{s}/",
+                      "json_url": f"{SITE_URL}/{s}.json"}
                      for s, t in SECTIONS.items()],
         "pages": [{"slug": p["slug"], "section": p["section"], "title": p["title"],
                    "summary": p["summary"],
-                   "url": "./" if p["slug"] == "index" else f"./{p['slug']}/",
-                   "json_url": "./home.json" if p["slug"] == "index" else f"./{p['slug']}.json"}
+                   "url": SITE_URL + ("/" if p["slug"] == "index" else f"/{p['slug']}/"),
+                   "json_url": SITE_URL + ("/home.json" if p["slug"] == "index"
+                                           else f"/{p['slug']}.json")}
                   for p in sorted(pages, key=lambda x: x["slug"])],
-        "registry": "./registry.json",
+        "registry": f"{SITE_URL}/registry.json",
     }
     (DOCS / "index.json").write_text(jdumps(sitemap, indent=2), encoding="utf-8")
 
@@ -778,6 +899,15 @@ function apply(){
             "method": "implemented method slug, e.g. stage-and-approve",
             "protocol": "protocol type, e.g. ai-primer",
             "auth": "auth scheme identifier",
+        },
+        "deployment": {
+            "base_url": SITE_URL,
+            "discovery_note": (
+                "Project-path deployment on GitHub Pages: the discovery "
+                "document lives under the project prefix, not the origin "
+                "root. A root deployment serves it at "
+                "/.well-known/wellknownindex.json per RFC 8615."
+            ),
         },
         "contributing": "https://github.com/MASAGDT/wellknownindex/issues",
         "license": "https://github.com/MASAGDT/wellknownindex/blob/main/LICENSE",
